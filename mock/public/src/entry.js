@@ -5,7 +5,7 @@ var ProductCategoryRow = React.createClass({
     render: function () {
         return (
             <tr>
-                <th cloSpan="2">{this.props.category}</th>
+                <th colSpan="2">{this.props.category}</th>
             </tr>
         )
     }
@@ -79,7 +79,7 @@ var SearchBar = React.createClass({
 var FilterableProductTable = React.createClass({
     getInitialState: function () {
         return {
-            fukterText: '',
+            filterText: '',
             inStockOnly: false
         };
     },
@@ -111,7 +111,4 @@ var PRODUCTS = [
 ReactDOM.render(
     <FilterableProductTable products={PRODUCTS} />,
     document.getElementById("container")
-)
-
-
-
+);

@@ -65,7 +65,7 @@
 	            null,
 	            React.createElement(
 	                "th",
-	                { cloSpan: "2" },
+	                { colSpan: "2" },
 	                this.props.category
 	            )
 	        );
@@ -171,7 +171,7 @@
 
 	    getInitialState: function getInitialState() {
 	        return {
-	            fukterText: '',
+	            filterText: '',
 	            inStockOnly: false
 	        };
 	    },
