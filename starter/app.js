@@ -48,7 +48,7 @@ if ('development' === app.get('env')) {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/helloworld.html')
 })
-routes(app)
+//routes(app)
 
 app.listen(app.get('port'), function () {
     console.log('Server is running on ' + app.set('port'))
