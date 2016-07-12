@@ -1,8 +1,19 @@
-var React = require("react"),
-	ReactDOM = require("react-dom"),
-	CommentBox = require("./CommentBox");
+import { createStore } from 'redux'
 
-ReactDOM.render(
-	<CommentBox url="/api/comments" pollInterval={2000} />,
-	document.getElementById('content')
-);
+//reducer
+function counter(state = 0, action) {
+	switch (action.type) {
+		case 'INCREMENT':
+			return state + 1
+		case 'DECREMENT':
+			return state - 1
+		default:
+			return state
+	}
+}
+
+//store
+let store = createStore(counter)
+store.subscribe(() => console.log(store.getState()))
+
+store.dispatch({type: 'INCREMENT'})
