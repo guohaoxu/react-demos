@@ -1,19 +1,32 @@
-import { createStore } from 'redux'
+/**
+* actions
+*/
+export const ADD_TODO = 'ADD_TODO';
+export const TOGGLE_TODO = 'TOGGLE_TODO';
+export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
 
-//reducer
-function counter(state = 0, action) {
-	switch (action.type) {
-		case 'INCREMENT':
-			return state + 1
-		case 'DECREMENT':
-			return state - 1
-		default:
-			return state
-	}
+/**
+* other consts
+*/
+export const VisibilityFilters = {
+	SHOW_ALL: 'SHOW_ALL',
+	SHOW_COMPLETED: 'SHOW_COMPLETED',
+	SHOW_ACTIVE: 'SHOW_ACTIVE'
 }
 
-//store
-let store = createStore(counter)
-store.subscribe(() => console.log(store.getState()))
+/**
+* action function
+*/
+export function addTodo(text) {
+	return { type: ADD_TODO, text }
+}
+export function toggleTodo(index) {
+	return { type: TOGGLE_TODO, index}
+}
+export function setVisibilityFilter(filter) {
+	return { type: SET_VISIBILITY_FILTER, filter}
+}
 
-store.dispatch({type: 'INCREMENT'});;
+/**
+* reducer
+*/
