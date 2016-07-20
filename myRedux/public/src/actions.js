@@ -7,3 +7,14 @@ export const VisibilityFilters = {
   SHOW_COMPLETED: 'SHOW_COMPLETED',
   SHOW_ACTIVE: 'SHOW_ACTIVE'
 }
+
+//actions creators
+export function addTodo(text) {
+  return { type: ADD_TODO, text }
+}
+export function completeTodo(index) {
+  return { type: COMPLETE_TODO, index }
+}
+export function setVisibilityFilter(filter) {
+  return { type: SET_VISIBILITY_FILTER, filter }
+}
