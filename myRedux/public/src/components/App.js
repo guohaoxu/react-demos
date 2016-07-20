@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilters } from 'actions'
+import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilters } from '../actions'
 
 import AddTodo from './AddTodo'
 import TodoList from './TodoList'
@@ -9,7 +9,7 @@ import Footer from './Footer'
 class App extends Component {
   render() {
     //通过connect()注入
-    const { dispatch, visibleTodos, visbilityFilter } = this.props
+    const { dispatch, visibleTodos, visibilityFilter } = this.props
     return (
       <div>
         <AddTodo
@@ -18,7 +18,7 @@ class App extends Component {
           } />
         <TodoList
           todos={this.props.visibleTodos}
-          onTodoClick={todo => 
+          onTodoClick={index => 
             dispatch(completeTodo(index))
           } />
         <Footer
@@ -56,7 +56,7 @@ function selectTodos(todos, filter) {
 //基于全局state注入props
 function select(state) {
   return {
-    visibleTodo: selectTodo(state.todos, state.visibilityFilter),
+    visibleTodos: selectTodos(state.todos, state.visibilityFilter),
     visibilityFilter: state.visibilityFilter
   }
 }

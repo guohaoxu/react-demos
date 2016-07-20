@@ -11,5 +11,6 @@ let rootElement = document.getElementById('content')
 render(
   <Provider store={store}>
     <App />
-  </Provider>
+  </Provider>,
+  rootElement
 )
