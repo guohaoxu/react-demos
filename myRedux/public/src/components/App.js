@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilter } from 'actions'
+import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilters } from 'actions'
 
-import AddTodo from './components/AddTodo'
-import TodoList from './components/TodoList'
-import Footer from './components/Footer'
+import AddTodo from './AddTodo'
+import TodoList from './TodoList'
+import Footer from './Footer'
 
 class App extends Component {
   render() {
@@ -34,7 +34,7 @@ App.propTypes = {
   visibleTodos: PropTypes.arrayOf(PropTypes.shape({
     text: PropTypes.string.inRequired,
     completed: PropTypes.bool.isRequired
-  })),
+  }).isRequired).isRequired,
   visibilityFilter: PropTypes.oneOf([
     'SHOW_ALL',
     'SHOW_COMPLETED',
