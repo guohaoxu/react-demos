@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 export default class Footer extends Component {
   renderFilter(filter, name) {
+    let hash = '#/' + name
     if (filter === this.props.filter) {
       return name
     }
     return (
-      <a href='#' onClick={e => {
-        e.preventDefault()
+      <a href={hash} onClick={e => {
+        //e.preventDefault()
         this.props.onFilterChange(filter)
       }}>
         {name}

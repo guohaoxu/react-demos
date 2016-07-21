@@ -22798,15 +22798,58 @@
 	var App = function (_Component) {
 	  _inherits(App, _Component);
 
+	  //router
+
 	  function App() {
 	    _classCallCheck(this, App);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+
+	    _this.state = {
+	      route: window.location.hash.substr(1)
+	    };
+	    return _this;
 	  }
 
 	  _createClass(App, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      window.addEventListener('hashchange', function () {
+	        _this2.setState({
+	          route: window.location.hash.substr(1)
+	        });
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      //router component
+	      var child;
+	      switch (this.state.route) {
+	        case '/about':
+	          child = _react2.default.createElement(
+	            'div',
+	            null,
+	            'This is about.'
+	          );
+	          break;
+	        case '/setting':
+	          child = _react2.default.createElement(
+	            'div',
+	            null,
+	            'This is setting.'
+	          );
+	          break;
+	        default:
+	          child = _react2.default.createElement(
+	            'div',
+	            null,
+	            'This is default.'
+	          );
+	      }
+
 	      //通过connect()注入
 	      var _props = this.props;
 	      var dispatch = _props.dispatch;
@@ -22829,7 +22872,30 @@
 	          filter: visibilityFilter,
 	          onFilterChange: function onFilterChange(nextFilter) {
 	            return dispatch((0, _actions.setVisibilityFilter)(nextFilter));
-	          } })
+	          } }),
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              'a',
+	              { href: '#/about' },
+	              'About'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'li',
+	            null,
+	            _react2.default.createElement(
+	              'a',
+	              { href: '#/setting' },
+	              'setting'
+	            )
+	          )
+	        ),
+	        child
 	      );
 	    }
 	  }]);
@@ -23109,13 +23175,14 @@
 	    value: function renderFilter(filter, name) {
 	      var _this2 = this;
 
+	      var hash = '#/' + name;
 	      if (filter === this.props.filter) {
 	        return name;
 	      }
 	      return _react2.default.createElement(
 	        'a',
-	        { href: '#', onClick: function onClick(e) {
-	            e.preventDefault();
+	        { href: hash, onClick: function onClick(e) {
+	            //e.preventDefault()
 	            _this2.props.onFilterChange(filter);
 	          } },
 	        name
