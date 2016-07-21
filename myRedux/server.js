@@ -45,7 +45,7 @@ if ('development' === app.get('env')) {
 	app.use(logger('dev'))
 	app.use(errorHandler())
 }
-app.get('/', function (req, res) {
+app.get('*', function (req, res) {
 	res.sendFile(__dirname + '/public/helloworld.html')
 })
 //routes(app)
