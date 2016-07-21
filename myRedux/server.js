@@ -45,10 +45,11 @@ if ('development' === app.get('env')) {
 	app.use(logger('dev'))
 	app.use(errorHandler())
 }
-app.get('*', function (req, res) {
-	res.sendFile(__dirname + '/public/helloworld.html')
-})
+
 //routes(app)
+app.get('*', function (req, res) {
+	res.sendFile(__dirname + '/public/index.html')
+})
 
 app.listen(app.get('port'), function () {
 	console.log('Server is running on ' + app.set('port'))
