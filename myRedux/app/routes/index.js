@@ -4,7 +4,7 @@ module.exports = function (app) {
 
     app.get('/api/comments', function (req, res) {
         Message.find({}, function (err, docs) {
-            if (err) return
+            if (err) return console.error(err)
             res.send(docs)
         })
     })
@@ -18,7 +18,7 @@ module.exports = function (app) {
                 text: text
             })
         newMessage.save(function(err, doc) {
-            if (err) return
+            if (err) return console.error(err)
             console.log(doc)
             res.send(doc)
         })

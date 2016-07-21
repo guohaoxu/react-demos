@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { Router, Route, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { addTodo, completeTodo, setVisibilityFilter, VisibilityFilters } from '../actions'
 
@@ -7,35 +8,7 @@ import TodoList from './TodoList'
 import Footer from './Footer'
 
 class App extends Component {
-  //router
-  constructor() {
-    super(...arguments)
-    this.state = {
-      route: window.location.hash.substr(1)
-    }
-  }
-  componentDidMount() {
-    window.addEventListener('hashchange', () => {
-      this.setState({
-        route: window.location.hash.substr(1)
-      })
-    })
-  }
-  
   render() {
-    //router component
-    var child
-    switch (this.state.route) {
-      case '/about':
-        child = <div>This is about.</div>
-        break
-      case '/setting':
-        child = <div>This is setting.</div>
-        break
-      default:
-        child = <div>This is default.</div>
-    }
-    
     //通过connect()注入
     const { dispatch, visibleTodos, visibilityFilter } = this.props
     return (
@@ -58,7 +31,6 @@ class App extends Component {
           <li><a href='#/about'>About</a></li>
           <li><a href='#/setting'>setting</a></li>
         </ul>
-        {child}
       </div>
     )
   }

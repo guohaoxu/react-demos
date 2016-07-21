@@ -15,7 +15,7 @@ var express = require('express'),
 
 	favicon = require('serve-favicon'),
 	settings = require('./app/settings'),
-	routes = require('./app/routes/index.js'),
+	//routes = require('./app/routes/index.js'),
 
 	app = express()
 
