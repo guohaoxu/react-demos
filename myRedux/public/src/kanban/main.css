@@ -1,0 +1,111 @@
+* {
+  box-sizing: border-box;
+}
+html, body, #content, .app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #eee;
+  font-family: "microsoft yahei";
+  color: #333;
+  font-size: 14px;
+}
+.app {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+h1 {
+  font-weight: 400;
+  color: #2a303b;
+  font-size: 28px;
+  text-shadow: 0px 1px 0px #fff;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.app {
+  white-space: nowrap;
+  height: 100%;
+}
+.list {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  white-space: normal;
+  height: 100%;
+  width: 33%;
+  padding: 0 20px;
+  overflow: auto;
+}
+@media screen and (max-width: 767px) {
+  .list {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+@media screen and (min-width: 767px) {
+  .list:not(:last-child):after{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 99%;
+    background: linear-gradient(to bottom, #eee 0%, #ccc 50%, #eee 100%) fixed;
+  }
+}
+.card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  width: 100%;
+  padding: 10px 5px 10px 10px;
+  margin: 0 0 15px 0;
+  overflow: auto;
+  border: 1px solid #e5e5df;
+  border-left: 3px solid #b66;
+  border-bottom: 1px solid #ddd;
+  border-radius: 3px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, .05);
+  background: linear-gradient(to bottom, #f4f4f4 0%, #fff 100%) fixed;
+}
+.card-title {
+  margin-bottom: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.card-title:before {
+  display: inline-block;
+  width: 1em;
+  content: '+';
+}
+.card-title-open:before {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  content: '-';
+}
+.card-details {
+  padding-left: 17px;
+  color: #777;
+}
+.checklist-task:first-child {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #ddd;
+}
+.checklist-task-remove {
+  display: inline-block;
+  width: 1em;
+  margin-left: 4px;
+  color: #d66;
+  text-decoration: none;
+}
+.hide {
+  display: none;
+}
