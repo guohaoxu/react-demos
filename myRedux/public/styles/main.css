@@ -82,17 +82,19 @@ ul {
 .card-title:before {
   display: inline-block;
   width: 1em;
+  text-align: center;
   content: '+';
 }
 .card-title-open:before {
-  display: inline-block;
-  width: 1em;
-  text-align: center;
   content: '-';
 }
 .card-details {
-  padding-left: 17px;
+  padding: 0px 10px 0px 17px;
   color: #777;
+}
+.card-details img{
+  max-width: 100%;
+  border-radius: 2px;
 }
 .checklist-task:first-child {
   margin-top: 10px;
@@ -108,4 +110,10 @@ ul {
 }
 .hide {
   display: none;
+}
+code {
+  display: block;
+  padding: 5px 10px;
+  background: #eee;
+  border-radius: 2px;
 }
