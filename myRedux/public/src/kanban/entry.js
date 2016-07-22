@@ -70,12 +70,12 @@ let cardsList = [
     ]
   }
 ]
-render(
-  <KanbanBoard cards={cardsList} />,
-  document.getElementById('content')
-)
-
 // render(
-//   <Search />,
+//   <KanbanBoard cards={cardsList} />,
 //   document.getElementById('content')
 // )
+
+render(
+  <Search />,
+  document.getElementById('content')
+)
