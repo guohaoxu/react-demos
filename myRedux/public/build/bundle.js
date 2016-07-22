@@ -69,12 +69,14 @@
 	  id: 1,
 	  title: "Read the Book",
 	  description: "I should read the whole book.\n\n![](/public/imgs/boy.jpg)",
+	  color: "#bd8d31",
 	  status: "in-progress",
 	  tasks: []
 	}, {
 	  id: 2,
 	  title: "Write some code",
 	  description: "Code along with the samples in the book **Pro React**. The complete source can be found at [github](https://github.com/pro-react).\n\n`console.log('What?')`",
+	  color: "#3a7e28",
 	  status: "todo",
 	  tasks: [{
 	    id: 1,
@@ -93,6 +95,7 @@
 	  id: 3,
 	  title: "Play the game",
 	  description: "I have played CS game yet.",
+	  color: "#b66",
 	  status: "done",
 	  tasks: [{
 	    id: 1,
@@ -103,6 +106,7 @@
 	  id: 4,
 	  title: "Cooke the food",
 	  description: "I should cook the reac.js food.",
+	  color: "#66b",
 	  status: "todo",
 	  tasks: [{
 	    id: 1,
@@ -21254,6 +21258,7 @@
 	          key: index,
 	          title: card.title,
 	          description: card.description,
+	          color: card.color,
 	          tasks: card.tasks });
 	      });
 	      return _react2.default.createElement(
@@ -21337,9 +21342,13 @@
 	          _react2.default.createElement(_CheckList2.default, { cardId: this.props.id, tasks: this.props.tasks })
 	        );
 	      }
+	      var sideColor = {
+	        backgroundColor: this.props.color
+	      };
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'card' },
+	        _react2.default.createElement('div', { className: 'cardBorder', style: sideColor }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: this.state.showDetails ? "card-title card-title-open" : "card-title",

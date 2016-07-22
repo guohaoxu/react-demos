@@ -22,8 +22,12 @@ export default class Card extends Component {
         </div>
       )
     }
+    let sideColor = {
+      backgroundColor: this.props.color
+    }
     return (
       <div className="card">
+        <div className="cardBorder" style={sideColor} />
         <div className={this.state.showDetails ? "card-title card-title-open" : "card-title"} 
           onClick={this.toggleDetails.bind(this)}>
           {this.props.title}

@@ -68,11 +68,18 @@ ul {
   margin: 0 0 15px 0;
   overflow: auto;
   border: 1px solid #e5e5df;
-  border-left: 3px solid #b66;
   border-bottom: 1px solid #ddd;
   border-radius: 3px;
   box-shadow: 0 3px 15px rgba(0, 0, 0, .05);
   background: linear-gradient(to bottom, #f4f4f4 0%, #fff 100%) fixed;
+}
+.cardBorder {
+  position: absolute;
+  zIndex: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 5px;
 }
 .card-title {
   margin-bottom: 10px;
