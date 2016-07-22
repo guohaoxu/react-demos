@@ -1,11 +1,12 @@
 import React from 'react'
 import { render } from 'react-dom'
 import KanbanBoard from './KanbanBoard'
+import Search from './Search'
 
 let cardsList = [
   {
     id: 1,
-    title: "Read the Book",
+    title: "Read the BookRead the Book",
     description: "I should read the whole book.\n\n![](/public/imgs/boy.jpg)",
     color: "#bd8d31",
     status: "in-progress",
@@ -73,3 +74,8 @@ render(
   <KanbanBoard cards={cardsList} />,
   document.getElementById('content')
 )
+
+// render(
+//   <Search />,
+//   document.getElementById('content')
+// )

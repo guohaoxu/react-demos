@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 
 export default class CheckList extends Component {
   constructor() {
@@ -9,11 +9,13 @@ export default class CheckList extends Component {
   }
   render() {
     let tasks = this.props.tasks.map((task, index) => (
-      <Li key={index} task={task} />
+      <Li key={task.id} task={task} />
     ))
     return (
       <div className="checklist">
         <ul>{tasks}</ul>
+        <input type="text" className="checklist-add-task"
+          placeholder="Type then hit Enter to add a task" />
       </div>
     )
   }
@@ -39,4 +41,9 @@ class Li extends Component {
       </li>
     )
   }
+}
+
+CheckList.propTypes = {
+  cardId: PropTypes.number,
+  task: PropTypes.arrayOf(PropTypes.object)
 }

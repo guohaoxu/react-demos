@@ -118,6 +118,13 @@ ul {
 .hide {
   display: none;
 }
+.checklist-add-task {
+  border: 1px dashed #bbb;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 2px;
+}
 code {
   display: block;
   padding: 5px 10px;
