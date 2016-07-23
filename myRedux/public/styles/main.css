@@ -131,3 +131,35 @@ code {
   background: #eee;
   border-radius: 2px;
 }
+
+.contacts-app {
+  width: 50%;
+  margin: 0 auto;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.contacts-app input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0px 10px;
+  border: 1px dashed #aaa;
+}
+.contacts-app ul {
+  padding: 5px 0px;
+  background: #fff;
+  box-shadow: 0px 3px 10px rgba(0,0,0,.2);
+}
+.contacts-app li {
+  line-height: 30px;
+}
+.contacts-app li:hover {
+  background: #f4f4f4;
+}
+.contacts-app li:not(:last-child) {
+  border-bottom: 1px dashed #eee;
+}
+.red {
+  color: #f44;
+}

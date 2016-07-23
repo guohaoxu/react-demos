@@ -1,7 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
 import KanbanBoard from './KanbanBoard'
-import Search from './Search'
 
 let cardsList = [
   {
@@ -70,12 +69,7 @@ let cardsList = [
     ]
   }
 ]
-// render(
-//   <KanbanBoard cards={cardsList} />,
-//   document.getElementById('content')
-// )
-
 render(
-  <Search />,
+  <KanbanBoard cards={cardsList} />,
   document.getElementById('content')
 )

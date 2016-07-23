@@ -47,6 +47,17 @@ if ('development' === app.get('env')) {
 }
 
 //routes(app)
+app.get('/contactsApp', function (req, res) {
+	setTimeout(() => 
+		res.json([
+		  { name: "Cassio Zen", email: "cassiozen@gmail.com" },
+		  { name: "Dan Abramov", email: "danabramov@gmail.com" },
+		  { name: "Pete Hunt", email: "petehunt@gmail.com" },
+		  { name: "Paul O'Shannessy", email: "pualoshannessy@gmail.com" },
+		  { name: "Ryan Florence", email: "ryanflorence@gmail.com" },
+		  { name: "Sebastian Markbage", email: "sebastian@gmail.com" }
+		]), 2000)
+})
 app.get('*', function (req, res) {
 	res.sendFile(__dirname + '/public/index.html')
 })
