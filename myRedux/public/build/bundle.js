@@ -84,7 +84,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var API_URL = 'http://localhost:3000';
-	var APT_HEADERS = {
+	var API_HEADERS = {
 	  'Content-Type': 'application/json'
 	};
 
@@ -108,7 +108,10 @@
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
-	      fetch(API_URL + '/kanban/cards', { headers: APT_HEADERS }).then(function (response) {
+	      fetch(API_URL + '/cards', {
+	        method: 'get',
+	        headers: API_HEADERS
+	      }).then(function (response) {
 	        return response.json();
 	      }).then(function (responseData) {
 	        _this2.setState({ cards: responseData, isFetching: false });
@@ -119,7 +122,24 @@
 	  }, {
 	    key: 'addTask',
 	    value: function addTask(cardId, taskName) {
-	      console.log('addTask...');
+	      var cardIndex = this.state.cards.findIndex(function (card) {
+	        return card.id === cardId;
+	      });
+	      var newTask = { id: Date.now(), name: taskName, done: false };
+	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
+	        tasks: { $push: [newTask] }
+	      }));
+	      this.setState({ cards: nextState });
+	      fetch(API_URL + '/cards/' + cardId + '/tasks', {
+	        method: 'post',
+	        headers: API_HEADERS,
+	        body: JSON.stringify(newTask)
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        console.log(responseData.success);
+	        // this.setState({cards: nextState})
+	      });
 	    }
 	  }, {
 	    key: 'deleteTask',
@@ -131,11 +151,32 @@
 	        tasks: { $splice: [[taskIndex, 1]] }
 	      }));
 	      this.setState({ cards: nextState });
+	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskIndex, {
+	        method: 'delete',
+	        headers: API_HEADERS
+	      });
 	    }
 	  }, {
 	    key: 'toggleTask',
 	    value: function toggleTask(cardId, taskId, taskIndex) {
-	      console.log('toggleTask...');
+	      var cardIndex = this.state.cards.findIndex(function (card) {
+	        return card.id === cardId;
+	      });
+	      var newDoneValue = void 0;
+	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
+	        tasks: _defineProperty({}, taskIndex, {
+	          done: { $apply: function $apply(done) {
+	              newDoneValue = !done;
+	              return newDoneValue;
+	            } }
+	        })
+	      }));
+	      this.setState({ cards: nextState });
+	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskIndex, {
+	        method: 'put',
+	        headers: API_HEADERS,
+	        body: JSON.stringify({ done: newDoneValue })
+	      });
 	    }
 	  }, {
 	    key: 'render',
