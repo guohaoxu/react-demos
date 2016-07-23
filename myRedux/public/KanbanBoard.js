@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+mport React, { Component, PropTypes } from 'react'
 import { render } from 'react-dom'
 import update from 'react-addons-update'
 import 'whatwg-fetch'
