@@ -113,6 +113,21 @@
 	      });
 	    }
 	  }, {
+	    key: 'addTask',
+	    value: function addTask(cardId, taskName) {
+	      console.log('addTask...');
+	    }
+	  }, {
+	    key: 'deleteTask',
+	    value: function deleteTask(cardId, taskId, taskIndex) {
+	      console.log('deleteTask...');
+	    }
+	  }, {
+	    key: 'toggleTask',
+	    value: function toggleTask(cardId, taskId, taskIndex) {
+	      console.log('toggleTask...');
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -120,13 +135,25 @@
 	        { className: 'app' },
 	        _react2.default.createElement(List, { id: 'todo', title: 'To Do', cards: this.state.cards.filter(function (card) {
 	            return card.status === "todo";
-	          }) }),
+	          }), taskCallbacks: {
+	            add: this.addTask.bind(this),
+	            delete: this.deleteTask.bind(this),
+	            toggle: this.toggleTask.bind(this)
+	          } }),
 	        _react2.default.createElement(List, { id: 'in-progress', title: 'In progress', cards: this.state.cards.filter(function (card) {
 	            return card.status === "in-progress";
-	          }) }),
+	          }), taskCallbacks: {
+	            add: this.addTask.bind(this),
+	            delete: this.deleteTask.bind(this),
+	            toggle: this.toggleTask.bind(this)
+	          } }),
 	        _react2.default.createElement(List, { id: 'done', title: 'Done', cards: this.state.cards.filter(function (card) {
 	            return card.status === "done";
-	          }) }),
+	          }), taskCallbacks: {
+	            add: this.addTask.bind(this),
+	            delete: this.deleteTask.bind(this),
+	            toggle: this.toggleTask.bind(this)
+	          } }),
 	        _react2.default.createElement(
 	          'div',
 	          { className: this.state.isFetching ? "load load-show" : "load" },
@@ -151,8 +178,11 @@
 	  _createClass(List, [{
 	    key: 'render',
 	    value: function render() {
+	      var _this4 = this;
+
 	      var cards = this.props.cards.map(function (card, index) {
 	        return _react2.default.createElement(Card, { id: card.id,
+	          taskCallbacks: _this4.props.taskCallbacks,
 	          key: card.id,
 	          title: card.title,
 	          description: card.description,
@@ -177,7 +207,8 @@
 
 	List.propTypes = {
 	  title: _react.PropTypes.string.isRequired,
-	  cards: _react.PropTypes.arrayOf(_react.PropTypes.object)
+	  cards: _react.PropTypes.arrayOf(_react.PropTypes.object),
+	  taskCallbacks: _react.PropTypes.object
 	};
 
 	var titlePropType = function titlePropType(props, propName, componentName) {
@@ -195,12 +226,12 @@
 	  function Card() {
 	    _classCallCheck(this, Card);
 
-	    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card).apply(this, arguments));
+	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card).apply(this, arguments));
 
-	    _this4.state = {
+	    _this5.state = {
 	      showDetails: false
 	    };
-	    return _this4;
+	    return _this5;
 	  }
 
 	  _createClass(Card, [{
@@ -217,7 +248,7 @@
 	          'div',
 	          { className: 'card-details' },
 	          _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: (0, _marked2.default)(this.props.description) } }),
-	          _react2.default.createElement(CheckList, { cardId: this.props.id, tasks: this.props.tasks })
+	          _react2.default.createElement(CheckList, { cardId: this.props.id, tasks: this.props.tasks, taskCallbacks: this.props.taskCallbacks })
 	        );
 	      }
 	      var sideColor = {
@@ -246,7 +277,8 @@
 	  title: titlePropType,
 	  description: _react.PropTypes.string,
 	  color: _react.PropTypes.string,
-	  tasks: _react.PropTypes.arrayOf(_react.PropTypes.object)
+	  tasks: _react.PropTypes.arrayOf(_react.PropTypes.object),
+	  taskCallbacks: _react.PropTypes.object
 	};
 
 	var CheckList = function (_Component4) {
@@ -255,19 +287,44 @@
 	  function CheckList() {
 	    _classCallCheck(this, CheckList);
 
-	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
+	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
 
-	    _this5.state = {
+	    _this6.state = {
 	      showRemove: false
 	    };
-	    return _this5;
+	    return _this6;
 	  }
 
 	  _createClass(CheckList, [{
+	    key: 'inputKeyPress',
+	    value: function inputKeyPress(event) {
+	      if (event.key === 'Enter') {
+	        this.props.taskCallbacks.add(this.props.cardId, event.target.value);
+	        event.target.value = '';
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var tasks = this.props.tasks.map(function (task, index) {
-	        return _react2.default.createElement(Li, { key: task.id, task: task });
+	      var _this7 = this;
+
+	      var tasks = this.props.tasks.map(function (task, taskIndex) {
+	        return _react2.default.createElement(
+	          'li',
+	          { key: task.id, className: 'checklist-task' },
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            _react2.default.createElement('input', { type: 'checkbox', defaultChecked: task.done,
+	              onChange: _this7.props.taskCallbacks.toggle.bind(null, _this7.props.cardId, task.id, taskIndex) }),
+	            task.name
+	          ),
+	          _react2.default.createElement(
+	            'a',
+	            { href: '#', className: 'checklist-task-remove', onClick: _this7.props.taskCallbacks.delete.bind(null, _this7.props.cardId, task.id, taskIndex) },
+	            'x'
+	          )
+	        );
 	      });
 	      return _react2.default.createElement(
 	        'div',
@@ -278,7 +335,8 @@
 	          tasks
 	        ),
 	        _react2.default.createElement('input', { type: 'text', className: 'checklist-add-task',
-	          placeholder: 'Type then hit Enter to add a task' })
+	          placeholder: 'Type then hit Enter to add a task',
+	          onKeyPress: this.inputKeyPress.bind(this) })
 	      );
 	    }
 	  }]);
@@ -286,53 +344,10 @@
 	  return CheckList;
 	}(_react.Component);
 
-	var Li = function (_Component5) {
-	  _inherits(Li, _Component5);
-
-	  function Li() {
-	    _classCallCheck(this, Li);
-
-	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(Li).apply(this, arguments));
-
-	    _this6.state = {
-	      showRemove: false
-	    };
-	    return _this6;
-	  }
-
-	  _createClass(Li, [{
-	    key: 'render',
-	    value: function render() {
-	      var _this7 = this;
-
-	      return _react2.default.createElement(
-	        'li',
-	        { className: 'checklist-task', onMouseOver: function onMouseOver() {
-	            return _this7.setState({ showRemove: true });
-	          }, onMouseOut: function onMouseOut() {
-	            return _this7.setState({ showRemove: false });
-	          } },
-	        _react2.default.createElement(
-	          'label',
-	          null,
-	          _react2.default.createElement('input', { type: 'checkbox', defaultChecked: this.props.task.done }),
-	          this.props.task.name
-	        ),
-	        _react2.default.createElement(
-	          'a',
-	          { href: '#', className: this.state.showRemove ? "checklist-task-remove" : "checklist-task-remove hide" },
-	          'x'
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Li;
-	}(_react.Component);
-
 	CheckList.propTypes = {
 	  cardId: _react.PropTypes.number,
-	  task: _react.PropTypes.arrayOf(_react.PropTypes.object)
+	  task: _react.PropTypes.arrayOf(_react.PropTypes.object),
+	  taskCallbacks: _react.PropTypes.object
 	};
 
 	(0, _reactDom.render)(_react2.default.createElement(KanbanBoard, null), document.getElementById('content'));
