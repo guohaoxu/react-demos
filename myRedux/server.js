@@ -10,12 +10,12 @@ var express = require('express'),
 	methodOverride = require('method-override'),
 	compression = require('compression'),
 
-	errorHandler = require('errorHandler'),
-	logger = require('morgan'),
-
 	favicon = require('serve-favicon'),
 	settings = require('./app/settings'),
 	routes = require('./app/routes/index.js'),
+
+	errorHandler = require('errorHandler'),
+	logger = require('morgan'),
 
 	app = express()
 
