@@ -1,6 +1,6 @@
 module.exports = {
 	entry: [
-		'./public/src/kanban/ContactsApp.js'
+		'./public/kanbanBoard.js'
 	],
 	output: {
 		path: __dirname + '/public/build',

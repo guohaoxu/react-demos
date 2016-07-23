@@ -10,6 +10,7 @@
   "license": "ISC",
   "main": "server.js",
   "dependencies": {
+    "babel-polyfill": "^6.9.1",
     "body-parser": "^1.15.0",
     "compression": "^1.6.1",
     "cookie-parser": "^1.4.1",
@@ -20,6 +21,7 @@
     "method-override": "^2.3.5",
     "mongoose": "^4.4.12",
     "morgan": "^1.7.0",
+    "react-addons-update": "^15.2.1",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
     "serve-favicon": "^2.3.0"
