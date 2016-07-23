@@ -160,7 +160,7 @@ module.exports = function (app) {
     })
     cards = nextState
     res.json({
-      success: true
+      success: false
     })
   })
 }
