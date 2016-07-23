@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { render } from 'react-dom'
 import update from 'react-addons-update'
 import 'whatwg-fetch'
+import 'babel-polyfill'
 import marked from 'marked'
 
 const API_URL = 'http://localhost:3000'
@@ -30,7 +31,13 @@ class KanbanBoard extends Component {
     console.log('addTask...')
   }
   deleteTask(cardId, taskId, taskIndex) {
-    console.log('deleteTask...')
+    let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
+    let nextState = update(this.state.cards, {
+      [cardIndex]: {
+        tasks: {$splice: [[taskIndex, 1]]}
+      }
+    })
+    this.setState({cards: nextState})
   }
   toggleTask(cardId, taskId, taskIndex) {
     console.log('toggleTask...')
