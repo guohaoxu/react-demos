@@ -33,7 +33,8 @@ ul {
 }
 .list {
   position: relative;
-  display: inline-block;
+  z-index: 0;
+  display: inline-block;``
   vertical-align: top;
   white-space: normal;
   height: 100%;
@@ -177,10 +178,59 @@ code {
   border-radius: 3px;
   box-shadow: 0 10px 15px rgba(0, 0, 0, .2);
   background: linear-gradient(to bottom, #f4f4f4 0%, #fff 100%) fixed;
-  transition: .4s;
+  transition: ease-in-out .4s;
   text-align: center;
   font-size: 16px;
+  opacity: 0;
 }
 .load-show {
+  opacity: 1;
   top: 100px;
+  animation: fadeIn .4s;
+}
+@keyframes fadeIn {
+  0% {
+    top: -60px;
+    opacity: 0;
+  }
+  100% {
+    top: 100px;
+    opacity: 1;
+  }
+}
+
+.item {
+  background: #efefef;
+  cursor: pointer;
+  display: block;
+  margin-bottom: 1px;
+  padding: 8px 12px;
+  width: 120px;
+}
+.exampe-enter {
+  opacity: 0;
+  transform: translateX(-250px);
+}
+.example-enter.example-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: 1.4s;
+}
+.example-leave {
+  opacity: 1;
+  transform: translateX(0);
+}
+.example-leave.example-leave-active {
+  opacity: 0;
+  transform: translateX(250px);
+  transition: 1.4s;
+}
+.exampe-appear {
+  opacity: 0;
+  transform: translateX(-250px);
+}
+.example-appear.example-appear-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: .4s;
 }

@@ -1,6 +1,7 @@
-mport React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { render } from 'react-dom'
 import update from 'react-addons-update'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import 'whatwg-fetch'
 import 'babel-polyfill'
 import marked from 'marked'
@@ -93,6 +94,7 @@ class KanbanBoard extends Component {
   render() {
     return (
       <div className="app">
+        <div className={this.state.isFetching ? "load load-show" : "load"}>载入中，请稍后...</div>
         <List id="todo" title="To Do" cards={
           this.state.cards.filter((card) => card.status === "todo")
         } taskCallbacks={{
@@ -114,7 +116,6 @@ class KanbanBoard extends Component {
           delete: this.deleteTask.bind(this),
           toggle: this.toggleTask.bind(this)
         }}/>
-        <div className={this.state.isFetching ? "load load-show" : "load"}>载入中，请稍后...</div>
       </div>
     )
   }
@@ -229,12 +230,21 @@ class CheckList extends Component {
     ))
     return (
       <div className="checklist">
-        <ul>{tasks}</ul>
-        <input type="text" className="checklist-add-task"
-          placeholder="Type then hit Enter to add a task"
-          onKeyPress={
-            this.inputKeyPress.bind(this)
-          } />
+        
+        <ul>
+          <ReactCSSTransitionGroup transitionName="example"
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}
+            transitionAppear={true}
+            transitionAppearTimeout={300}>
+            {tasks}
+          </ReactCSSTransitionGroup>
+        </ul>
+          <input type="text" className="checklist-add-task"
+            placeholder="Type then hit Enter to add a task"
+            onKeyPress={
+              this.inputKeyPress.bind(this)
+            } />
       </div>
     )
   }

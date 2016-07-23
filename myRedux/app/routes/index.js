@@ -48,7 +48,7 @@ module.exports = function (app) {
   	{
   		id: 1,
   		title: "Read the BookRead the Book",
-  		description: "I should read the whole book.\n\n![](/public/imgs/boy.jpg)",
+  		description: "I should read the whole book.\n\n![](/public/imgs/food.jpg)",
   		color: "#bd8d31",
   		status: "in-progress",
   		tasks: []
@@ -113,7 +113,7 @@ module.exports = function (app) {
   ]
   app.get('/cards', (req, res) => {
   	setTimeout(() => 
-  		res.json(cards), 1000)
+  		res.json(cards), 2000)
   })
   app.delete('/cards/:cardId/tasks/:taskIndex', (req, res) => {
     let card_id = Number(req.params.cardId)
@@ -160,7 +160,7 @@ module.exports = function (app) {
     })
     cards = nextState
     res.json({
-      success: false
+      success: true
     })
   })
 }
