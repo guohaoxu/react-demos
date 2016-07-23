@@ -25,8 +25,7 @@ module.exports = function (app) {
       })
 
   })
-  
-  
+
   /**
    * contactsApp api
    */
@@ -116,7 +115,7 @@ module.exports = function (app) {
   	setTimeout(() => 
   		res.json(cards), 1000)
   })
-  app.del('/cards/:cardId/tasks/:taskIndex', (req, res) => {
+  app.delete('/cards/:cardId/tasks/:taskIndex', (req, res) => {
     let card_id = Number(req.params.cardId)
     let task_index = Number(req.params.taskIndex)
     let cardIndex = cards.findIndex((card) => card.id === card_id)

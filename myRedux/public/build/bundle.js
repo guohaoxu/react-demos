@@ -122,6 +122,8 @@
 	  }, {
 	    key: 'addTask',
 	    value: function addTask(cardId, taskName) {
+	      var _this3 = this;
+
 	      var cardIndex = this.state.cards.findIndex(function (card) {
 	        return card.id === cardId;
 	      });
@@ -129,6 +131,7 @@
 	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
 	        tasks: { $push: [newTask] }
 	      }));
+	      var prevState = this.state;
 	      this.setState({ cards: nextState });
 	      fetch(API_URL + '/cards/' + cardId + '/tasks', {
 	        method: 'post',
@@ -137,8 +140,12 @@
 	      }).then(function (response) {
 	        return response.json();
 	      }).then(function (responseData) {
-	        console.log(responseData.success);
-	        // this.setState({cards: nextState})
+	        if (!responseData.success) {
+	          throw new Error('Server response wasn\'t success');
+	        }
+	      }).catch(function (error) {
+	        console.error("Fetch error: ", error);
+	        _this3.setState(prevState);
 	      });
 	    }
 	  }, {
@@ -229,11 +236,11 @@
 	  _createClass(List, [{
 	    key: 'render',
 	    value: function render() {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      var cards = this.props.cards.map(function (card, index) {
 	        return _react2.default.createElement(Card, { id: card.id,
-	          taskCallbacks: _this4.props.taskCallbacks,
+	          taskCallbacks: _this5.props.taskCallbacks,
 	          key: card.id,
 	          title: card.title,
 	          description: card.description,
@@ -277,12 +284,12 @@
 	  function Card() {
 	    _classCallCheck(this, Card);
 
-	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card).apply(this, arguments));
+	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card).apply(this, arguments));
 
-	    _this5.state = {
+	    _this6.state = {
 	      showDetails: false
 	    };
-	    return _this5;
+	    return _this6;
 	  }
 
 	  _createClass(Card, [{
@@ -338,12 +345,12 @@
 	  function CheckList() {
 	    _classCallCheck(this, CheckList);
 
-	    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
+	    var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
 
-	    _this6.state = {
+	    _this7.state = {
 	      showRemove: false
 	    };
-	    return _this6;
+	    return _this7;
 	  }
 
 	  _createClass(CheckList, [{
@@ -357,7 +364,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this7 = this;
+	      var _this8 = this;
 
 	      var tasks = this.props.tasks.map(function (task, taskIndex) {
 	        return _react2.default.createElement(
@@ -367,12 +374,12 @@
 	            'label',
 	            null,
 	            _react2.default.createElement('input', { type: 'checkbox', defaultChecked: task.done,
-	              onChange: _this7.props.taskCallbacks.toggle.bind(null, _this7.props.cardId, task.id, taskIndex) }),
+	              onChange: _this8.props.taskCallbacks.toggle.bind(null, _this8.props.cardId, task.id, taskIndex) }),
 	            task.name
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: '#', className: 'checklist-task-remove', onClick: _this7.props.taskCallbacks.delete.bind(null, _this7.props.cardId, task.id, taskIndex) },
+	            { href: '#', className: 'checklist-task-remove', onClick: _this8.props.taskCallbacks.delete.bind(null, _this8.props.cardId, task.id, taskIndex) },
 	            'x'
 	          )
 	        );

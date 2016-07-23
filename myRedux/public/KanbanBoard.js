@@ -9,7 +9,6 @@ const API_URL = 'http://localhost:3000'
 const API_HEADERS = {
   'Content-Type': 'application/json'
 }
-
 class KanbanBoard extends Component {
   constructor() {
     super()
@@ -38,6 +37,7 @@ class KanbanBoard extends Component {
         tasks: {$push: [newTask]}
       }
     })
+    let prevState = this.state
     this.setState({cards: nextState})
     fetch(`${API_URL}/cards/${cardId}/tasks`, {
       method: 'post',
@@ -46,8 +46,13 @@ class KanbanBoard extends Component {
     })
     .then((response) => response.json())
     .then((responseData) => {
-      console.log(responseData.success)
-      // this.setState({cards: nextState})
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
+      }
+    })
+    .catch((error) => {
+      console.error("Fetch error: ", error)
+      this.setState(prevState)
     })
   }
   deleteTask(cardId, taskId, taskIndex) {
