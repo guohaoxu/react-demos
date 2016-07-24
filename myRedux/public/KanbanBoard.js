@@ -55,6 +55,7 @@ class KanbanBoard extends Component {
     .catch((error) => {
       console.error("Fetch error: ", error)
       this.setState(prevState)
+      this.props.history.pushState(null, '/error')
     })
   }
   deleteTask(cardId, taskId, taskIndex) {
@@ -232,7 +233,7 @@ class CheckList extends Component {
             } />
           {task.name}
         </label>
-        <a href="#" className="checklist-task-remove" onClick={
+        <a href="javascript:;" className="checklist-task-remove" onClick={
           this.props.taskCallbacks.delete.bind(null, this.props.cardId, task.id, taskIndex)
         }>x</a>
       </li>
@@ -305,6 +306,16 @@ class NoMatch extends Component {
     )
   }
 }
+class ServerError extends Component {
+  render() {
+    return (
+      <div>
+        <h1>500</h1>
+        <p>Ops.Server is down...</p>
+      </div>
+    )
+  }
+}
 class Repo extends Component {
   render() {
     return (
@@ -323,6 +334,7 @@ render(
       <Route path="repos" component={Repos}>
         <Route path=":repo" title="haha" component={Repo} />
       </Route>
+      <Route path="error" component={ServerError} />
       <Route path="*" component={NoMatch} />
     </Route>
   </Router>,

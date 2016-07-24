@@ -152,6 +152,7 @@
 	      }).catch(function (error) {
 	        console.error("Fetch error: ", error);
 	        _this3.setState(prevState);
+	        _this3.props.history.pushState(null, '/error');
 	      });
 	    }
 	  }, {
@@ -421,7 +422,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: '#', className: 'checklist-task-remove', onClick: _this8.props.taskCallbacks.delete.bind(null, _this8.props.cardId, task.id, taskIndex) },
+	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this8.props.taskCallbacks.delete.bind(null, _this8.props.cardId, task.id, taskIndex) },
 	            'x'
 	          )
 	        );
@@ -591,8 +592,40 @@
 	  return NoMatch;
 	}(_react.Component);
 
-	var Repo = function (_Component9) {
-	  _inherits(Repo, _Component9);
+	var ServerError = function (_Component9) {
+	  _inherits(ServerError, _Component9);
+
+	  function ServerError() {
+	    _classCallCheck(this, ServerError);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ServerError).apply(this, arguments));
+	  }
+
+	  _createClass(ServerError, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          '500'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Ops.Server is down...'
+	        )
+	      );
+	    }
+	  }]);
+
+	  return ServerError;
+	}(_react.Component);
+
+	var Repo = function (_Component10) {
+	  _inherits(Repo, _Component10);
 
 	  function Repo() {
 	    _classCallCheck(this, Repo);
@@ -638,6 +671,7 @@
 	      { path: 'repos', component: Repos },
 	      _react2.default.createElement(_reactRouter.Route, { path: ':repo', title: 'haha', component: Repo })
 	    ),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'error', component: ServerError }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '*', component: NoMatch })
 	  )
 	), document.getElementById('content'));
