@@ -5,6 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import 'whatwg-fetch'
 import 'babel-polyfill'
 import marked from 'marked'
+import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
 
 const API_URL = 'http://localhost:3000'
 const API_HEADERS = {
@@ -95,6 +96,14 @@ class KanbanBoard extends Component {
     return (
       <div className="app">
         <div className={this.state.isFetching ? "load load-show" : "load"}>载入中，请稍后...</div>
+        <menu>
+          <ul>
+            <li><Link to="/about" activeClassName="active">About</Link></li>
+            <li><Link to="/repos" activeClassName="active">Repos</Link></li>
+            <li><Link to="/repos/abc" activeClassName="active">test</Link></li>
+          </ul>
+        </menu>
+        {this.props.children}
         <List id="todo" title="To Do" cards={
           this.state.cards.filter((card) => card.status === "todo")
         } taskCallbacks={{
@@ -230,7 +239,6 @@ class CheckList extends Component {
     ))
     return (
       <div className="checklist">
-        
         <ul>
           <ReactCSSTransitionGroup transitionName="example"
             transitionEnterTimeout={300}
@@ -256,7 +264,67 @@ CheckList.propTypes = {
   taskCallbacks: PropTypes.object
 }
 
+class About extends Component {
+  render() {
+    return (
+      <div>
+        <h1>About</h1>
+        <p>This is about route.</p>
+      </div>
+    )
+  }
+}
+class Repos extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Repos</h1>
+        <p>This is repos route.</p>
+        <h3>{this.props.children}</h3>
+      </div>
+    )
+  }
+}
+class Home extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Repos</h1>
+        <p>This is home route.</p>
+      </div>
+    )
+  }
+}
+class NoMatch extends Component {
+  render() {
+    return (
+      <div>
+        <h1>404</h1>
+        <p>Ops.</p>
+      </div>
+    )
+  }
+}
+class Repo extends Component {
+  render() {
+    return (
+      <div>
+        <p>"this.props.route.title:" {this.props.route.title}</p>
+        <p>"this.props.params.repo:" {this.props.params.repo}</p>
+      </div>
+    )
+  }
+}
 render(
-  <KanbanBoard />,
+  <Router history={browserHistory}>
+    <Route path="/" component={KanbanBoard}>
+      <IndexRoute path="" component={Home} />
+      <Route path="about" component={About} />
+      <Route path="repos" component={Repos}>
+        <Route path=":repo" title="haha" component={Repo} />
+      </Route>
+      <Route path="*" component={NoMatch} />
+    </Route>
+  </Router>,
   document.getElementById('content')
 )
