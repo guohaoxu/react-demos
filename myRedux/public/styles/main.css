@@ -207,33 +207,34 @@ code {
   margin-bottom: 1px;
   padding: 8px 12px;
   width: 120px;
+  position: relative;
+  left: 0;
 }
-.exampe-enter {
+.example-enter {
   opacity: 0;
-  transform: translateX(-250px);
+  transform: translateY(20px);
+  transition:.3s;
 }
 .example-enter.example-enter-active {
   opacity: 1;
-  transform: translateX(0);
-  transition: .3s;
+  transform: translateY(0);
 }
 .example-leave {
   opacity: 1;
-  transform: translateX(0);
+  transition: .3s;
 }
 .example-leave.example-leave-active {
   opacity: 0;
-  transform: translateX(250px);
+  transform: translateX(20px);
+}
+.example-appear {
+  opacity: 0;
+  transform: translateX(20px);
   transition: .3s;
 }
-.exampe-appear {
-  opacity: 0;
-  transform: translateX(-250px);
-}
-.example-appear.example-appear-active {
+.example-appear-active {
   opacity: 1;
   transform: translateX(0);
-  transition: .3s;
 }
 
 .snack {
