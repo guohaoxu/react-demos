@@ -1,6 +1,6 @@
 module.exports = {
 	entry: [
-		'./public/KanbanBoard.js'
+		'./public/DragApp.js'
 	],
 	output: {
 		path: __dirname + '/public/build',

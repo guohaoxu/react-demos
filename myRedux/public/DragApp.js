@@ -23,7 +23,7 @@ const ShoppingCartSpec = {
     return { name: 'ShoppingCart' }
   }
 }
-let collect = (connect, monitor) => {
+let ShoppingCartCollect = (connect, monitor) => {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
@@ -57,7 +57,7 @@ ShoppingCart.propTypes = {
   isOVer: PropTypes.bool.isRequired,
   canDrop: PropTypes.bool.isRequired
 }
-let e_ShoppingCart = DropTarget("snack", ShoppingCartSpec, collect)(ShoppingCart)
+let e_ShoppingCart = DropTarget("e_ShoppingCart", ShoppingCartSpec, ShoppingCartCollect)(ShoppingCart)
 
 // ------------------------------
 const snackSpec = {
@@ -99,7 +99,7 @@ class Snack extends Component {
 Snack.propTypes = {
   name: PropTypes.string.isRequired
 }
-let e_snack = DragSource('snack', snackSpec, snackCollect)(Snack)
+let e_snack = DragSource('Snack', snackSpec, snackCollect)(Snack)
 
 let Container = DragDropContext(HTML5Backend)(DragApp)
 
