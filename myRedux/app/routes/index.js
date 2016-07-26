@@ -113,7 +113,7 @@ module.exports = function (app) {
   ]
   app.get('/cards', (req, res) => {
   	setTimeout(() => 
-  		res.json(cards), 2000)
+  		res.json(cards), 0)
   })
   app.delete('/cards/:cardId/tasks/:taskIndex', (req, res) => {
     let card_id = Number(req.params.cardId)
@@ -162,5 +162,36 @@ module.exports = function (app) {
     res.json({
       success: true
     })
+  })
+  app.put('/cards/:cardId', (req, res) => {
+    let card_id = Number(req.params.cardId)
+    let cardIndex = cards.findIndex((card) => card.id === card_id)
+    let newStatus = req.body.newStatus
+    let nextState = update(cards, {
+      [cardIndex]: {
+        status: {$apply: (status) => newStatus}
+      }
+    })
+    cards = nextState
+  })
+  app.post('/cards/updatePosition', (req, res) => {
+    let cardId = Number(req.body.cardId)
+    let afterId = Number(req.body.afterId)
+    // if (cardId !== afterId) {
+    //   let cardIndex =cards.findIndex((card => card.id === cardId))
+    //   let card = cards[cardIndex]
+    //   let afterIndex = cards.findIndex((card) => card.id === afterId)
+    //   let newState = update(cards, {
+    //     $splice: [
+    //       [cardIndex, 1],
+    //       [afterIndex, 0, card]
+    //     ]
+    //   })
+    //   cards = newState
+    // }
+    res.json({
+      success: true
+    })
+    console.log(cardId, afterId)
   })
 }

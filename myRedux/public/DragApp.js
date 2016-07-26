@@ -57,7 +57,7 @@ class ShoppingCart_dnd extends Component {
     )
   }
 }
-let ShoppingCart = DropTarget(["snack", "snack2"], ShoppingCartSpec, ShoppingCartCollect)(ShoppingCart_dnd)
+let ShoppingCart = DropTarget(["Snack", "Div"], ShoppingCartSpec, ShoppingCartCollect)(ShoppingCart_dnd)
 
 // dragSource Snack ---------------------------------------------------------
 const SnackSpec = {
@@ -99,7 +99,7 @@ Snack_dnd.propTypes = {
   isDragging: PropTypes.bool.isRequired,  
   name: PropTypes.string.isRequired
 }
-let Snack = DragSource('snack', SnackSpec, SnackCollect)(Snack_dnd)
+let Snack = DragSource('Snack', SnackSpec, SnackCollect)(Snack_dnd)
 
 // dragSource Div ---------------------------------------------------------
 class Div_dnd extends Component {
@@ -116,7 +116,7 @@ class Div_dnd extends Component {
     )
   }
 }
-let Div = DragSource('snack2', SnackSpec, SnackCollect)(Div_dnd)
+let Div = DragSource('Div', SnackSpec, SnackCollect)(Div_dnd)
 
 let DragApp = DragDropContext(HTML5Backend)(Container)
 render(

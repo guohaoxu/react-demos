@@ -6,12 +6,14 @@ import 'whatwg-fetch'
 import 'babel-polyfill'
 import marked from 'marked'
 import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
+import { DragDropContext, DropTarget, DragSource } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 const API_URL = 'http://localhost:3000'
 const API_HEADERS = {
   'Content-Type': 'application/json'
 }
-class KanbanBoard extends Component {
+class KanbanBoard_dnd extends Component {
   constructor() {
     super()
     this.state = {
@@ -28,7 +30,7 @@ class KanbanBoard extends Component {
     .then((responseData) => {
       this.setState({cards: responseData, isFetching: false})
     }).catch((error) => {
-      console.log('Error fetching and parsing data', error)
+      console.error('Error fetching and parsing data', error)
     })
   }
   addTask(cardId, taskName) {
@@ -93,6 +95,59 @@ class KanbanBoard extends Component {
       body: JSON.stringify({done: newDoneValue})
     })
   }
+  updateCardStatus(cardId, listId) {
+    let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
+    let card = this.state.cards[cardIndex]
+    if (card.status !== listId) {
+      this.setState(update(this.state, {
+        cards: {
+          [cardIndex]: {
+            status: { $set: listId }
+          }
+        }
+      }))
+    }
+    fetch(`${API_URL}/cards/${cardId}`, {
+      method: 'put',
+      headers: API_HEADERS,
+      body: JSON.stringify({
+        newStatus: listId
+      })
+    })
+  }
+  updateCardPosition(cardId, afterId) {
+    if (cardId !== afterId) {
+      let cardIndex = this.state.cards.findIndex((card => card.id == cardId))
+      let card = this.state.cards[cardIndex]
+      let afterIndex = this.state.cards.findIndex((card) => card.id === afterId)
+      this.setState(update(this.state, {
+        cards: {
+          $splice: [
+            [cardIndex, 1],
+            [afterIndex, 0, card]
+          ]
+        }
+      }))
+      fetch(`${API_URL}/cards/updatePosition`, {
+        method: 'post',
+        headers: API_HEADERS,
+        body: JSON.stringify({
+          cardId: cardId,
+          afterId: afterId
+        })
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        if (!responseData.success) {
+          throw new Error('Server response wasn\'t success')
+        }
+      })
+      .catch((error) => {
+        console.error("Fetch error: ", error)
+        this.props.history.pushState(null, '/error')
+      })
+    }
+  }
   render() {
     return (
       <div className="app">
@@ -111,6 +166,10 @@ class KanbanBoard extends Component {
           add: this.addTask.bind(this),
           delete: this.deleteTask.bind(this),
           toggle: this.toggleTask.bind(this)
+        }}
+        cardCallbacks={{
+          updateStatus: this.updateCardStatus.bind(this),
+          updatePosition: this.updateCardPosition.bind(this)
         }}/>
         <List id="in-progress" title="In progress" cards={
           this.state.cards.filter((card) => card.status === "in-progress")
@@ -118,6 +177,10 @@ class KanbanBoard extends Component {
           add: this.addTask.bind(this),
           delete: this.deleteTask.bind(this),
           toggle: this.toggleTask.bind(this)
+        }}
+        cardCallbacks={{
+          updateStatus: this.updateCardStatus.bind(this),
+          updatePosition: this.updateCardPosition.bind(this)
         }}/>
         <List id="done" title="Done" cards={
           this.state.cards.filter((card) => card.status === "done")
@@ -125,36 +188,71 @@ class KanbanBoard extends Component {
           add: this.addTask.bind(this),
           delete: this.deleteTask.bind(this),
           toggle: this.toggleTask.bind(this)
+        }}
+        cardCallbacks={{
+          updateStatus: this.updateCardStatus.bind(this),
+          updatePosition: this.updateCardPosition.bind(this)
         }}/>
       </div>
     )
   }
 }
+let KanbanBoard = DragDropContext(HTML5Backend)(KanbanBoard_dnd)
 
-class List extends Component {
+const ListSpec = {
+  drop(props, monitor) {
+    const draggedId = monitor.getItem().id
+    props.cardCallbacks.updateStatus(draggedId, props.id)
+  }
+}
+let ListCollect = (connect, monitor) => {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOVer: monitor.isOver(),
+    canDrop: monitor.canDrop()
+  }
+}
+class List_dnd extends Component {
   render() {
+    const { canDrop, isOVer, connectDropTarget } = this.props
+    const isActive = canDrop && isOVer
+    
+    let backgroundColor = ''
+    if (isActive) {
+      backgroundColor = '#f8f8f8'
+    } else if (canDrop) {
+      backgroundColor = '#e8e8e8'
+    }
+    const style={
+      backgroundColor: backgroundColor
+    }
+    
     var cards = this.props.cards.map((card, index) => {
       return <Card id={card.id}
         taskCallbacks={this.props.taskCallbacks}
+        cardCallbacks={this.props.cardCallbacks}
         key={card.id}
         title={card.title}
         description={card.description}
         color={card.color}
         tasks={card.tasks} />
     })
-    return (
-      <div className="list">
+    return connectDropTarget(
+      <div className="list" style={style}>
         <h1>{this.props.title}</h1>
         {cards}
       </div>
     )
   }
 }
-List.propTypes = {
+List_dnd.propTypes = {
   title: PropTypes.string.isRequired,
   cards: PropTypes.arrayOf(PropTypes.object),
-  taskCallbacks: PropTypes.object
+  taskCallbacks: PropTypes.object,
+  cardCallbacks: PropTypes.object,
+  connectDropTarget: PropTypes.func.isRequired
 }
+let List = DropTarget("Card", ListSpec, ListCollect)(List_dnd)
 
 let titlePropType = (props, propName, componentName) => {
   if (props[propName]) {
@@ -166,7 +264,40 @@ let titlePropType = (props, propName, componentName) => {
     }
   }
 }
-class Card extends Component {
+
+//dnd
+const CardDragSpec = {
+  beginDrag(props) {
+    return {
+      id: props.id
+    }
+  },
+  endDrag(props, monitor) {
+    const dragItem = monitor.getItem()
+    const dropResult = monitor.getDropResult()
+    if (dropResult) {
+      console.log(`You dropped ${dragItem.name} into ${dropResult.name}`)
+    }
+  }
+}
+let CardDragCollect = (connect, monitor) => {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  }
+}
+const CardDropSpec = {
+  drop(props, monitor) {
+    const draggedId = monitor.getItem().id
+    props.cardCallbacks.updatePosition(draggedId, props.id)
+  }
+}
+let CardDropCollect = (connect, monitor) => {
+  return {
+    connectDropTarget: connect.dropTarget()
+  }
+}
+class Card_dnd extends Component {
   constructor() {
     super(...arguments)
     this.state = {
@@ -177,6 +308,12 @@ class Card extends Component {
     this.setState({showDetails: !this.state.showDetails})
   }
   render() {
+    const { name, isDragging, connectDragSource, connectDropTarget } = this.props
+  
+    const opacity = isDragging ? 0.4 : 1
+    let style = {
+      opacity: opacity
+    }
     let cardDetails
     if (this.state.showDetails) {
       cardDetails = (
@@ -189,8 +326,8 @@ class Card extends Component {
     let sideColor = {
       backgroundColor: this.props.color
     }
-    return (
-      <div className="card">
+    return connectDropTarget(connectDragSource(
+      <div className="card" style={style}>
         <div className="cardBorder" style={sideColor} />
         <div className={this.state.showDetails ? "card-title card-title-open" : "card-title"} 
           onClick={this.toggleDetails.bind(this)}>
@@ -198,17 +335,22 @@ class Card extends Component {
         </div>
         {cardDetails}
       </div>
-    )
+    ))
   }
 }
-Card.propTypes = {
+Card_dnd.propTypes = {
   id: PropTypes.number,
   title: titlePropType,
   description: PropTypes.string,
   color: PropTypes.string,
   tasks: PropTypes.arrayOf(PropTypes.object),
-  taskCallbacks: PropTypes.object
+  taskCallbacks: PropTypes.object,
+  cardCallbacks: PropTypes.object,
+  connectDragSource: PropTypes.func.isRequired,
+  connectDropTarget: PropTypes.func.isRequired
 }
+let CardDrag = DragSource("Card", CardDragSpec, CardDragCollect)(Card_dnd)
+let Card = DropTarget("Card", CardDropSpec, CardDropCollect)(CardDrag)
 
 class CheckList extends Component {
   constructor() {
