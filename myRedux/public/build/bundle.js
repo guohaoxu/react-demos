@@ -67,6 +67,14 @@
 
 	var _reactDndHtml5Backend2 = _interopRequireDefault(_reactDndHtml5Backend);
 
+	var _Snack = __webpack_require__(327);
+
+	var _Snack2 = _interopRequireDefault(_Snack);
+
+	var _ShoppingCart = __webpack_require__(328);
+
+	var _ShoppingCart2 = _interopRequireDefault(_ShoppingCart);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -75,154 +83,144 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var DragApp = function (_Component) {
-	  _inherits(DragApp, _Component);
+	var Container = function (_Component) {
+	  _inherits(Container, _Component);
 
-	  function DragApp() {
-	    _classCallCheck(this, DragApp);
+	  function Container() {
+	    _classCallCheck(this, Container);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(DragApp).apply(this, arguments));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Container).apply(this, arguments));
 	  }
 
-	  _createClass(DragApp, [{
+	  _createClass(Container, [{
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement('e_snack', { name: 'Chips' }),
-	        _react2.default.createElement('e_snack', { name: 'Cupcake' }),
-	        _react2.default.createElement('e_snack', { name: 'Donut' }),
-	        _react2.default.createElement('e_snack', { name: 'Doritos' }),
-	        _react2.default.createElement('e_snack', { name: 'Popcorn' }),
-	        _react2.default.createElement('e_ShoppingCart', null)
+	        _react2.default.createElement(_Snack2.default, { name: 'chips' }),
+	        _react2.default.createElement(_Snack2.default, { name: 'Cupcake' }),
+	        _react2.default.createElement(_Snack2.default, { name: 'Dount' }),
+	        _react2.default.createElement(_Snack2.default, { name: 'Doritos' }),
+	        _react2.default.createElement(_Snack2.default, { name: 'Poppcorn' }),
+	        _react2.default.createElement(_ShoppingCart2.default, null)
 	      );
 	    }
 	  }]);
 
-	  return DragApp;
+	  return Container;
 	}(_react.Component);
 
-	var ShoppingCartSpec = {
-	  drop: function drop() {
-	    return { name: 'ShoppingCart' };
-	  }
-	};
-	var ShoppingCartCollect = function ShoppingCartCollect(connect, monitor) {
-	  return {
-	    connectDropTarget: connect.dropTarget(),
-	    isOver: monitor.isOver(),
-	    canDrop: monitor.canDrop()
-	  };
-	};
+	var App = (0, _reactDnd.DragDropContext)(_reactDndHtml5Backend2.default)(Container);
+	// export default DragDropContext(HTML5Backend)(Container)
 
-	var ShoppingCart = function (_Component2) {
-	  _inherits(ShoppingCart, _Component2);
+	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('content'));
 
-	  function ShoppingCart() {
-	    _classCallCheck(this, ShoppingCart);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShoppingCart).apply(this, arguments));
-	  }
-
-	  _createClass(ShoppingCart, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var canDrop = _props.canDrop;
-	      var isOver = _props.isOver;
-	      var connectDropTarget = _props.connectDropTarget;
-
-	      var isActive = canDrop && isOVer;
-	      var backgroundColor = '#fff';
-	      if (isActive) {
-	        backgroundColor = '#f7f7bd';
-	      } else if (canDrop) {
-	        backgroundColor = '#f7f7f7';
-	      }
-	      var style = {
-	        backgroundColor: backgroundColor
-	      };
-	      return connectDropTarget(_react2.default.createElement(
-	        'div',
-	        { className: 'shopping-cart', style: style },
-	        isActive ? 'Hummmm, snack!' : 'Drag here to order!'
-	      ));
-	    }
-	  }]);
-
-	  return ShoppingCart;
-	}(_react.Component);
-
-	ShoppingCart.propTypes = {
-	  connectDropTarget: _react.PropTypes.func.isRequired,
-	  isOVer: _react.PropTypes.bool.isRequired,
-	  canDrop: _react.PropTypes.bool.isRequired
-	};
-	var e_ShoppingCart = (0, _reactDnd.DropTarget)("e_ShoppingCart", ShoppingCartSpec, ShoppingCartCollect)(ShoppingCart);
-
-	// ------------------------------
-	var snackSpec = {
-	  beginDrag: function beginDrag(props) {
-	    return {
-	      name: props.name
-	    };
-	  },
-	  endDrag: function endDrag(props, monitor) {
-	    var dragItem = monitor.getItem();
-	    var dropResult = monitor.getDropResult();
-	    if (dropResult) {
-	      console.log('You dropped ' + dragItem.name + ' into ' + dropResult.name);
-	    }
-	  }
-	};
-	var snackCollect = function snackCollect(connect, monitor) {
-	  return {
-	    connectDragSource: connect.dragSource(),
-	    isDragging: monitor.isDragging()
-	  };
-	};
-
-	var Snack = function (_Component3) {
-	  _inherits(Snack, _Component3);
-
-	  function Snack() {
-	    _classCallCheck(this, Snack);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Snack).apply(this, arguments));
-	  }
-
-	  _createClass(Snack, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props2 = this.props;
-	      var name = _props2.name;
-	      var isDragging = _props2.isDragging;
-	      var connectDragSource = _props2.connectDragSource;
-
-	      var opacity = isDragging ? 0.4 : 1;
-	      var style = {
-	        opacity: opacity
-	      };
-	      return connectDragSource(_react2.default.createElement(
-	        'div',
-	        { ClassName: 'snack', style: style },
-	        name
-	      ));
-	    }
-	  }]);
-
-	  return Snack;
-	}(_react.Component);
-
-	Snack.propTypes = {
-	  name: _react.PropTypes.string.isRequired
-	};
-	var e_snack = (0, _reactDnd.DragSource)('Snack', snackSpec, snackCollect)(Snack);
-
-	var Container = (0, _reactDnd.DragDropContext)(_reactDndHtml5Backend2.default)(DragApp);
-
-	(0, _reactDom.render)(_react2.default.createElement(Container, null), document.getElementById('content'));
+	// 
+	// class DragApp extends Component {
+	//   render() {
+	//     return (
+	//       <div>
+	//         <e_snack name='Chips' />
+	//         <e_snack name='Cupcake' />
+	//         <e_snack name='Donut' />
+	//         <e_snack name='Doritos' />
+	//         <e_snack name='Popcorn' />
+	//         <e_ShoppingCart />
+	//       </div>
+	//     )
+	//   }
+	// }
+	// 
+	// const ShoppingCartSpec = {
+	//   drop() {
+	//     return { name: 'ShoppingCart' }
+	//   }
+	// }
+	// let ShoppingCartCollect = (connect, monitor) => {
+	//   return {
+	//     connectDropTarget: connect.dropTarget(),
+	//     isOver: monitor.isOver(),
+	//     canDrop: monitor.canDrop()
+	//   }
+	// }
+	// class ShoppingCart extends Component {
+	//   render() {
+	//     const { canDrop, isOver, connectDropTarget } = this.props
+	//     const isActive = canDrop && isOVer
+	//     let backgroundColor = '#fff'
+	//     if (isActive) {
+	//       backgroundColor = '#f7f7bd'
+	//     } else if (canDrop) {
+	//       backgroundColor = '#f7f7f7'
+	//     }
+	//     const style = {
+	//       backgroundColor: backgroundColor
+	//     }
+	//     return (
+	//       connectDropTarget(
+	//         <div className="shopping-cart" style={style}>
+	//           {isActive ? 'Hummmm, snack!' : 'Drag here to order!'}
+	//         </div>
+	//       )
+	//     )   
+	//   }
+	// }
+	// ShoppingCart.propTypes = {
+	//   connectDropTarget: PropTypes.func.isRequired,
+	//   isOVer: PropTypes.bool.isRequired,
+	//   canDrop: PropTypes.bool.isRequired
+	// }
+	// let e_ShoppingCart = DropTarget("e_ShoppingCart", ShoppingCartSpec, ShoppingCartCollect)(ShoppingCart)
+	// 
+	// // ------------------------------
+	// const snackSpec = {
+	//   beginDrag(props) {
+	//     return {
+	//       name: props.name
+	//     }
+	//   },
+	//   endDrag(props, monitor) {
+	//     const dragItem = monitor.getItem()
+	//     const dropResult = monitor.getDropResult()
+	//     if (dropResult) {
+	//       console.log(`You dropped ${dragItem.name} into ${dropResult.name}`)
+	//     }
+	//   }
+	// }
+	// let snackCollect = (connect, monitor) => {
+	//   return {
+	//     connectDragSource: connect.dragSource(),
+	//     isDragging: monitor.isDragging()
+	//   }
+	// }
+	// class Snack extends Component {
+	//   render() {
+	//     const { name, isDragging, connectDragSource } = this.props
+	//     const opacity = isDragging ? 0.4 : 1
+	//     const style = {
+	//       opacity: opacity
+	//     }
+	//     return (
+	//       connectDragSource(
+	//         <div ClassName="snack" style={style}>
+	//           {name}
+	//         </div>
+	//       )
+	//     )
+	//   }
+	// }
+	// Snack.propTypes = {
+	//   name: PropTypes.string.isRequired
+	// }
+	// let e_snack = DragSource('Snack', snackSpec, snackCollect)(Snack)
+	// 
+	// let Container = DragDropContext(HTML5Backend)(DragApp)
+	// 
+	// render (
+	//   <Container />,
+	//   document.getElementById('content')
+	// )
 
 /***/ },
 /* 2 */
@@ -29279,6 +29277,175 @@
 	}
 
 	module.exports = exports['default'];
+
+/***/ },
+/* 327 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDnd = __webpack_require__(173);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var snackSpec = {
+	  beginDrag: function beginDrag(props) {
+	    return {
+	      name: props.name
+	    };
+	  },
+	  endDrag: function endDrag(props, monitor) {
+	    var dragItem = monitor.getItem();
+	    var dropResult = monitor.getDropResult();
+	    if (dropResult) {
+	      console.log('You dropped ' + dragItem.name + ' into ' + dropResult.name);
+	    }
+	  }
+	};
+	var collect = function collect(connect, monitor) {
+	  return {
+	    connectDragSource: connect.dragSource(),
+	    isDragging: monitor.isDragging()
+	  };
+	};
+
+	var Snack = function (_Component) {
+	  _inherits(Snack, _Component);
+
+	  function Snack() {
+	    _classCallCheck(this, Snack);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Snack).apply(this, arguments));
+	  }
+
+	  _createClass(Snack, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var name = _props.name;
+	      var isDragging = _props.isDragging;
+	      var connectDragSource = _props.connectDragSource;
+
+	      var opacity = isDragging ? 0.4 : 1;
+	      var style = {
+	        opacity: opacity
+	      };
+	      return connectDragSource(_react2.default.createElement(
+	        'div',
+	        { className: 'snack', style: style },
+	        name
+	      ));
+	    }
+	  }]);
+
+	  return Snack;
+	}(_react.Component);
+
+	Snack.propTypes = {
+	  connectDragSource: _react.PropTypes.func.isRequired,
+	  isDragging: _react.PropTypes.bool.isRequired,
+	  name: _react.PropTypes.string.isRequired
+	};
+	exports.default = (0, _reactDnd.DragSource)('snack', snackSpec, collect)(Snack);
+
+/***/ },
+/* 328 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDnd = __webpack_require__(173);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ShoppingCartSpec = {
+	  drop: function drop() {
+	    return {
+	      name: "ShoppingCart"
+	    };
+	  }
+	};
+	var collect = function collect(connect, monitor) {
+	  return {
+	    connectDropTarget: connect.dropTarget(),
+	    isOVer: monitor.isOver(),
+	    canDrop: monitor.canDrop()
+	  };
+	};
+
+	var ShoppingCart = function (_Component) {
+	  _inherits(ShoppingCart, _Component);
+
+	  function ShoppingCart() {
+	    _classCallCheck(this, ShoppingCart);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShoppingCart).apply(this, arguments));
+	  }
+
+	  _createClass(ShoppingCart, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var canDrop = _props.canDrop;
+	      var isOVer = _props.isOVer;
+	      var connectDropTarget = _props.connectDropTarget;
+
+	      var isActive = canDrop && isOVer;
+
+	      var backgroundColor = '#fff';
+	      if (isActive) {
+	        backgroundColor = '#f7f7bd';
+	      } else if (canDrop) {
+	        backgroundColor = '#f7f7f7';
+	      }
+
+	      var style = {
+	        backgroundColor: backgroundColor
+	      };
+	      return connectDropTarget(_react2.default.createElement(
+	        'div',
+	        { className: 'shopping-cart', style: style },
+	        isActive ? 'Hummm, snack!' : 'Drag here to order!'
+	      ));
+	    }
+	  }]);
+
+	  return ShoppingCart;
+	}(_react.Component);
+
+	exports.default = (0, _reactDnd.DropTarget)("snack", ShoppingCartSpec, collect)(ShoppingCart);
 
 /***/ }
 /******/ ]);
