@@ -197,4 +197,10 @@ module.exports = function (app) {
     })
     console.log(cardId, afterId)
   })
+  app.post('/cards', (req, res) => {
+    let card = req.body
+    res.json({
+      success: true
+    })
+  })
 }

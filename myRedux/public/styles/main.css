@@ -345,3 +345,35 @@ menu .active {
   background: #ddd;
   border: 1px solid #ccc;
 }
+
+.float-button {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  z-index: 2;
+  right: 20px;
+  bottom: 20px;
+  background: #d43a2f;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 34px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 56px;
+  box-shadow: 0px 5px 10px rgba(0,0,0,.5)
+}
+.card-edit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  opacity: 0;
+  transition: .3s ease-in;
+}
+.card:hover .card-edit {
+  opacity: 1;
+}
+.card-edit a {
+  text-decoration: none;
+  color: #999;
+  font-size: 17px;
+}

@@ -5,7 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import 'whatwg-fetch'
 import 'babel-polyfill'
 import marked from 'marked'
-import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
+import { Router, Route, IndexRoute, Link, browserHistory, RouterContext } from 'react-router'
 import { DragDropContext, DropTarget, DragSource } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { throttle } from './utils'
@@ -149,18 +149,69 @@ class KanbanBoard_dnd extends Component {
       })
     }
   }
+  addCard(card) {
+    let prevState = this.state
+    if (card.id === null) {
+      let card = Object.assign({}, card, {id: Date.now()})
+    }
+    let nextState = update(this.state.cards, { $push: [card]})
+    this.setState({cards: nextState})
+    fetch(`${API_URL}/cards`, {
+      method: 'post',
+      headers: API_HEADERS,
+      body: JSON.stringify(card)
+    })
+    .then((response) => {
+      if (response.success) {
+        return response.json()
+      } else {
+        throw new Error('Server response was\'t success.')
+      }
+    })
+    .then((responseData) => {
+      card.id = responseData.id
+      this.setState({cards: nextState})
+    })
+    .catch((error) => {
+      this.setState(prevState)
+    })
+  }
+  updateCard(card) {
+    let prevState = this.state
+    let cardIndex = this.state.cards.findIndex((c) => c.id == card.id)
+    let nextState = update(
+      this.state.cards, {
+        [cardIndex]: { $set: card }
+      }
+    )
+    this.setState({cards: nextState})
+    fetch(`${API_URL}/cards/${card.id}`, {
+      method: 'put',
+      headers: API_HEADERS,
+      body:JSON.stringify(card)
+    })
+    .then((response) => {
+      if (!response.success) {
+        throw new Error("Server response was\'t success")
+      }
+    })
+    .catch((error) => {
+      console.error('Fetch error: ' , err)
+      this.setState(prevState)
+    })
+  }
   render() {
+    let cardModal = this.props.children && React.cloneElement(this.props.children, {
+      cards: this.state.cards,
+      cardCallbacks: {
+        addCard: this.addCard.bind(this),
+        updateCard: this.updateCard.bind(this)
+      }
+    })
     return (
       <div className="app">
+        <Link to='/new' className='float-button'>+</Link>
         <div className={this.state.isFetching ? "load load-show" : "load"}>载入中，请稍后...</div>
-        <menu>
-          <ul>
-            <li><Link to="/about" activeClassName="active">About</Link></li>
-            <li><Link to="/repos" activeClassName="active">Repos</Link></li>
-            <li><Link to="/repos/abc" activeClassName="active">test</Link></li>
-          </ul>
-        </menu>
-        {this.props.children}
         <List id="todo" title="To Do" cards={
           this.state.cards.filter((card) => card.status === "todo")
         } taskCallbacks={{
@@ -194,6 +245,7 @@ class KanbanBoard_dnd extends Component {
           updateStatus: throttle(this.updateCardStatus.bind(this)),
           updatePosition: throttle(this.updateCardPosition.bind(this), 500)
         }}/>
+        {cardModal}
       </div>
     )
   }
@@ -330,6 +382,7 @@ class Card_dnd extends Component {
     return connectDropTarget(connectDragSource(
       <div className="card" style={style}>
         <div className="cardBorder" style={sideColor} />
+        <div className="card-edit"><Link to={'/edit/'+this.props.id}>&#9998</Link></div>
         <div className={this.state.showDetails ? "card-title card-title-open" : "card-title"} 
           onClick={this.toggleDetails.bind(this)}>
           {this.props.title}
@@ -570,7 +623,7 @@ NewCard.propTypes = {
 
 class EditCard extends Component {
   componentWillMount() {
-    let card = this.props.card.find((card) => card.id == this.props.params.card_id)
+    let card = this.props.cards.find((card) => card.id == this.props.params.card_id)
     this.setState({...card})
   }
   handleChange(field, value) {
@@ -579,10 +632,10 @@ class EditCard extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.props.cardCallbacks.updateCard(this.state)
-    this.props.history.push(null, '/')
+    this.props.history.pushState(null, '/')
   }
   handleClose(event) {
-    this.props.hidtory.push(null, '/')
+    this.props.history.pushState(null, '/')
   }
   render() {
     return (
@@ -600,7 +653,7 @@ EditCard.propTypes = {
 
 
 render(
-  <Router history={browserHistory}>
+  <Router history={browserHistory} render={props => <RouterContext {...props} />}>
     <Route path="/" component={KanbanBoard}>
       <Route path="about" component={About} />
       <Route path="new" component={NewCard} />

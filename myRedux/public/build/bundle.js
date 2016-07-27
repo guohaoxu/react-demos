@@ -262,52 +262,80 @@
 	      }
 	    }
 	  }, {
+	    key: 'addCard',
+	    value: function addCard(card) {
+	      var _this5 = this;
+
+	      var prevState = this.state;
+	      if (card.id === null) {
+	        var _card = Object.assign({}, _card, { id: Date.now() });
+	      }
+	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, { $push: [card] });
+	      this.setState({ cards: nextState });
+	      fetch(API_URL + '/cards', {
+	        method: 'post',
+	        headers: API_HEADERS,
+	        body: JSON.stringify(card)
+	      }).then(function (response) {
+	        if (response.success) {
+	          return response.json();
+	        } else {
+	          throw new Error('Server response was\'t success.');
+	        }
+	      }).then(function (responseData) {
+	        card.id = responseData.id;
+	        _this5.setState({ cards: nextState });
+	      }).catch(function (error) {
+	        _this5.setState(prevState);
+	      });
+	    }
+	  }, {
+	    key: 'updateCard',
+	    value: function updateCard(card) {
+	      var _this6 = this;
+
+	      var prevState = this.state;
+	      var cardIndex = this.state.cards.findIndex(function (c) {
+	        return c.id == card.id;
+	      });
+	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, { $set: card }));
+	      this.setState({ cards: nextState });
+	      fetch(API_URL + '/cards/' + card.id, {
+	        method: 'put',
+	        headers: API_HEADERS,
+	        body: JSON.stringify(card)
+	      }).then(function (response) {
+	        if (!response.success) {
+	          throw new Error("Server response was\'t success");
+	        }
+	      }).catch(function (error) {
+	        console.error('Fetch error: ', err);
+	        _this6.setState(prevState);
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var cardModal = this.props.children && _react2.default.cloneElement(this.props.children, {
+	        cards: this.state.cards,
+	        cardCallbacks: {
+	          addCard: this.addCard.bind(this),
+	          updateCard: this.updateCard.bind(this)
+	        }
+	      });
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'app' },
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/new', className: 'float-button' },
+	          '+'
+	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: this.state.isFetching ? "load load-show" : "load" },
 	          '载入中，请稍后...'
 	        ),
-	        _react2.default.createElement(
-	          'menu',
-	          null,
-	          _react2.default.createElement(
-	            'ul',
-	            null,
-	            _react2.default.createElement(
-	              'li',
-	              null,
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: '/about', activeClassName: 'active' },
-	                'About'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'li',
-	              null,
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: '/repos', activeClassName: 'active' },
-	                'Repos'
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'li',
-	              null,
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: '/repos/abc', activeClassName: 'active' },
-	                'test'
-	              )
-	            )
-	          )
-	        ),
-	        this.props.children,
 	        _react2.default.createElement(List, { id: 'todo', title: 'To Do', cards: this.state.cards.filter(function (card) {
 	            return card.status === "todo";
 	          }), taskCallbacks: {
@@ -340,7 +368,8 @@
 	          cardCallbacks: {
 	            updateStatus: (0, _utils.throttle)(this.updateCardStatus.bind(this)),
 	            updatePosition: (0, _utils.throttle)(this.updateCardPosition.bind(this), 500)
-	          } })
+	          } }),
+	        cardModal
 	      );
 	    }
 	  }]);
@@ -376,7 +405,7 @@
 	  _createClass(List_dnd, [{
 	    key: 'render',
 	    value: function render() {
-	      var _this6 = this;
+	      var _this8 = this;
 
 	      var _props = this.props;
 	      var canDrop = _props.canDrop;
@@ -397,8 +426,8 @@
 
 	      var cards = this.props.cards.map(function (card, index) {
 	        return _react2.default.createElement(Card, { id: card.id,
-	          taskCallbacks: _this6.props.taskCallbacks,
-	          cardCallbacks: _this6.props.cardCallbacks,
+	          taskCallbacks: _this8.props.taskCallbacks,
+	          cardCallbacks: _this8.props.cardCallbacks,
 	          key: card.id,
 	          title: card.title,
 	          description: card.description,
@@ -478,12 +507,12 @@
 	  function Card_dnd() {
 	    _classCallCheck(this, Card_dnd);
 
-	    var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card_dnd).apply(this, arguments));
+	    var _this9 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card_dnd).apply(this, arguments));
 
-	    _this7.state = {
+	    _this9.state = {
 	      showDetails: false
 	    };
-	    return _this7;
+	    return _this9;
 	  }
 
 	  _createClass(Card_dnd, [{
@@ -523,6 +552,15 @@
 	        _react2.default.createElement('div', { className: 'cardBorder', style: sideColor }),
 	        _react2.default.createElement(
 	          'div',
+	          { className: 'card-edit' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/edit/' + this.props.id },
+	            '&#9998'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
 	          { className: this.state.showDetails ? "card-title card-title-open" : "card-title",
 	            onClick: this.toggleDetails.bind(this) },
 	          this.props.title
@@ -555,12 +593,12 @@
 	  function CheckList() {
 	    _classCallCheck(this, CheckList);
 
-	    var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
+	    var _this10 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
 
-	    _this8.state = {
+	    _this10.state = {
 	      showRemove: false
 	    };
-	    return _this8;
+	    return _this10;
 	  }
 
 	  _createClass(CheckList, [{
@@ -574,7 +612,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this9 = this;
+	      var _this11 = this;
 
 	      var tasks = this.props.tasks.map(function (task, taskIndex) {
 	        return _react2.default.createElement(
@@ -584,12 +622,12 @@
 	            'label',
 	            null,
 	            _react2.default.createElement('input', { type: 'checkbox', defaultChecked: task.done,
-	              onChange: _this9.props.taskCallbacks.toggle.bind(null, _this9.props.cardId, task.id, taskIndex) }),
+	              onChange: _this11.props.taskCallbacks.toggle.bind(null, _this11.props.cardId, task.id, taskIndex) }),
 	            task.name
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this9.props.taskCallbacks.delete.bind(null, _this9.props.cardId, task.id, taskIndex) },
+	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this11.props.taskCallbacks.delete.bind(null, _this11.props.cardId, task.id, taskIndex) },
 	            'x'
 	          )
 	        );
@@ -1003,10 +1041,10 @@
 	  _createClass(EditCard, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var _this19 = this;
+	      var _this21 = this;
 
-	      var card = this.props.card.find(function (card) {
-	        return card.id == _this19.props.params.card_id;
+	      var card = this.props.cards.find(function (card) {
+	        return card.id == _this21.props.params.card_id;
 	      });
 	      this.setState(_extends({}, card));
 	    }
@@ -1020,12 +1058,12 @@
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
 	      this.props.cardCallbacks.updateCard(this.state);
-	      this.props.history.push(null, '/');
+	      this.props.history.pushState(null, '/');
 	    }
 	  }, {
 	    key: 'handleClose',
 	    value: function handleClose(event) {
-	      this.props.hidtory.push(null, '/');
+	      this.props.history.pushState(null, '/');
 	    }
 	  }, {
 	    key: 'render',
@@ -1047,7 +1085,9 @@
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
-	  { history: _reactRouter.browserHistory },
+	  { history: _reactRouter.browserHistory, render: function render(props) {
+	      return _react2.default.createElement(_reactRouter.RouterContext, props);
+	    } },
 	  _react2.default.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: KanbanBoard },
