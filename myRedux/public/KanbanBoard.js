@@ -58,7 +58,7 @@ class KanbanBoard_dnd extends Component {
     .catch((error) => {
       console.error("Fetch error: ", error)
       this.setState(prevState)
-      this.props.history.pushState(null, '/error')
+      this.props.history.push(null, '/error')
     })
   }
   deleteTask(cardId, taskId, taskIndex) {
@@ -145,7 +145,7 @@ class KanbanBoard_dnd extends Component {
       })
       .catch((error) => {
         console.error("Fetch error: ", error)
-        this.props.history.pushState(null, '/error')
+        this.props.history.push(null, '/error')
       })
     }
   }
@@ -471,18 +471,140 @@ class Repo extends Component {
 }
 
 class CardForm extends Component {
-  
+  handleChange(field, event) {
+    this.props.handleChange(field, event.target.value)
+  }
+  handleClose(event) {
+    event.preventDefault()
+    this.props.handleClose()
+  }
+  render() {
+    return (
+      <div>
+        <div className="card_form">
+          <form onSubmit={this.props.handleSubmit.bind(this)}>
+            <input type="text"
+              value={this.props.draftCard.title}
+              onChange={this.handleChange.bind(this, "title")}
+              placeholder="Title"
+              required={true}
+              autoFocus={true} />
+            <textarea value={this.props.draftCard.description}
+              onChange={this.handleChange.bind(this, "description")}
+              placeholder="description"
+              required={true} />
+            <label htmlFor="status">Status</label>
+            <select id="status"
+              value={this.props.draftCard.status}
+              onChange={this.handleChange.bind(this, "status")}>
+              <option value="todo">To Do</option>
+              <option value="in-proogress">In Propgress</option>
+              <option value="done">Done</option>
+            </select>
+            <br />
+            <label htmlFor="color">Color</label>
+            <input id="color"
+              value={this.props.draftCard.color || "#f00"}
+              onChange={this.handleChange.bind(this, "color")}
+              type="color" />
+            <div className="actions">
+              <button type="submit">{this.props.buttonLabel}</button>
+            </div>
+          </form>
+        </div>
+        <div className="overlay" onClick={this.handleClose.bind(this)}></div>
+      </div>
+    )
+  }
+}
+CardForm.propTypes = {
+  buttonLabel: PropTypes.string.isRequired,
+  draftCard: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    status: PropTypes.string,
+    color: PropTypes.string
+  }).isRequired,
+  handleChange: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired
+}
+
+class NewCard extends Component {
+  componentWillMount() {
+    this.setState({
+      id: Date.now(),
+      title: '',
+      description: '',
+      status: 'todo',
+      color: '#c9c9c9',
+      tasks: []
+    })
+  }
+  handleChange(field, value) {
+    this.setState({
+      [field]: value
+    })
+  }
+  handleSubmit(event) {
+    event.preventDefault()
+    this.props.cardCallbacks.addCard(this.state)
+    this.props.history.push(null, '/')
+  }
+  handleClose(event) {
+    this.props.history.push(null, '/')
+  }
+  render() {
+    return (
+      <CardForm draftCard={this.state}
+        buttonLabel="Create Card"
+        handleChange={this.handleChange.bind(this)}
+        handleSubmit={this.handleSubmit.bind(this)}
+        handleClose={this.handleClose.bind(this)} />
+    )
+  }
+}
+NewCard.propTypes = {
+  cardCallbacks: PropTypes.object
+}
+
+class EditCard extends Component {
+  componentWillMount() {
+    let card = this.props.card.find((card) => card.id == this.props.params.card_id)
+    this.setState({...card})
+  }
+  handleChange(field, value) {
+    this.setState({[field]: value})
+  }
+  handleSubmit(event) {
+    event.preventDefault()
+    this.props.cardCallbacks.updateCard(this.state)
+    this.props.history.push(null, '/')
+  }
+  handleClose(event) {
+    this.props.hidtory.push(null, '/')
+  }
+  render() {
+    return (
+      <CardForm draftCard={this.state}
+        buttonLabel="Edit Card"
+        handleChange={this.handleChange.bind(this)}
+        handleSubmit={this.handleSubmit.bind(this)}
+        handleClose={this.handleClose.bind(this)} />
+    )
+  }
+}
+EditCard.propTypes = {
+  cardCallbacks: PropTypes.object
 }
 
 
 render(
   <Router history={browserHistory}>
     <Route path="/" component={KanbanBoard}>
-      <IndexRoute path="" component={Home} />
       <Route path="about" component={About} />
-      <Route path="repos" component={Repos}>
-        <Route path=":repo" title="haha" component={Repo} />
-      </Route>
+      <Route path="new" component={NewCard} />
+      <Route path="edit/:card_id" component={EditCard} />
       <Route path="error" component={ServerError} />
       <Route path="*" component={NoMatch} />
     </Route>

@@ -53,6 +53,8 @@
 
 	'use strict';
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(2);
@@ -160,7 +162,7 @@
 	      }).catch(function (error) {
 	        console.error("Fetch error: ", error);
 	        _this3.setState(prevState);
-	        _this3.props.history.pushState(null, '/error');
+	        _this3.props.history.push(null, '/error');
 	      });
 	    }
 	  }, {
@@ -255,7 +257,7 @@
 	          }
 	        }).catch(function (error) {
 	          console.error("Fetch error: ", error);
-	          _this4.props.history.pushState(null, '/error');
+	          _this4.props.history.push(null, '/error');
 	        });
 	      }
 	    }
@@ -325,7 +327,7 @@
 	            toggle: this.toggleTask.bind(this)
 	          },
 	          cardCallbacks: {
-	            updateStatus: (0, _utils.throttle)(this.updateCardStatus.bind(this)),
+	            updateStatus: (0, _utils.throttle)(this.updateCardStatus.bind(this), 500),
 	            updatePosition: (0, _utils.throttle)(this.updateCardPosition.bind(this), 500)
 	          } }),
 	        _react2.default.createElement(List, { id: 'done', title: 'Done', cards: this.state.cards.filter(function (card) {
@@ -823,19 +825,235 @@
 	  return Repo;
 	}(_react.Component);
 
+	var CardForm = function (_Component11) {
+	  _inherits(CardForm, _Component11);
+
+	  function CardForm() {
+	    _classCallCheck(this, CardForm);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(CardForm).apply(this, arguments));
+	  }
+
+	  _createClass(CardForm, [{
+	    key: 'handleChange',
+	    value: function handleChange(field, event) {
+	      this.props.handleChange(field, event.target.value);
+	    }
+	  }, {
+	    key: 'handleClose',
+	    value: function handleClose(event) {
+	      event.preventDefault();
+	      this.props.handleClose();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'card_form' },
+	          _react2.default.createElement(
+	            'form',
+	            { onSubmit: this.props.handleSubmit.bind(this) },
+	            _react2.default.createElement('input', { type: 'text',
+	              value: this.props.draftCard.title,
+	              onChange: this.handleChange.bind(this, "title"),
+	              placeholder: 'Title',
+	              required: true,
+	              autoFocus: true }),
+	            _react2.default.createElement('textarea', { value: this.props.draftCard.description,
+	              onChange: this.handleChange.bind(this, "description"),
+	              placeholder: 'description',
+	              required: true }),
+	            _react2.default.createElement(
+	              'label',
+	              { htmlFor: 'status' },
+	              'Status'
+	            ),
+	            _react2.default.createElement(
+	              'select',
+	              { id: 'status',
+	                value: this.props.draftCard.status,
+	                onChange: this.handleChange.bind(this, "status") },
+	              _react2.default.createElement(
+	                'option',
+	                { value: 'todo' },
+	                'To Do'
+	              ),
+	              _react2.default.createElement(
+	                'option',
+	                { value: 'in-proogress' },
+	                'In Propgress'
+	              ),
+	              _react2.default.createElement(
+	                'option',
+	                { value: 'done' },
+	                'Done'
+	              )
+	            ),
+	            _react2.default.createElement('br', null),
+	            _react2.default.createElement(
+	              'label',
+	              { htmlFor: 'color' },
+	              'Color'
+	            ),
+	            _react2.default.createElement('input', { id: 'color',
+	              value: this.props.draftCard.color || "#f00",
+	              onChange: this.handleChange.bind(this, "color"),
+	              type: 'color' }),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'actions' },
+	              _react2.default.createElement(
+	                'button',
+	                { type: 'submit' },
+	                this.props.buttonLabel
+	              )
+	            )
+	          )
+	        ),
+	        _react2.default.createElement('div', { className: 'overlay', onClick: this.handleClose.bind(this) })
+	      );
+	    }
+	  }]);
+
+	  return CardForm;
+	}(_react.Component);
+
+	CardForm.propTypes = {
+	  buttonLabel: _react.PropTypes.string.isRequired,
+	  draftCard: _react.PropTypes.shape({
+	    title: _react.PropTypes.string,
+	    description: _react.PropTypes.string,
+	    status: _react.PropTypes.string,
+	    color: _react.PropTypes.string
+	  }).isRequired,
+	  handleChange: _react.PropTypes.func.isRequired,
+	  handleSubmit: _react.PropTypes.func.isRequired,
+	  handleClose: _react.PropTypes.func.isRequired
+	};
+
+	var NewCard = function (_Component12) {
+	  _inherits(NewCard, _Component12);
+
+	  function NewCard() {
+	    _classCallCheck(this, NewCard);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(NewCard).apply(this, arguments));
+	  }
+
+	  _createClass(NewCard, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.setState({
+	        id: Date.now(),
+	        title: '',
+	        description: '',
+	        status: 'todo',
+	        color: '#c9c9c9',
+	        tasks: []
+	      });
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(field, value) {
+	      this.setState(_defineProperty({}, field, value));
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit(event) {
+	      event.preventDefault();
+	      this.props.cardCallbacks.addCard(this.state);
+	      this.props.history.push(null, '/');
+	    }
+	  }, {
+	    key: 'handleClose',
+	    value: function handleClose(event) {
+	      this.props.history.push(null, '/');
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(CardForm, { draftCard: this.state,
+	        buttonLabel: 'Create Card',
+	        handleChange: this.handleChange.bind(this),
+	        handleSubmit: this.handleSubmit.bind(this),
+	        handleClose: this.handleClose.bind(this) });
+	    }
+	  }]);
+
+	  return NewCard;
+	}(_react.Component);
+
+	NewCard.propTypes = {
+	  cardCallbacks: _react.PropTypes.object
+	};
+
+	var EditCard = function (_Component13) {
+	  _inherits(EditCard, _Component13);
+
+	  function EditCard() {
+	    _classCallCheck(this, EditCard);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(EditCard).apply(this, arguments));
+	  }
+
+	  _createClass(EditCard, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _this19 = this;
+
+	      var card = this.props.card.find(function (card) {
+	        return card.id == _this19.props.params.card_id;
+	      });
+	      this.setState(_extends({}, card));
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(field, value) {
+	      this.setState(_defineProperty({}, field, value));
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit(event) {
+	      event.preventDefault();
+	      this.props.cardCallbacks.updateCard(this.state);
+	      this.props.history.push(null, '/');
+	    }
+	  }, {
+	    key: 'handleClose',
+	    value: function handleClose(event) {
+	      this.props.hidtory.push(null, '/');
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(CardForm, { draftCard: this.state,
+	        buttonLabel: 'Edit Card',
+	        handleChange: this.handleChange.bind(this),
+	        handleSubmit: this.handleSubmit.bind(this),
+	        handleClose: this.handleClose.bind(this) });
+	    }
+	  }]);
+
+	  return EditCard;
+	}(_react.Component);
+
+	EditCard.propTypes = {
+	  cardCallbacks: _react.PropTypes.object
+	};
+
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
 	  { history: _reactRouter.browserHistory },
 	  _react2.default.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: KanbanBoard },
-	    _react2.default.createElement(_reactRouter.IndexRoute, { path: '', component: Home }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'about', component: About }),
-	    _react2.default.createElement(
-	      _reactRouter.Route,
-	      { path: 'repos', component: Repos },
-	      _react2.default.createElement(_reactRouter.Route, { path: ':repo', title: 'haha', component: Repo })
-	    ),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'new', component: NewCard }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'edit/:card_id', component: EditCard }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'error', component: ServerError }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '*', component: NoMatch })
 	  )
@@ -45572,6 +45790,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var throttle = exports.throttle = function throttle(func, wait) {
 	  var context = void 0,
 	      args = void 0,
@@ -45590,7 +45811,7 @@
 	    context = this;
 	    args = arguments;
 	    argsChanged = JSON.stringify(args) != JSON.stringify(prevArgs);
-	    prevArgs = args;
+	    prevArgs = _extends({}, args);
 	    if (argsChanged || wait && (remaining <= 0 || remaining > wait)) {
 	      if (wait) {
 	        previous = now;

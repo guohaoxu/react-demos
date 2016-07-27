@@ -11,7 +11,7 @@ export const throttle = (func, wait) => {
     context = this
     args = arguments
     argsChanged = JSON.stringify(args) != JSON.stringify(prevArgs)
-    prevArgs = args
+    prevArgs = {...args}
     if (argsChanged || wait && (remaining <= 0 || remaining > wait)) {
       if (wait) {
         previous = now

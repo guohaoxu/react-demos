@@ -277,3 +277,71 @@ menu .active {
   background-color: #f4f4f4;
   border-radius: 50%;
 }
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  background-color: rgba(0,0,0,.6)
+}
+.card_form {
+  position: absolute;
+  width: 450px;
+  height: 210px;
+  margin: auto;
+  padding: 15px;
+  top: 0;
+  left: 0;
+  bottom: 0px;
+  right: 0;
+  z-index: 3;
+  border: 1px solid #e5e5df;
+  border-bottom: 1px solid #ddd;
+  border-radius: 3px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, .05);
+  background: linear-gradient(to bottom, #f4f4f4 0%, #fff 100%) fixed;
+}
+.card_form input[type=text], .card_form textarea {
+  display: block;
+  width: 100%;
+  padding: 4px 8px;
+  margin-bottom: 5px;
+  border: none;
+}
+.card_form input[type=text] {
+  outline: 1px dashed #ddd;
+  font-size: 20px;
+  font-weight: bold;
+}
+.card_form textarea {
+  resize: none;
+ }
+.card_form input[type=text]:focus, .card_form textarea:focus {
+  outline-offset: 2px;
+}
+.card_form label {
+  margin: 3px 0 7px 3px;
+  color: #a7a7a7;
+  display: inline-block;
+  width: 60px;
+}
+.actions {
+  margin-top: 10px;
+  text-align: right;
+}
+.card_form button {
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #eee;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: .3s;
+}
+.card_form button:hover {
+  background: #ddd;
+  border: 1px solid #ccc;
+}
