@@ -110,12 +110,19 @@ ul {
   padding-top: 10px;
   border-top: 1px dashed #ddd;
 }
-.checklist-task-remove {
+.checklist-task:hover .checklist-task-remove{
   display: inline-block;
+}
+.checklist-task-remove {
+  display: none;
   width: 1em;
   margin-left: 4px;
   color: #d66;
   text-decoration: none;
+  font-weight: bold;
+}
+.checklist-task-remove:hover {
+  color: #b44;
 }
 .hide {
   display: none;

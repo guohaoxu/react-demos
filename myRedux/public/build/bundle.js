@@ -85,6 +85,8 @@
 
 	var _reactDndHtml5Backend2 = _interopRequireDefault(_reactDndHtml5Backend);
 
+	var _utils = __webpack_require__(691);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -312,8 +314,8 @@
 	            toggle: this.toggleTask.bind(this)
 	          },
 	          cardCallbacks: {
-	            updateStatus: this.updateCardStatus.bind(this),
-	            updatePosition: this.updateCardPosition.bind(this)
+	            updateStatus: (0, _utils.throttle)(this.updateCardStatus.bind(this)),
+	            updatePosition: (0, _utils.throttle)(this.updateCardPosition.bind(this), 500)
 	          } }),
 	        _react2.default.createElement(List, { id: 'in-progress', title: 'In progress', cards: this.state.cards.filter(function (card) {
 	            return card.status === "in-progress";
@@ -323,8 +325,8 @@
 	            toggle: this.toggleTask.bind(this)
 	          },
 	          cardCallbacks: {
-	            updateStatus: this.updateCardStatus.bind(this),
-	            updatePosition: this.updateCardPosition.bind(this)
+	            updateStatus: (0, _utils.throttle)(this.updateCardStatus.bind(this)),
+	            updatePosition: (0, _utils.throttle)(this.updateCardPosition.bind(this), 500)
 	          } }),
 	        _react2.default.createElement(List, { id: 'done', title: 'Done', cards: this.state.cards.filter(function (card) {
 	            return card.status === "done";
@@ -334,8 +336,8 @@
 	            toggle: this.toggleTask.bind(this)
 	          },
 	          cardCallbacks: {
-	            updateStatus: this.updateCardStatus.bind(this),
-	            updatePosition: this.updateCardPosition.bind(this)
+	            updateStatus: (0, _utils.throttle)(this.updateCardStatus.bind(this)),
+	            updatePosition: (0, _utils.throttle)(this.updateCardPosition.bind(this), 500)
 	          } })
 	      );
 	    }
@@ -45560,6 +45562,45 @@
 	}
 
 	module.exports = exports['default'];
+
+/***/ },
+/* 691 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var throttle = exports.throttle = function throttle(func, wait) {
+	  var context = void 0,
+	      args = void 0,
+	      prevArgs = void 0,
+	      argsChanged = void 0,
+	      result = void 0;
+	  var previous = 0;
+
+	  return function () {
+	    var now = void 0,
+	        remaining = void 0;
+	    if (wait) {
+	      now = Date.now();
+	      remaining = wait - (now - previous);
+	    }
+	    context = this;
+	    args = arguments;
+	    argsChanged = JSON.stringify(args) != JSON.stringify(prevArgs);
+	    prevArgs = args;
+	    if (argsChanged || wait && (remaining <= 0 || remaining > wait)) {
+	      if (wait) {
+	        previous = now;
+	      }
+	      result = func.apply(context, args);
+	      context = args = null;
+	    }
+	    return result;
+	  };
+	};
 
 /***/ }
 /******/ ]);

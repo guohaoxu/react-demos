@@ -8,6 +8,7 @@ import marked from 'marked'
 import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
 import { DragDropContext, DropTarget, DragSource } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
+import { throttle } from './utils'
 
 const API_URL = 'http://localhost:3000'
 const API_HEADERS = {
@@ -168,8 +169,8 @@ class KanbanBoard_dnd extends Component {
           toggle: this.toggleTask.bind(this)
         }}
         cardCallbacks={{
-          updateStatus: this.updateCardStatus.bind(this),
-          updatePosition: this.updateCardPosition.bind(this)
+          updateStatus: throttle(this.updateCardStatus.bind(this)),
+          updatePosition: throttle(this.updateCardPosition.bind(this), 500)
         }}/>
         <List id="in-progress" title="In progress" cards={
           this.state.cards.filter((card) => card.status === "in-progress")
@@ -179,8 +180,8 @@ class KanbanBoard_dnd extends Component {
           toggle: this.toggleTask.bind(this)
         }}
         cardCallbacks={{
-          updateStatus: this.updateCardStatus.bind(this),
-          updatePosition: this.updateCardPosition.bind(this)
+          updateStatus: throttle(this.updateCardStatus.bind(this), 500),
+          updatePosition: throttle(this.updateCardPosition.bind(this), 500)
         }}/>
         <List id="done" title="Done" cards={
           this.state.cards.filter((card) => card.status === "done")
@@ -190,8 +191,8 @@ class KanbanBoard_dnd extends Component {
           toggle: this.toggleTask.bind(this)
         }}
         cardCallbacks={{
-          updateStatus: this.updateCardStatus.bind(this),
-          updatePosition: this.updateCardPosition.bind(this)
+          updateStatus: throttle(this.updateCardStatus.bind(this)),
+          updatePosition: throttle(this.updateCardPosition.bind(this), 500)
         }}/>
       </div>
     )
@@ -468,6 +469,12 @@ class Repo extends Component {
     )
   }
 }
+
+class CardForm extends Component {
+  
+}
+
+
 render(
   <Router history={browserHistory}>
     <Route path="/" component={KanbanBoard}>
