@@ -1004,12 +1004,12 @@
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
 	      this.props.cardCallbacks.addCard(this.state);
-	      this.props.history.push(null, '/');
+	      this.props.history.pushState(null, '/');
 	    }
 	  }, {
 	    key: 'handleClose',
 	    value: function handleClose(event) {
-	      this.props.history.push(null, '/');
+	      this.props.history.pushState(null, '/');
 	    }
 	  }, {
 	    key: 'render',
@@ -1058,12 +1058,12 @@
 	    value: function handleSubmit(event) {
 	      event.preventDefault();
 	      this.props.cardCallbacks.updateCard(this.state);
-	      this.props.context.history.pushState(null, '/');
+	      this.props.history.pushState(null, '/');
 	    }
 	  }, {
 	    key: 'handleClose',
 	    value: function handleClose(event) {
-	      this.props.context.history.pushState(null, '/');
+	      this.props.history.pushState(null, '/');
 	    }
 	  }, {
 	    key: 'render',

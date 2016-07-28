@@ -81,7 +81,7 @@ module.exports = function (app) {
   		id: 3,
   		title: "Play the game",
   		description: "I have played CS game yet.",
-  		color: "#b66",
+  		color: "#bb6666",
   		status: "done",
   		tasks: [
   			{
@@ -95,7 +95,7 @@ module.exports = function (app) {
   		id: 4,
   		title: "Cooke the food",
   		description: "I should cook the reac.js food.",
-  		color: "#66b",
+  		color: "#6666bb",
   		status: "todo",
   		tasks: [
   			{

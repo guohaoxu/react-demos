@@ -602,10 +602,10 @@ class NewCard extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.props.cardCallbacks.addCard(this.state)
-    this.props.history.push(null, '/')
+    this.props.history.pushState(null, '/')
   }
   handleClose(event) {
-    this.props.history.push(null, '/')
+    this.props.history.pushState(null, '/')
   }
   render() {
     return (
@@ -632,10 +632,10 @@ class EditCard extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.props.cardCallbacks.updateCard(this.state)
-    this.props.context.history.pushState(null, '/')
+    this.props.history.pushState(null, '/')
   }
   handleClose(event) {
-    this.props.context.history.pushState(null, '/')
+    this.props.history.pushState(null, '/')
   }
   render() {
     return (
