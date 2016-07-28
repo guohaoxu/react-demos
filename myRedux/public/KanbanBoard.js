@@ -557,7 +557,7 @@ class CardForm extends Component {
             <br />
             <label htmlFor="color">Color</label>
             <input id="color"
-              value={this.props.draftCard.color || "#f00"}
+              value={this.props.draftCard.color || "#ff0000"}
               onChange={this.handleChange.bind(this, "color")}
               type="color" />
             <div className="actions">
