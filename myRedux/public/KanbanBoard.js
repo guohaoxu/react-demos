@@ -632,10 +632,10 @@ class EditCard extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.props.cardCallbacks.updateCard(this.state)
-    this.props.history.pushState(null, '/')
+    this.props.context.history.pushState(null, '/')
   }
   handleClose(event) {
-    this.props.history.pushState(null, '/')
+    this.props.context.history.pushState(null, '/')
   }
   render() {
     return (
