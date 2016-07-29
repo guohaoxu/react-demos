@@ -1,31 +1,28 @@
 var Card = require('../models/card.js')
 
 module.exports = function (app) {
-
-  app.get('/api/comments', function (req, res) {
-      Message.find({}, function (err, docs) {
-          if (err) return console.error(err)
-          res.send(docs)
+  //get cards
+  app.get('/cards', function (req, res, next) {
+    Card.find({}, function (err, docs) {
+        if (err) return next(err)
+        console.log(docs)
+        res.send(docs)
+    })
+  })
+  // new card
+  app.post('/cards', (req, res, next) => {
+    let card = req.body,
+      newCard = new Card(card)
+    newCard.save(function(err, doc) {
+      if (err) return next(err)
+      console.log(doc)
+      res.json({
+        success: true
       })
+    })
   })
 
-  app.post('/api/comments', function (req, res) {
-      var author = req.body.author,
-          text = req.body.text,
-          newMessage = new Message({
-              id: Math.random(),
-              author: author,
-              text: text
-          })
-      newMessage.save(function(err, doc) {
-          if (err) return console.error(err)
-          console.log(doc)
-          res.send(doc)
-      })
 
-  })
-  
-  var cards = []
   app.get('/cards', (req, res) => {
   	setTimeout(() => 
   		res.json(cards), 0)
@@ -112,14 +109,6 @@ module.exports = function (app) {
     })
     console.log(cardId, afterId)
   })
-  app.post('/cards', (req, res) => {
-    let card = req.body
-    let nextState = update(cards, {
-      $push: [card]
-    })
-    cards = nextState
-    res.json({
-      success: true
-    })
-  })
+  
+  
 }

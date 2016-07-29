@@ -316,6 +316,7 @@
 	          updateCard: this.updateCard.bind(this)
 	        }
 	      });
+	      console.log('this.state.cards: ', this.state.cards);
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'app' },
@@ -549,7 +550,7 @@
 	          _react2.default.createElement(
 	            _reactRouter.Link,
 	            { to: '/edit/' + this.props.id },
-	            '&#9998'
+	            '✎'
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -568,7 +569,7 @@
 
 	Card_dnd.propTypes = {
 	  id: _react.PropTypes.number,
-	  title: titlePropType,
+	  title: _react.PropTypes.string,
 	  description: _react.PropTypes.string,
 	  color: _react.PropTypes.string,
 	  tasks: _react.PropTypes.arrayOf(_react.PropTypes.object),
@@ -689,77 +690,8 @@
 	  return About;
 	}(_react.Component);
 
-	var Repos = function (_Component6) {
-	  _inherits(Repos, _Component6);
-
-	  function Repos() {
-	    _classCallCheck(this, Repos);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Repos).apply(this, arguments));
-	  }
-
-	  _createClass(Repos, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'Repos'
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          'This is repos route.'
-	        ),
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          this.props.children
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Repos;
-	}(_react.Component);
-
-	var Home = function (_Component7) {
-	  _inherits(Home, _Component7);
-
-	  function Home() {
-	    _classCallCheck(this, Home);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Home).apply(this, arguments));
-	  }
-
-	  _createClass(Home, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'Repos'
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          'This is home route.'
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Home;
-	}(_react.Component);
-
-	var NoMatch = function (_Component8) {
-	  _inherits(NoMatch, _Component8);
+	var NoMatch = function (_Component6) {
+	  _inherits(NoMatch, _Component6);
 
 	  function NoMatch() {
 	    _classCallCheck(this, NoMatch);
@@ -790,8 +722,8 @@
 	  return NoMatch;
 	}(_react.Component);
 
-	var ServerError = function (_Component9) {
-	  _inherits(ServerError, _Component9);
+	var ServerError = function (_Component7) {
+	  _inherits(ServerError, _Component7);
 
 	  function ServerError() {
 	    _classCallCheck(this, ServerError);
@@ -822,42 +754,8 @@
 	  return ServerError;
 	}(_react.Component);
 
-	var Repo = function (_Component10) {
-	  _inherits(Repo, _Component10);
-
-	  function Repo() {
-	    _classCallCheck(this, Repo);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Repo).apply(this, arguments));
-	  }
-
-	  _createClass(Repo, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          '"this.props.route.title:" ',
-	          this.props.route.title
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          '"this.props.params.repo:" ',
-	          this.props.params.repo
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Repo;
-	}(_react.Component);
-
-	var CardForm = function (_Component11) {
-	  _inherits(CardForm, _Component11);
+	var CardForm = function (_Component8) {
+	  _inherits(CardForm, _Component8);
 
 	  function CardForm() {
 	    _classCallCheck(this, CardForm);
@@ -915,7 +813,7 @@
 	              ),
 	              _react2.default.createElement(
 	                'option',
-	                { value: 'in-proogress' },
+	                { value: 'in-progress' },
 	                'In Propgress'
 	              ),
 	              _react2.default.createElement(
@@ -931,7 +829,7 @@
 	              'Color'
 	            ),
 	            _react2.default.createElement('input', { id: 'color',
-	              value: this.props.draftCard.color || "#ff0000",
+	              value: this.props.draftCard.color,
 	              onChange: this.handleChange.bind(this, "color"),
 	              type: 'color' }),
 	            _react2.default.createElement(
@@ -966,8 +864,8 @@
 	  handleClose: _react.PropTypes.func.isRequired
 	};
 
-	var NewCard = function (_Component12) {
-	  _inherits(NewCard, _Component12);
+	var NewCard = function (_Component9) {
+	  _inherits(NewCard, _Component9);
 
 	  function NewCard() {
 	    _classCallCheck(this, NewCard);
@@ -1022,8 +920,8 @@
 	  cardCallbacks: _react.PropTypes.object
 	};
 
-	var EditCard = function (_Component13) {
-	  _inherits(EditCard, _Component13);
+	var EditCard = function (_Component10) {
+	  _inherits(EditCard, _Component10);
 
 	  function EditCard() {
 	    _classCallCheck(this, EditCard);
@@ -1034,12 +932,19 @@
 	  _createClass(EditCard, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var _this20 = this;
+	      var _this17 = this;
 
-	      var card = this.props.cards.find(function (card) {
-	        return card.id == _this20.props.params.card_id;
+	      var card = this.props.cards && this.props.cards.find(function (card) {
+	        return card.id == _this17.props.params.card_id;
 	      });
 	      this.setState(_extends({}, card));
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      // let card = nextProps.cards && nextProps.cards.find((card) => card.id == nextProps.params.card_id)
+	      // let newState = Object.assign({}, this.state, card)
+	      this.setState({ title: 'haa' });
 	    }
 	  }, {
 	    key: 'handleChange',

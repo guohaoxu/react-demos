@@ -6,12 +6,11 @@ mongoose.connect(settings.dbURL)
 
 var cardSchema = new mongoose.Schema({
     id: Number,
-    author: String,
-    text: String,
-    date: {
-        type: Date,
-        default: Date.now
-    }
+    title: String,
+    description: String,
+    color: String,
+    status: String,
+    tasks: Array
 })
 
 //Instance methods

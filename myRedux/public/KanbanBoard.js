@@ -201,6 +201,7 @@ class KanbanBoard_dnd extends Component {
         updateCard: this.updateCard.bind(this)
       }
     })
+    console.log('this.state.cards: ', this.state.cards)
     return (
       <div className="app">
         <Link to='/new' className='float-button'>+</Link>
@@ -375,7 +376,7 @@ class Card_dnd extends Component {
     return connectDropTarget(connectDragSource(
       <div className="card" style={style}>
         <div className="cardBorder" style={sideColor} />
-        <div className="card-edit"><Link to={'/edit/'+this.props.id}>&#9998</Link></div>
+        <div className="card-edit"><Link to={'/edit/'+this.props.id}>✎</Link></div>
         <div className={this.state.showDetails ? "card-title card-title-open" : "card-title"} 
           onClick={this.toggleDetails.bind(this)}>
           {this.props.title}
@@ -387,7 +388,7 @@ class Card_dnd extends Component {
 }
 Card_dnd.propTypes = {
   id: PropTypes.number,
-  title: titlePropType,
+  title: PropTypes.string,
   description: PropTypes.string,
   color: PropTypes.string,
   tasks: PropTypes.arrayOf(PropTypes.object),
@@ -513,13 +514,13 @@ class CardForm extends Component {
               value={this.props.draftCard.status}
               onChange={this.handleChange.bind(this, "status")}>
               <option value="todo">To Do</option>
-              <option value="in-proogress">In Propgress</option>
+              <option value="in-progress">In Propgress</option>
               <option value="done">Done</option>
             </select>
             <br />
             <label htmlFor="color">Color</label>
             <input id="color"
-              value={this.props.draftCard.color || "#ff0000"}
+              value={this.props.draftCard.color}
               onChange={this.handleChange.bind(this, "color")}
               type="color" />
             <div className="actions">
@@ -585,8 +586,13 @@ NewCard.propTypes = {
 
 class EditCard extends Component {
   componentWillMount() {
-    let card = this.props.cards.find((card) => card.id == this.props.params.card_id)
+    let card = this.props.cards && this.props.cards.find((card) => card.id == this.props.params.card_id)
     this.setState({...card})
+  }
+  componentWillReceiveProps(nextProps) {
+    // let card = nextProps.cards && nextProps.cards.find((card) => card.id == nextProps.params.card_id)
+    // let newState = Object.assign({}, this.state, card)
+    this.setState({title: 'haa'})
   }
   handleChange(field, value) {
     this.setState({[field]: value})
