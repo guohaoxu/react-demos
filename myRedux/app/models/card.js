@@ -1,9 +1,10 @@
 var mongoose = require('mongoose'),
-    settings = require('../settings.js')
+    settings = require('../settings.js'),
+    dbURL = process.env.dbURL || settings.dbURL
 
-mongoose.connect(settings.dbUrl)
+mongoose.connect(settings.dbURL)
 
-var messSchema = new mongoose.Schema({
+var cardSchema = new mongoose.Schema({
     id: Number,
     author: String,
     text: String,
@@ -14,12 +15,12 @@ var messSchema = new mongoose.Schema({
 })
 
 //Instance methods
-messSchema.methods.speak = function () {
+cardSchema.methods.speak = function () {
     console.log(this.sayer)
 }
 
 //Statics methods
-messSchema.statics.getFive = function (sayer, toer, cb) {
+cardSchema.statics.getFive = function (sayer, toer, cb) {
     this.find({
         $or: [{
             sayer: sayer,
@@ -31,6 +32,6 @@ messSchema.statics.getFive = function (sayer, toer, cb) {
     }, cb)
 }
 
-var Message = mongoose.model('Message', messSchema)
+var Card = mongoose.model('Card', cardSchema)
 
-module.exports = Message
+module.exports = Card

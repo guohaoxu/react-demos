@@ -1,1 +1,1 @@
-mongoexport -d guohao-react -c messages -o messages.json
+mongoexport -d guohao-react -c cards -o db.json

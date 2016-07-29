@@ -39,17 +39,18 @@ app.use(session({
 }))
 app.use(compression())
 //app.use(favicon(path.join(__dirname, 'build/images/favicon.ico')))
+
 app.use('/public', express.static(path.join(__dirname, 'public')))
+routes(app)
+app.get('*', function (req, res) {
+	res.sendFile(__dirname + '/public/index.html')
+})
+
 
 if ('development' === app.get('env')) {
 	app.use(logger('dev'))
 	app.use(errorHandler())
 }
-
-routes(app)
-app.get('*', function (req, res) {
-	res.sendFile(__dirname + '/public/index.html')
-})
 
 app.listen(app.get('port'), function () {
 	console.log('Server is running on ' + app.set('port'))

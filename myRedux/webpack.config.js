@@ -1,6 +1,6 @@
 module.exports = {
 	entry: [
-		'./public/bankFlux/App.js'
+		'./public/KanbanBoard.js'
 	],
 	output: {
 		path: __dirname + '/public/build',

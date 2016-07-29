@@ -1,1 +1,1 @@
-mongoimport -d guohao-react -c messages messages.json
+mongoimport -d guohao-react -c card db.json

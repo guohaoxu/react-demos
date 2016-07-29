@@ -58,7 +58,7 @@ class KanbanBoard_dnd extends Component {
     .catch((error) => {
       console.error("Fetch error: ", error)
       this.setState(prevState)
-      this.props.history.push(null, '/error')
+      browserHistory.push('/error')
     })
   }
   deleteTask(cardId, taskId, taskIndex) {
@@ -145,32 +145,25 @@ class KanbanBoard_dnd extends Component {
       })
       .catch((error) => {
         console.error("Fetch error: ", error)
-        this.props.history.push(null, '/error')
+        browserHistory.push('/error')
       })
     }
   }
   addCard(card) {
     let prevState = this.state
-    if (card.id === null) {
-      let card = Object.assign({}, card, {id: Date.now()})
-    }
-    let nextState = update(this.state.cards, { $push: [card]})
+    let newCard = Object.assign({}, card, {id: Date.now()})
+    let nextState = update(this.state.cards, { $push: [newCard] })
     this.setState({cards: nextState})
     fetch(`${API_URL}/cards`, {
       method: 'post',
       headers: API_HEADERS,
-      body: JSON.stringify(card)
+      body: JSON.stringify(newCard)
     })
-    .then((response) => {
-      if (response.success) {
-        return response.json()
-      } else {
-        throw new Error('Server response was\'t success.')
-      }
-    })
+    .then((response) => response.json())
     .then((responseData) => {
-      card.id = responseData.id
-      this.setState({cards: nextState})
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
+      }
     })
     .catch((error) => {
       this.setState(prevState)
@@ -196,7 +189,7 @@ class KanbanBoard_dnd extends Component {
       }
     })
     .catch((error) => {
-      console.error('Fetch error: ' , err)
+      console.error('Fetch error: ' , error)
       this.setState(prevState)
     })
   }
@@ -602,10 +595,10 @@ class NewCard extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.props.cardCallbacks.addCard(this.state)
-    this.props.history.pushState(null, '/')
+    browserHistory.push('/')
   }
   handleClose(event) {
-    this.props.history.pushState(null, '/')
+    browserHistory.push('/')
   }
   render() {
     return (
@@ -632,10 +625,10 @@ class EditCard extends Component {
   handleSubmit(event) {
     event.preventDefault()
     this.props.cardCallbacks.updateCard(this.state)
-    this.props.history.pushState(null, '/')
+    browserHistory.push('/')
   }
   handleClose(event) {
-    this.props.history.pushState(null, '/')
+    browserHistory.push('/')
   }
   render() {
     return (
@@ -653,7 +646,7 @@ EditCard.propTypes = {
 
 
 render(
-  <Router history={browserHistory} render={props => <RouterContext {...props} />}>
+  <Router history={browserHistory}>
     <Route path="/" component={KanbanBoard}>
       <Route path="about" component={About} />
       <Route path="new" component={NewCard} />
