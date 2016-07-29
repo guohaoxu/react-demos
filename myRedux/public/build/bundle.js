@@ -316,7 +316,6 @@
 	          updateCard: this.updateCard.bind(this)
 	        }
 	      });
-	      console.log('this.state.cards: ', this.state.cards);
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'app' },
@@ -942,9 +941,12 @@
 	  }, {
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      // let card = nextProps.cards && nextProps.cards.find((card) => card.id == nextProps.params.card_id)
-	      // let newState = Object.assign({}, this.state, card)
-	      this.setState({ title: 'haa' });
+	      var card = nextProps.cards && nextProps.cards.find(function (card) {
+	        return card.id == nextProps.params.card_id;
+	      });
+	      var newState = Object.assign({}, card);
+	      this.setState(newState);
+	      console.log('wocao');
 	    }
 	  }, {
 	    key: 'handleChange',

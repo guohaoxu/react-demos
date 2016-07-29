@@ -201,7 +201,6 @@ class KanbanBoard_dnd extends Component {
         updateCard: this.updateCard.bind(this)
       }
     })
-    console.log('this.state.cards: ', this.state.cards)
     return (
       <div className="app">
         <Link to='/new' className='float-button'>+</Link>
@@ -590,9 +589,10 @@ class EditCard extends Component {
     this.setState({...card})
   }
   componentWillReceiveProps(nextProps) {
-    // let card = nextProps.cards && nextProps.cards.find((card) => card.id == nextProps.params.card_id)
-    // let newState = Object.assign({}, this.state, card)
-    this.setState({title: 'haa'})
+    let card = nextProps.cards && nextProps.cards.find((card) => card.id == nextProps.params.card_id)
+    let newState = Object.assign({}, card)
+    this.setState(newState)
+    console.log('wocao------------------------------------------------------------------------------------------------------------')
   }
   handleChange(field, value) {
     this.setState({[field]: value})
