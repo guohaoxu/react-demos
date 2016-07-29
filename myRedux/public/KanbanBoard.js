@@ -464,27 +464,6 @@ class About extends Component {
     )
   }
 }
-class Repos extends Component {
-  render() {
-    return (
-      <div>
-        <h1>Repos</h1>
-        <p>This is repos route.</p>
-        <h3>{this.props.children}</h3>
-      </div>
-    )
-  }
-}
-class Home extends Component {
-  render() {
-    return (
-      <div>
-        <h1>Repos</h1>
-        <p>This is home route.</p>
-      </div>
-    )
-  }
-}
 class NoMatch extends Component {
   render() {
     return (
@@ -501,16 +480,6 @@ class ServerError extends Component {
       <div>
         <h1>500</h1>
         <p>Ops.Server is down...</p>
-      </div>
-    )
-  }
-}
-class Repo extends Component {
-  render() {
-    return (
-      <div>
-        <p>"this.props.route.title:" {this.props.route.title}</p>
-        <p>"this.props.params.repo:" {this.props.params.repo}</p>
       </div>
     )
   }
