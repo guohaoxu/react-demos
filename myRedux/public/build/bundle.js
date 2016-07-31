@@ -133,6 +133,14 @@
 	        _this2.setState({ cards: responseData, isFetching: false });
 	      }).catch(function (error) {
 	        console.error('Error fetching and parsing data', error);
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          throw new Error('Server response wasn\'t success');
+	        }
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
@@ -168,25 +176,40 @@
 	  }, {
 	    key: 'deleteTask',
 	    value: function deleteTask(cardId, taskId, taskIndex) {
+	      var _this4 = this;
+
 	      var cardIndex = this.state.cards.findIndex(function (card) {
 	        return card.id === cardId;
 	      });
 	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
 	        tasks: { $splice: [[taskIndex, 1]] }
 	      }));
+	      var prevState = this.state;
 	      this.setState({ cards: nextState });
-	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskIndex, {
+	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskId, {
 	        method: 'delete',
 	        headers: API_HEADERS
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          throw new Error('Server response wasn\'t success');
+	        }
+	      }).catch(function (error) {
+	        _this4.setState(prevState);
+	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
 	    key: 'toggleTask',
 	    value: function toggleTask(cardId, taskId, taskIndex) {
+	      var _this5 = this;
+
 	      var cardIndex = this.state.cards.findIndex(function (card) {
 	        return card.id === cardId;
 	      });
 	      var newDoneValue = void 0;
+	      var prevState = this.state;
 	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
 	        tasks: _defineProperty({}, taskIndex, {
 	          done: { $apply: function $apply(done) {
@@ -196,19 +219,31 @@
 	        })
 	      }));
 	      this.setState({ cards: nextState });
-	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskIndex, {
+	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskId, {
 	        method: 'put',
 	        headers: API_HEADERS,
 	        body: JSON.stringify({ done: newDoneValue })
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          throw new Error('Server response wasn\'t success');
+	        }
+	      }).catch(function (error) {
+	        _this5.setState(prevState);
+	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
 	    key: 'updateCardStatus',
 	    value: function updateCardStatus(cardId, listId) {
+	      var _this6 = this;
+
 	      var cardIndex = this.state.cards.findIndex(function (card) {
 	        return card.id === cardId;
 	      });
 	      var card = this.state.cards[cardIndex];
+	      var prevState = this.state;
 	      if (card.status !== listId) {
 	        this.setState((0, _reactAddonsUpdate2.default)(this.state, {
 	          cards: _defineProperty({}, cardIndex, {
@@ -220,8 +255,18 @@
 	        method: 'put',
 	        headers: API_HEADERS,
 	        body: JSON.stringify({
+	          do: 'updateStatus',
 	          newStatus: listId
 	        })
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          throw new Error('Server response wasn\'t success');
+	        }
+	      }).catch(function (error) {
+	        _this6.setState(prevState);
+	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
@@ -235,6 +280,7 @@
 	        var afterIndex = this.state.cards.findIndex(function (card) {
 	          return card.id === afterId;
 	        });
+	        var prevState = this.state;
 	        this.setState((0, _reactAddonsUpdate2.default)(this.state, {
 	          cards: {
 	            $splice: [[cardIndex, 1], [afterIndex, 0, card]]
@@ -262,7 +308,7 @@
 	  }, {
 	    key: 'addCard',
 	    value: function addCard(card) {
-	      var _this4 = this;
+	      var _this7 = this;
 
 	      var prevState = this.state;
 	      var newCard = Object.assign({}, card, { id: Date.now() });
@@ -279,13 +325,14 @@
 	          throw new Error('Server response wasn\'t success');
 	        }
 	      }).catch(function (error) {
-	        _this4.setState(prevState);
+	        _this7.setState(prevState);
+	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
 	    key: 'updateCard',
 	    value: function updateCard(card) {
-	      var _this5 = this;
+	      var _this8 = this;
 
 	      var prevState = this.state;
 	      var cardIndex = this.state.cards.findIndex(function (c) {
@@ -296,14 +343,19 @@
 	      fetch(API_URL + '/cards/' + card.id, {
 	        method: 'put',
 	        headers: API_HEADERS,
-	        body: JSON.stringify(card)
+	        body: JSON.stringify({
+	          do: 'edit',
+	          newCard: card
+	        })
 	      }).then(function (response) {
-	        if (!response.success) {
-	          throw new Error("Server response was\'t success");
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          throw new Error('Server response wasn\'t success');
 	        }
 	      }).catch(function (error) {
-	        console.error('Fetch error: ', error);
-	        _this5.setState(prevState);
+	        _this8.setState(prevState);
+	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
@@ -398,7 +450,7 @@
 	  _createClass(List_dnd, [{
 	    key: 'render',
 	    value: function render() {
-	      var _this7 = this;
+	      var _this10 = this;
 
 	      var _props = this.props;
 	      var canDrop = _props.canDrop;
@@ -419,8 +471,8 @@
 
 	      var cards = this.props.cards.map(function (card, index) {
 	        return _react2.default.createElement(Card, { id: card.id,
-	          taskCallbacks: _this7.props.taskCallbacks,
-	          cardCallbacks: _this7.props.cardCallbacks,
+	          taskCallbacks: _this10.props.taskCallbacks,
+	          cardCallbacks: _this10.props.cardCallbacks,
 	          key: card.id,
 	          title: card.title,
 	          description: card.description,
@@ -500,12 +552,12 @@
 	  function Card_dnd() {
 	    _classCallCheck(this, Card_dnd);
 
-	    var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card_dnd).apply(this, arguments));
+	    var _this11 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card_dnd).apply(this, arguments));
 
-	    _this8.state = {
+	    _this11.state = {
 	      showDetails: false
 	    };
-	    return _this8;
+	    return _this11;
 	  }
 
 	  _createClass(Card_dnd, [{
@@ -586,12 +638,12 @@
 	  function CheckList() {
 	    _classCallCheck(this, CheckList);
 
-	    var _this9 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
+	    var _this12 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
 
-	    _this9.state = {
+	    _this12.state = {
 	      showRemove: false
 	    };
-	    return _this9;
+	    return _this12;
 	  }
 
 	  _createClass(CheckList, [{
@@ -605,7 +657,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this10 = this;
+	      var _this13 = this;
 
 	      var tasks = this.props.tasks.map(function (task, taskIndex) {
 	        return _react2.default.createElement(
@@ -615,12 +667,12 @@
 	            'label',
 	            null,
 	            _react2.default.createElement('input', { type: 'checkbox', defaultChecked: task.done,
-	              onChange: _this10.props.taskCallbacks.toggle.bind(null, _this10.props.cardId, task.id, taskIndex) }),
+	              onChange: _this13.props.taskCallbacks.toggle.bind(null, _this13.props.cardId, task.id, taskIndex) }),
 	            task.name
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this10.props.taskCallbacks.delete.bind(null, _this10.props.cardId, task.id, taskIndex) },
+	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this13.props.taskCallbacks.delete.bind(null, _this13.props.cardId, task.id, taskIndex) },
 	            'x'
 	          )
 	        );
@@ -931,10 +983,10 @@
 	  _createClass(EditCard, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var _this17 = this;
+	      var _this20 = this;
 
 	      var card = this.props.cards && this.props.cards.find(function (card) {
-	        return card.id == _this17.props.params.card_id;
+	        return card.id == _this20.props.params.card_id;
 	      });
 	      this.setState(_extends({}, card));
 	    }
@@ -946,7 +998,7 @@
 	      });
 	      var newState = Object.assign({}, card);
 	      this.setState(newState);
-	      console.log('wocao');
+	      console.log('wocao------------------------------------------------------------------------------------------------------------');
 	    }
 	  }, {
 	    key: 'handleChange',

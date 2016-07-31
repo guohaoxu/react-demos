@@ -33,6 +33,15 @@ class KanbanBoard_dnd extends Component {
     }).catch((error) => {
       console.error('Error fetching and parsing data', error)
     })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
   }
   addTask(cardId, taskName) {
     let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
@@ -68,15 +77,27 @@ class KanbanBoard_dnd extends Component {
         tasks: {$splice: [[taskIndex, 1]]}
       }
     })
+    let prevState = this.state
     this.setState({cards: nextState})
-    fetch(`${API_URL}/cards/${cardId}/tasks/${taskIndex}`, {
+    fetch(`${API_URL}/cards/${cardId}/tasks/${taskId}`, {
       method: 'delete',
       headers: API_HEADERS
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
+      }
+    })
+    .catch((error) => {
+      this.setState(prevState)
+      browserHistory.push('/error')
     })
   }
   toggleTask(cardId, taskId, taskIndex) {
     let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
     let newDoneValue
+    let prevState = this.state
     let nextState = update(this.state.cards, {
       [cardIndex]: {
         tasks: {
@@ -90,15 +111,26 @@ class KanbanBoard_dnd extends Component {
       }
     })
     this.setState({cards: nextState})
-    fetch(`${API_URL}/cards/${cardId}/tasks/${taskIndex}`, {
+    fetch(`${API_URL}/cards/${cardId}/tasks/${taskId}`, {
       method: 'put',
       headers: API_HEADERS,
       body: JSON.stringify({done: newDoneValue})
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
+      }
+    })
+    .catch((error) => {
+      this.setState(prevState)
+      browserHistory.push('/error')
     })
   }
   updateCardStatus(cardId, listId) {
     let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
     let card = this.state.cards[cardIndex]
+    let prevState = this.state
     if (card.status !== listId) {
       this.setState(update(this.state, {
         cards: {
@@ -112,8 +144,19 @@ class KanbanBoard_dnd extends Component {
       method: 'put',
       headers: API_HEADERS,
       body: JSON.stringify({
+        do: 'updateStatus',
         newStatus: listId
       })
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
+      }
+    })
+    .catch((error) => {
+      this.setState(prevState)
+      browserHistory.push('/error')
     })
   }
   updateCardPosition(cardId, afterId) {
@@ -121,6 +164,7 @@ class KanbanBoard_dnd extends Component {
       let cardIndex = this.state.cards.findIndex((card => card.id == cardId))
       let card = this.state.cards[cardIndex]
       let afterIndex = this.state.cards.findIndex((card) => card.id === afterId)
+      let prevState = this.state
       this.setState(update(this.state, {
         cards: {
           $splice: [
@@ -167,6 +211,7 @@ class KanbanBoard_dnd extends Component {
     })
     .catch((error) => {
       this.setState(prevState)
+      browserHistory.push('/error')
     })
   }
   updateCard(card) {
@@ -181,16 +226,20 @@ class KanbanBoard_dnd extends Component {
     fetch(`${API_URL}/cards/${card.id}`, {
       method: 'put',
       headers: API_HEADERS,
-      body:JSON.stringify(card)
+      body:JSON.stringify({
+        do: 'edit',
+        newCard: card
+      })
     })
-    .then((response) => {
-      if (!response.success) {
-        throw new Error("Server response was\'t success")
+    .then((response) => response.json())
+    .then((responseData) => {
+      if (!responseData.success) {
+        throw new Error('Server response wasn\'t success')
       }
     })
     .catch((error) => {
-      console.error('Fetch error: ' , error)
       this.setState(prevState)
+      browserHistory.push('/error')
     })
   }
   render() {

@@ -3,92 +3,124 @@ var Card = require('../models/card.js')
 module.exports = function (app) {
   //get cards
   app.get('/cards', function (req, res, next) {
-    Card.find({}, function (err, docs) {
-        if (err) return next(err)
-        console.log(docs)
-        res.send(docs)
+    Card.find({}, function (err, r) {
+      if (err) return next(err)
+      res.send(r)
     })
   })
+  
   // new card
   app.post('/cards', (req, res, next) => {
     let card = req.body,
       newCard = new Card(card)
-    newCard.save(function(err, doc) {
+    newCard.save(function(err, r) {
       if (err) return next(err)
-      console.log(doc)
       res.json({
         success: true
       })
     })
   })
-
-
-  app.get('/cards', (req, res) => {
-  	setTimeout(() => 
-  		res.json(cards), 0)
-  })
-  app.delete('/cards/:cardId/tasks/:taskIndex', (req, res) => {
-    let card_id = Number(req.params.cardId)
-    let task_index = Number(req.params.taskIndex)
-    let cardIndex = cards.findIndex((card) => card.id === card_id)
-    
-    let nextState = update(cards, {
-      [cardIndex]: {
-        tasks: {$splice: [[task_index, 1]]}
+  
+  // new card task
+  app.post('/cards/:cardId/tasks', (req, res) => {
+    let cardId = Number(req.params.cardId),
+      newTask = req.body
+    Card.findOneAndUpdate({
+      id: cardId
+    }, {
+      $push: {
+        tasks: newTask
       }
-    })
-    cards = nextState
-    res.json({
-      success: true
+    }, function (err, r) {
+      if (err) return console.error(err)
+      res.json({
+        success: true
+      })
     })
   })
-  app.put('/cards/:cardId/tasks/:taskIndex', (req, res) => {
-    let card_id = Number(req.params.cardId)
-    let task_index = Number(req.params.taskIndex)
-    let newDoneValue = req.body.done
-    let cardIndex = cards.findIndex((card) => card.id === card_id)
-    let nextState = update(cards, {
-      [cardIndex]: {
+  
+  // delete card task
+  app.delete('/cards/:cardId/tasks/:taskId', (req, res) => {
+    let cardId = Number(req.params.cardId),
+      taskId = Number(req.params.taskId)
+    Card.findOneAndUpdate({
+      id: cardId
+    }, {
+      $pull: {
         tasks: {
-          [task_index]: {
-            done: {$apply: (done) => newDoneValue}
-          }
+          id: taskId
         }
       }
-    })
-    cards = nextState
-    res.json({
-      success: true
+    }, function (err, r) {
+      if (err) return console.error(err)
+      res.json({
+        success: true
+      })
     })
   })
-  app.post('/cards/:cardId/tasks', (req, res) => {
-    let card_id = Number(req.params.cardId)
-    let cardIndex = cards.findIndex((card) => card.id === card_id)
-    let newTask = req.body
-    let nextState = update(cards, {
-      [cardIndex]: {
-        tasks: {$push: [newTask]}
+  
+  // toggle card task
+  app.put('/cards/:cardId/tasks/:taskId', (req, res) => {
+    let cardId = Number(req.params.cardId),
+      taskId = Number(req.params.taskId),
+      newDoneValue = req.body.done
+    Card.findOneAndUpdate({
+      id: cardId,
+      'tasks.id': taskId
+    }, {
+      $set: {
+        'tasks.$.done': newDoneValue
       }
-    })
-    cards = nextState
-    res.json({
-      success: true
+    }, function (err, r) {
+      if (err) return console.error(err)
+      res.json({
+        success: true
+      })
     })
   })
+  
+  // put card -> two ways: put status and edit card
   app.put('/cards/:cardId', (req, res) => {
-    let card_id = Number(req.params.cardId)
-    let cardIndex = cards.findIndex((card) => card.id === card_id)
-    let newStatus = req.body.newStatus
-    let nextState = update(cards, {
-      [cardIndex]: {
-        status: {$apply: (status) => newStatus}
-      }
-    })
-    cards = nextState
-    res.json({
-      success: true
-    })
+    let put = req.body.do
+    let cardId = Number(req.params.cardId)
+    if (put === 'updateStatus') {
+      let newStatus = req.body.newStatus
+      Card.findOneAndUpdate({
+        id: cardId
+      }, {
+        $set: {
+          status: newStatus
+        }
+      }, function (err, r) {
+        if (err) return console.error(err)
+        res.json({
+          success: true
+        })
+      })
+    } else if (put === 'edit') {
+      let newCard = req.body.newCard
+      Card.findOneAndUpdate({
+        id: cardId
+      }, {
+        $set: {
+          title: newCard.title,
+          description: newCard.description,
+          color: newCard.color
+        }
+      }, function (err, r) {
+        if (err) return console.error(err)
+        res.json({
+          success: true
+        })
+      })
+    }
   })
+  
+  
+  
+  
+  
+  
   app.post('/cards/updatePosition', (req, res) => {
     let cardId = Number(req.body.cardId)
     let afterId = Number(req.body.afterId)
