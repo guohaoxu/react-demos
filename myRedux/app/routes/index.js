@@ -3,7 +3,7 @@ var Card = require('../models/card.js')
 module.exports = function (app) {
   //get cards
   app.get('/cards', function (req, res, next) {
-    Card.find({}, function (err, r) {
+    Card.find({}).sort({id: 1}).exec(function (err, r) {
       if (err) return next(err)
       res.send(r)
     })
@@ -84,6 +84,9 @@ module.exports = function (app) {
     let put = req.body.do
     let cardId = Number(req.params.cardId)
     if (put === 'updateStatus') {
+      return res.json({
+        success: true
+      })
       let newStatus = req.body.newStatus
       Card.findOneAndUpdate({
         id: cardId
@@ -121,11 +124,39 @@ module.exports = function (app) {
   app.post('/cards/updatePosition', (req, res) => {
     let cardId = Number(req.body.cardId)
     let afterId = Number(req.body.afterId)
-    
-    res.json({
+    return res.json({
       success: true
     })
-    console.log(cardId, afterId)
+    Card.findOneAndUpdate({
+      id: cardId
+    }, {
+      $set: {
+        id: afterId + 1
+      }
+    } ,function (err, r) {
+      if (err) return console.error(err)
+      Card.findOneAndUpdate({
+        id: afterId
+      }, {
+        $set: {
+          id: cardId
+        }
+      }, function (err, r) {
+        if (err) return console.error(err)
+        Card.findOneAndUpdate({
+          id: afterId + 1
+        }, {
+          $set: {
+            id: afterId
+          }
+        }, function (err, r) {
+          if (err) return console.error(err)
+          res.json({
+            success: true
+          })
+        })
+      })
+    })
   })
   
   
