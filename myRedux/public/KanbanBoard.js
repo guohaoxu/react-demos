@@ -30,14 +30,6 @@ class KanbanBoard_dnd extends Component {
     .then((response) => response.json())
     .then((responseData) => {
       this.setState({cards: responseData, isFetching: false})
-    }).catch((error) => {
-      console.error('Error fetching and parsing data', error)
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      if (!responseData.success) {
-        throw new Error('Server response wasn\'t success')
-      }
     })
     .catch((error) => {
       browserHistory.push('/error')
@@ -131,14 +123,15 @@ class KanbanBoard_dnd extends Component {
     let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
     let card = this.state.cards[cardIndex]
     let prevState = this.state
-    if (card.status !== listId) {
-      this.setState(update(this.state, {
-        cards: {
-          [cardIndex]: {
-            status: { $set: listId }
-          }
+    let newState = update(this.state, {
+      cards: {
+        [cardIndex]: {
+          status: { $set: listId }
         }
-      }))
+      }
+    })
+    if (card.status !== listId) {
+      this.setState(newState)
     }
     fetch(`${API_URL}/cards/${cardId}`, {
       method: 'put',

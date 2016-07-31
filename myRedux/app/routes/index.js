@@ -105,7 +105,8 @@ module.exports = function (app) {
         $set: {
           title: newCard.title,
           description: newCard.description,
-          color: newCard.color
+          color: newCard.color,
+          status: newCard.status
         }
       }, function (err, r) {
         if (err) return console.error(err)

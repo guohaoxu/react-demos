@@ -132,14 +132,6 @@
 	      }).then(function (responseData) {
 	        _this2.setState({ cards: responseData, isFetching: false });
 	      }).catch(function (error) {
-	        console.error('Error fetching and parsing data', error);
-	      }).then(function (response) {
-	        return response.json();
-	      }).then(function (responseData) {
-	        if (!responseData.success) {
-	          throw new Error('Server response wasn\'t success');
-	        }
-	      }).catch(function (error) {
 	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
@@ -244,12 +236,13 @@
 	      });
 	      var card = this.state.cards[cardIndex];
 	      var prevState = this.state;
+	      var newState = (0, _reactAddonsUpdate2.default)(this.state, {
+	        cards: _defineProperty({}, cardIndex, {
+	          status: { $set: listId }
+	        })
+	      });
 	      if (card.status !== listId) {
-	        this.setState((0, _reactAddonsUpdate2.default)(this.state, {
-	          cards: _defineProperty({}, cardIndex, {
-	            status: { $set: listId }
-	          })
-	        }));
+	        this.setState(newState);
 	      }
 	      fetch(API_URL + '/cards/' + cardId, {
 	        method: 'put',
