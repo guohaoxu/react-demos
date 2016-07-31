@@ -116,27 +116,12 @@ module.exports = function (app) {
       })
     }
   })
-  
-  
-  
-  
-  
-  
+
+  // update card sort
   app.post('/cards/updatePosition', (req, res) => {
     let cardId = Number(req.body.cardId)
     let afterId = Number(req.body.afterId)
-    if (cardId !== afterId) {
-      let cardIndex =cards.findIndex((card => card.id === cardId))
-      let card = cards[cardIndex]
-      let afterIndex = cards.findIndex((card) => card.id === afterId)
-      let newState = update(cards, {
-        $splice: [
-          [cardIndex, 1],
-          [afterIndex, 0, card]
-        ]
-      })
-      cards = newState
-    }
+    
     res.json({
       success: true
     })

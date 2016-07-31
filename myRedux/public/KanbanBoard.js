@@ -38,12 +38,12 @@ class KanbanBoard_dnd extends Component {
   addTask(cardId, taskName) {
     let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
     let newTask = {id: Date.now(), name: taskName, done: false}
+    let prevState = this.state
     let nextState = update(this.state.cards, {
       [cardIndex]: {
         tasks: {$push: [newTask]}
       }
     })
-    let prevState = this.state
     this.setState({cards: nextState})
     fetch(`${API_URL}/cards/${cardId}/tasks`, {
       method: 'post',
@@ -64,12 +64,12 @@ class KanbanBoard_dnd extends Component {
   }
   deleteTask(cardId, taskId, taskIndex) {
     let cardIndex = this.state.cards.findIndex((card) => card.id === cardId)
+    let prevState = this.state
     let nextState = update(this.state.cards, {
       [cardIndex]: {
         tasks: {$splice: [[taskIndex, 1]]}
       }
     })
-    let prevState = this.state
     this.setState({cards: nextState})
     fetch(`${API_URL}/cards/${cardId}/tasks/${taskId}`, {
       method: 'delete',
@@ -158,14 +158,15 @@ class KanbanBoard_dnd extends Component {
       let card = this.state.cards[cardIndex]
       let afterIndex = this.state.cards.findIndex((card) => card.id === afterId)
       let prevState = this.state
-      this.setState(update(this.state, {
+      let newState = update(this.state, {
         cards: {
           $splice: [
             [cardIndex, 1],
             [afterIndex, 0, card]
           ]
         }
-      }))
+      })
+      this.setState(newState)
       fetch(`${API_URL}/cards/updatePosition`, {
         method: 'post',
         headers: API_HEADERS,
@@ -181,7 +182,7 @@ class KanbanBoard_dnd extends Component {
         }
       })
       .catch((error) => {
-        console.error("Fetch error: ", error)
+        this.setState(prevState)
         browserHistory.push('/error')
       })
     }

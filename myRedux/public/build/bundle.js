@@ -144,10 +144,10 @@
 	        return card.id === cardId;
 	      });
 	      var newTask = { id: Date.now(), name: taskName, done: false };
+	      var prevState = this.state;
 	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
 	        tasks: { $push: [newTask] }
 	      }));
-	      var prevState = this.state;
 	      this.setState({ cards: nextState });
 	      fetch(API_URL + '/cards/' + cardId + '/tasks', {
 	        method: 'post',
@@ -173,10 +173,10 @@
 	      var cardIndex = this.state.cards.findIndex(function (card) {
 	        return card.id === cardId;
 	      });
+	      var prevState = this.state;
 	      var nextState = (0, _reactAddonsUpdate2.default)(this.state.cards, _defineProperty({}, cardIndex, {
 	        tasks: { $splice: [[taskIndex, 1]] }
 	      }));
-	      var prevState = this.state;
 	      this.setState({ cards: nextState });
 	      fetch(API_URL + '/cards/' + cardId + '/tasks/' + taskId, {
 	        method: 'delete',
@@ -265,43 +265,48 @@
 	  }, {
 	    key: 'updateCardPosition',
 	    value: function updateCardPosition(cardId, afterId) {
+	      var _this7 = this;
+
 	      if (cardId !== afterId) {
-	        var cardIndex = this.state.cards.findIndex(function (card) {
-	          return card.id == cardId;
-	        });
-	        var card = this.state.cards[cardIndex];
-	        var afterIndex = this.state.cards.findIndex(function (card) {
-	          return card.id === afterId;
-	        });
-	        var prevState = this.state;
-	        this.setState((0, _reactAddonsUpdate2.default)(this.state, {
-	          cards: {
-	            $splice: [[cardIndex, 1], [afterIndex, 0, card]]
-	          }
-	        }));
-	        fetch(API_URL + '/cards/updatePosition', {
-	          method: 'post',
-	          headers: API_HEADERS,
-	          body: JSON.stringify({
-	            cardId: cardId,
-	            afterId: afterId
-	          })
-	        }).then(function (response) {
-	          return response.json();
-	        }).then(function (responseData) {
-	          if (!responseData.success) {
-	            throw new Error('Server response wasn\'t success');
-	          }
-	        }).catch(function (error) {
-	          console.error("Fetch error: ", error);
-	          _reactRouter.browserHistory.push('/error');
-	        });
+	        (function () {
+	          var cardIndex = _this7.state.cards.findIndex(function (card) {
+	            return card.id == cardId;
+	          });
+	          var card = _this7.state.cards[cardIndex];
+	          var afterIndex = _this7.state.cards.findIndex(function (card) {
+	            return card.id === afterId;
+	          });
+	          var prevState = _this7.state;
+	          var newState = (0, _reactAddonsUpdate2.default)(_this7.state, {
+	            cards: {
+	              $splice: [[cardIndex, 1], [afterIndex, 0, card]]
+	            }
+	          });
+	          _this7.setState(newState);
+	          fetch(API_URL + '/cards/updatePosition', {
+	            method: 'post',
+	            headers: API_HEADERS,
+	            body: JSON.stringify({
+	              cardId: cardId,
+	              afterId: afterId
+	            })
+	          }).then(function (response) {
+	            return response.json();
+	          }).then(function (responseData) {
+	            if (!responseData.success) {
+	              throw new Error('Server response wasn\'t success');
+	            }
+	          }).catch(function (error) {
+	            _this7.setState(prevState);
+	            _reactRouter.browserHistory.push('/error');
+	          });
+	        })();
 	      }
 	    }
 	  }, {
 	    key: 'addCard',
 	    value: function addCard(card) {
-	      var _this7 = this;
+	      var _this8 = this;
 
 	      var prevState = this.state;
 	      var newCard = Object.assign({}, card, { id: Date.now() });
@@ -318,14 +323,14 @@
 	          throw new Error('Server response wasn\'t success');
 	        }
 	      }).catch(function (error) {
-	        _this7.setState(prevState);
+	        _this8.setState(prevState);
 	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
 	  }, {
 	    key: 'updateCard',
 	    value: function updateCard(card) {
-	      var _this8 = this;
+	      var _this9 = this;
 
 	      var prevState = this.state;
 	      var cardIndex = this.state.cards.findIndex(function (c) {
@@ -347,7 +352,7 @@
 	          throw new Error('Server response wasn\'t success');
 	        }
 	      }).catch(function (error) {
-	        _this8.setState(prevState);
+	        _this9.setState(prevState);
 	        _reactRouter.browserHistory.push('/error');
 	      });
 	    }
@@ -443,7 +448,7 @@
 	  _createClass(List_dnd, [{
 	    key: 'render',
 	    value: function render() {
-	      var _this10 = this;
+	      var _this11 = this;
 
 	      var _props = this.props;
 	      var canDrop = _props.canDrop;
@@ -464,8 +469,8 @@
 
 	      var cards = this.props.cards.map(function (card, index) {
 	        return _react2.default.createElement(Card, { id: card.id,
-	          taskCallbacks: _this10.props.taskCallbacks,
-	          cardCallbacks: _this10.props.cardCallbacks,
+	          taskCallbacks: _this11.props.taskCallbacks,
+	          cardCallbacks: _this11.props.cardCallbacks,
 	          key: card.id,
 	          title: card.title,
 	          description: card.description,
@@ -545,12 +550,12 @@
 	  function Card_dnd() {
 	    _classCallCheck(this, Card_dnd);
 
-	    var _this11 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card_dnd).apply(this, arguments));
+	    var _this12 = _possibleConstructorReturn(this, Object.getPrototypeOf(Card_dnd).apply(this, arguments));
 
-	    _this11.state = {
+	    _this12.state = {
 	      showDetails: false
 	    };
-	    return _this11;
+	    return _this12;
 	  }
 
 	  _createClass(Card_dnd, [{
@@ -631,12 +636,12 @@
 	  function CheckList() {
 	    _classCallCheck(this, CheckList);
 
-	    var _this12 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
+	    var _this13 = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckList).apply(this, arguments));
 
-	    _this12.state = {
+	    _this13.state = {
 	      showRemove: false
 	    };
-	    return _this12;
+	    return _this13;
 	  }
 
 	  _createClass(CheckList, [{
@@ -650,7 +655,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this13 = this;
+	      var _this14 = this;
 
 	      var tasks = this.props.tasks.map(function (task, taskIndex) {
 	        return _react2.default.createElement(
@@ -660,12 +665,12 @@
 	            'label',
 	            null,
 	            _react2.default.createElement('input', { type: 'checkbox', defaultChecked: task.done,
-	              onChange: _this13.props.taskCallbacks.toggle.bind(null, _this13.props.cardId, task.id, taskIndex) }),
+	              onChange: _this14.props.taskCallbacks.toggle.bind(null, _this14.props.cardId, task.id, taskIndex) }),
 	            task.name
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this13.props.taskCallbacks.delete.bind(null, _this13.props.cardId, task.id, taskIndex) },
+	            { href: 'javascript:;', className: 'checklist-task-remove', onClick: _this14.props.taskCallbacks.delete.bind(null, _this14.props.cardId, task.id, taskIndex) },
 	            'x'
 	          )
 	        );
@@ -976,10 +981,10 @@
 	  _createClass(EditCard, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var _this20 = this;
+	      var _this21 = this;
 
 	      var card = this.props.cards && this.props.cards.find(function (card) {
-	        return card.id == _this20.props.params.card_id;
+	        return card.id == _this21.props.params.card_id;
 	      });
 	      this.setState(_extends({}, card));
 	    }
