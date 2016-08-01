@@ -84,9 +84,6 @@ module.exports = function (app) {
     let put = req.body.do
     let cardId = Number(req.params.cardId)
     if (put === 'updateStatus') {
-      return res.json({
-        success: true
-      })
       let newStatus = req.body.newStatus
       Card.findOneAndUpdate({
         id: cardId
@@ -124,9 +121,6 @@ module.exports = function (app) {
   app.post('/cards/updatePosition', (req, res) => {
     let cardId = Number(req.body.cardId)
     let afterId = Number(req.body.afterId)
-    return res.json({
-      success: true
-    })
     Card.findOneAndUpdate({
       id: cardId
     }, {
