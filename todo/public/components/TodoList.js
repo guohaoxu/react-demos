@@ -1,16 +1,22 @@
 import React, { Component, PropTypes } from 'react'
 import Todo from './Todo'
 export default class TodoList extends Component {
+  checkAll() {
+    this.props.todos.map((todo, index) => {
+      this.props.onTodoChecked(index, true)
+    })
+  }
   render() {
     return (
       <section className="main">
-				<input className="toggle-all" type="checkbox" />
+				<input className="toggle-all" type="checkbox" onChange={this.checkAll.bind(this)} />
 				<label htmlFor="toggle-all">Mark all as complete</label>
         <ul className="todo-list">
           {this.props.todos.map((todo, index) =>
             <Todo {...todo}
               key={index}
-              onClick={() => this.props.onTodoClick(index)} />
+              index={index}
+              onChecked={this.props.onTodoChecked} />
           )}
         </ul>
       </section>
@@ -18,9 +24,9 @@ export default class TodoList extends Component {
   }
 }
 TodoList.propsTypes = {
-  onTodoClick: PropTypes.func.isRequired,
+  onTodoChecked: PropTypes.func.isRequired,
   todos: PropTypes.arrayOf(PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired
+  text: PropTypes.string.isRequired,
+  completed: PropTypes.bool.isRequired
   }).isRequired).isRequired
 }

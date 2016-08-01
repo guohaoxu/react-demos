@@ -23060,9 +23060,9 @@
 	        text: action.text,
 	        completed: false
 	      }]);
-	    case _actions.COMPLETE_TODO:
+	    case _actions.TOGGLE_TODO:
 	      return [].concat(_toConsumableArray(state.slice(0, action.index)), [Object.assign({}, state[action.index], {
-	        completed: true
+	        completed: action.ifCompleted
 	      })], _toConsumableArray(state.slice(action.index + 1)));
 	    default:
 	      return state;
@@ -23086,10 +23086,10 @@
 	  value: true
 	});
 	exports.addTodo = addTodo;
-	exports.completeTodo = completeTodo;
+	exports.toggleTodo = toggleTodo;
 	exports.setVisibilityFilter = setVisibilityFilter;
 	var ADD_TODO = exports.ADD_TODO = 'ADD_TODO';
-	var COMPLETE_TODO = exports.COMPLETE_TODO = 'COMPLETE_TODO';
+	var TOGGLE_TODO = exports.TOGGLE_TODO = 'TOGGLE_TODO';
 	var SET_VISIBILITY_FILTER = exports.SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
 
 	var VisibilityFilters = exports.VisibilityFilters = {
@@ -23102,8 +23102,8 @@
 	function addTodo(text) {
 	  return { type: ADD_TODO, text: text };
 	}
-	function completeTodo(index) {
-	  return { type: COMPLETE_TODO, index: index };
+	function toggleTodo(index, ifCompleted) {
+	  return { type: TOGGLE_TODO, index: index, ifCompleted: ifCompleted };
 	}
 	function setVisibilityFilter(filter) {
 	  return { type: SET_VISIBILITY_FILTER, filter: filter };
@@ -23178,8 +23178,8 @@
 	          } }),
 	        _react2.default.createElement(_TodoList2.default, {
 	          todos: this.props.visibleTodos,
-	          onTodoClick: function onTodoClick(index) {
-	            return dispatch((0, _actions.completeTodo)(index));
+	          onTodoChecked: function onTodoChecked(index, ifCompleted) {
+	            return dispatch((0, _actions.toggleTodo)(index, ifCompleted));
 	          } }),
 	        _react2.default.createElement(_Footer2.default, {
 	          filter: visibilityFilter,
@@ -28843,14 +28843,23 @@
 	  }
 
 	  _createClass(TodoList, [{
+	    key: 'checkAll',
+	    value: function checkAll() {
+	      var _this2 = this;
+
+	      this.props.todos.map(function (todo, index) {
+	        _this2.props.onTodoChecked(index, true);
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      return _react2.default.createElement(
 	        'section',
 	        { className: 'main' },
-	        _react2.default.createElement('input', { className: 'toggle-all', type: 'checkbox' }),
+	        _react2.default.createElement('input', { className: 'toggle-all', type: 'checkbox', onChange: this.checkAll.bind(this) }),
 	        _react2.default.createElement(
 	          'label',
 	          { htmlFor: 'toggle-all' },
@@ -28862,9 +28871,8 @@
 	          this.props.todos.map(function (todo, index) {
 	            return _react2.default.createElement(_Todo2.default, _extends({}, todo, {
 	              key: index,
-	              onClick: function onClick() {
-	                return _this2.props.onTodoClick(index);
-	              } }));
+	              index: index,
+	              onChecked: _this3.props.onTodoChecked }));
 	          })
 	        )
 	      );
@@ -28877,7 +28885,7 @@
 	exports.default = TodoList;
 
 	TodoList.propsTypes = {
-	  onTodoClick: _react.PropTypes.func.isRequired,
+	  onTodoChecked: _react.PropTypes.func.isRequired,
 	  todos: _react.PropTypes.arrayOf(_react.PropTypes.shape({
 	    text: _react.PropTypes.string.isRequired,
 	    completed: _react.PropTypes.bool.isRequired
@@ -28928,9 +28936,8 @@
 	        _react2.default.createElement(
 	          "div",
 	          { className: "view" },
-	          _react2.default.createElement("input", { className: "toggle", type: "checkbox", defaultChecked: this.props.completed, onChange: function onChange() {
-	              console.log('s');
-	              _this2.props.onClick();
+	          _react2.default.createElement("input", { className: "toggle", type: "checkbox", ref: "check", defaultChecked: this.props.completed, onChange: function onChange() {
+	              _this2.props.onChecked(_this2.props.index, _this2.refs.check.checked);
 	            } }),
 	          _react2.default.createElement(
 	            "label",
@@ -28939,8 +28946,7 @@
 	          ),
 	          _react2.default.createElement("button", { className: "destroy" })
 	        ),
-	        _react2.default.createElement("input", { className: "edit", defaultValue: "Create a TodoMVC template" }),
-	        "aaa"
+	        _react2.default.createElement("input", { className: "edit", defaultValue: "Create a TodoMVC template" })
 	      );
 	    }
 	  }]);
@@ -28951,9 +28957,10 @@
 	exports.default = Todo;
 
 	Todo.propTypes = {
-	  onClick: _react.PropTypes.func.isRequired,
+	  onChecked: _react.PropTypes.func.isRequired,
 	  text: _react.PropTypes.string.isRequired,
-	  completed: _react.PropTypes.bool.isRequired
+	  completed: _react.PropTypes.bool.isRequired,
+	  index: _react.PropTypes.number.isRequired
 	};
 
 /***/ },
