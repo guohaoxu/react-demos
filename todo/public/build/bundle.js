@@ -28920,13 +28920,18 @@
 	  _createClass(Todo, [{
 	    key: "render",
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
 	        "li",
 	        { className: this.props.completed ? "completed" : "" },
 	        _react2.default.createElement(
 	          "div",
 	          { className: "view" },
-	          _react2.default.createElement("input", { className: "toggle", type: "checkbox", defaultChecked: this.props.completed, onChange: this.props.onClick }),
+	          _react2.default.createElement("input", { className: "toggle", type: "checkbox", defaultChecked: this.props.completed, onChange: function onChange() {
+	              console.log('s');
+	              _this2.props.onClick();
+	            } }),
 	          _react2.default.createElement(
 	            "label",
 	            null,
@@ -28934,7 +28939,8 @@
 	          ),
 	          _react2.default.createElement("button", { className: "destroy" })
 	        ),
-	        _react2.default.createElement("input", { className: "edit", defaultValue: "Create a TodoMVC template" })
+	        _react2.default.createElement("input", { className: "edit", defaultValue: "Create a TodoMVC template" }),
+	        "aaa"
 	      );
 	    }
 	  }]);
