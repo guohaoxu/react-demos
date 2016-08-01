@@ -23170,10 +23170,10 @@
 	      var visibilityFilter = _props.visibilityFilter;
 
 	      return _react2.default.createElement(
-	        'div',
-	        null,
+	        'section',
+	        { className: 'todoapp' },
 	        _react2.default.createElement(_AddTodo2.default, {
-	          onAddClick: function onAddClick(text) {
+	          onAddPress: function onAddPress(text) {
 	            return dispatch((0, _actions.addTodo)(text));
 	          } }),
 	        _react2.default.createElement(_TodoList2.default, {
@@ -28734,7 +28734,7 @@
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -28764,30 +28764,33 @@
 	  }
 
 	  _createClass(AddTodo, [{
-	    key: 'render',
+	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
 
 	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement('input', { type: 'text', ref: 'input' }),
+	        "header",
+	        { className: "header" },
 	        _react2.default.createElement(
-	          'button',
-	          { onClick: function onClick(e) {
-	              return _this2.handleClick(e);
-	            } },
-	          'Add'
-	        )
+	          "h1",
+	          null,
+	          "todos"
+	        ),
+	        _react2.default.createElement("input", { className: "new-todo", placeholder: "What needs to be done?", ref: "input", onKeyPress: function onKeyPress(e) {
+	            return _this2.handlePress(e);
+	          } })
 	      );
 	    }
 	  }, {
-	    key: 'handleClick',
-	    value: function handleClick(e) {
-	      var node = this.refs.input;
-	      var text = node.value.trim();
-	      this.props.onAddClick(text);
-	      node.value = '';
+	    key: "handlePress",
+	    value: function handlePress(e) {
+	      if (e.key === 'Enter') {
+	        var node = this.refs.input;
+	        var text = node.value.trim();
+	        if (!text.length) return false;
+	        this.props.onAddPress(text);
+	        node.value = '';
+	      }
 	    }
 	  }]);
 
@@ -28797,7 +28800,7 @@
 	exports.default = AddTodo;
 
 	AddTodo.propTypes = {
-	  onAddClick: _react.PropTypes.func.isRequired
+	  onAddPress: _react.PropTypes.func.isRequired
 	};
 
 /***/ },
@@ -28845,15 +28848,25 @@
 	      var _this2 = this;
 
 	      return _react2.default.createElement(
-	        'ul',
-	        null,
-	        this.props.todos.map(function (todo, index) {
-	          return _react2.default.createElement(_Todo2.default, _extends({}, todo, {
-	            key: index,
-	            onClick: function onClick() {
-	              return _this2.props.onTodoClick(index);
-	            } }));
-	        })
+	        'section',
+	        { className: 'main' },
+	        _react2.default.createElement('input', { className: 'toggle-all', type: 'checkbox' }),
+	        _react2.default.createElement(
+	          'label',
+	          { htmlFor: 'toggle-all' },
+	          'Mark all as complete'
+	        ),
+	        _react2.default.createElement(
+	          'ul',
+	          { className: 'todo-list' },
+	          this.props.todos.map(function (todo, index) {
+	            return _react2.default.createElement(_Todo2.default, _extends({}, todo, {
+	              key: index,
+	              onClick: function onClick() {
+	                return _this2.props.onTodoClick(index);
+	              } }));
+	          })
+	        )
 	      );
 	    }
 	  }]);
@@ -28875,7 +28888,7 @@
 /* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -28905,17 +28918,23 @@
 	  }
 
 	  _createClass(Todo, [{
-	    key: 'render',
+	    key: "render",
 	    value: function render() {
 	      return _react2.default.createElement(
-	        'li',
-	        {
-	          onClick: this.props.onClick,
-	          style: {
-	            textDecoration: this.props.completed ? 'line-through' : 'none',
-	            cursor: this.props.completed ? 'default' : 'pointer'
-	          } },
-	        this.props.text
+	        "li",
+	        { className: this.props.completed ? "completed" : "" },
+	        _react2.default.createElement(
+	          "div",
+	          { className: "view" },
+	          _react2.default.createElement("input", { className: "toggle", type: "checkbox", defaultChecked: this.props.completed, onChange: this.props.onClick }),
+	          _react2.default.createElement(
+	            "label",
+	            null,
+	            this.props.text
+	          ),
+	          _react2.default.createElement("button", { className: "destroy" })
+	        ),
+	        _react2.default.createElement("input", { className: "edit", defaultValue: "Create a TodoMVC template" })
 	      );
 	    }
 	  }]);
@@ -28984,17 +29003,62 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'p',
-	        null,
-	        'Show:',
-	        ' ',
-	        this.renderFilter('SHOW_ALL', 'ALL'),
-	        ', ',
-	        this.renderFilter('SHOW_COMPLETED', 'Completed'),
-	        ', ',
-	        this.renderFilter('SHOW_ACTIVE', 'Active'),
-	        '.'
+	      return (
+	        // <p>
+	        //   Show:
+	        //   {' '}
+	        //   {this.renderFilter('SHOW_ALL', 'ALL')}
+	        //   {', '}
+	        //   {this.renderFilter('SHOW_COMPLETED', 'Completed')}
+	        //   {', '}
+	        //   {this.renderFilter('SHOW_ACTIVE', 'Active')}
+	        //   .
+	        // </p>
+	        _react2.default.createElement(
+	          'footer',
+	          { className: 'footer' },
+	          _react2.default.createElement(
+	            'span',
+	            { className: 'todo-count' },
+	            _react2.default.createElement(
+	              'strong',
+	              null,
+	              '0'
+	            ),
+	            ' item left'
+	          ),
+	          _react2.default.createElement(
+	            'ul',
+	            { className: 'filters' },
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { className: 'selected', href: '#/' },
+	                'All'
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { href: '#/active' },
+	                'Active'
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                'a',
+	                { href: '#/completed' },
+	                'Completed'
+	              )
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }]);

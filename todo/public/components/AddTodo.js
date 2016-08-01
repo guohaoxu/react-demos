@@ -2,21 +2,22 @@ import React , { findDOMNode, Component, PropTypes } from 'react'
 export default class AddTodo extends Component {
   render() {
     return (
-      <div>
-        <input type='text' ref='input' />
-        <button onClick={e => this.handleClick(e)}>
-          Add
-        </button>
-      </div>
+      <header className="header">
+				<h1>todos</h1>
+				<input className="new-todo" placeholder="What needs to be done?" ref="input" onKeyPress={e => this.handlePress(e)} />
+			</header>
     )
   }
-  handleClick(e) {
-    const node = this.refs.input
-    const text = node.value.trim()
-    this.props.onAddClick(text)
-    node.value = ''
+  handlePress(e) {
+    if (e.key === 'Enter') {
+      const node = this.refs.input
+      const text = node.value.trim()
+      if (!text.length) return false
+      this.props.onAddPress(text)
+      node.value = ''
+    }
   }
 }
 AddTodo.propTypes = {
-  onAddClick: PropTypes.func.isRequired
+  onAddPress: PropTypes.func.isRequired
 }

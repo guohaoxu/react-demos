@@ -15,16 +15,31 @@ export default class Footer extends Component {
   }
   render() {
     return (
-      <p>
-        Show:
-        {' '}
-        {this.renderFilter('SHOW_ALL', 'ALL')}
-        {', '}
-        {this.renderFilter('SHOW_COMPLETED', 'Completed')}
-        {', '}
-        {this.renderFilter('SHOW_ACTIVE', 'Active')}
-        .
-      </p>
+      // <p>
+      //   Show:
+      //   {' '}
+      //   {this.renderFilter('SHOW_ALL', 'ALL')}
+      //   {', '}
+      //   {this.renderFilter('SHOW_COMPLETED', 'Completed')}
+      //   {', '}
+      //   {this.renderFilter('SHOW_ACTIVE', 'Active')}
+      //   .
+      // </p>
+      <footer className="footer">
+      
+				<span className="todo-count"><strong>0</strong> item left</span>
+				<ul className="filters">
+					<li>
+						<a className="selected" href="#/">All</a>
+					</li>
+					<li>
+						<a href="#/active">Active</a>
+					</li>
+					<li>
+						<a href="#/completed">Completed</a>
+					</li>
+				</ul>
+			</footer>
     )
   }
 }

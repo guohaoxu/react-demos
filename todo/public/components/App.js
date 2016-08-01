@@ -12,9 +12,9 @@ class App extends Component {
     //通过connect()注入
     const { dispatch, visibleTodos, visibilityFilter } = this.props
     return (
-      <div>
+      <section className="todoapp">
         <AddTodo
-          onAddClick={text =>
+          onAddPress={text =>
             dispatch(addTodo(text))
           } />
         <TodoList
@@ -27,7 +27,7 @@ class App extends Component {
           onFilterChange={nextFilter =>
             dispatch(setVisibilityFilter(nextFilter))
           } />
-      </div>
+      </section>
     )
   }
 }
