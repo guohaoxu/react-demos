@@ -451,6 +451,7 @@ class CheckList extends Component {
   }
   inputKeyPress(event) {
     if (event.key === 'Enter') {
+      if (event.target.value.trim() === '') return false
       this.props.taskCallbacks.add(this.props.cardId, event.target.value)
       event.target.value = ''
     }
