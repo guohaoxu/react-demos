@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import Todo from './Todo'
+
 export default class TodoList extends Component {
   ifAll() {
     let len = 0
@@ -8,7 +9,7 @@ export default class TodoList extends Component {
         len++
       }
     })
-    if (len === this.props.todos.length) {
+    if (this.props.todos.length && this.props.todos.length === len) {
       return true
     } else {
       return false
@@ -29,6 +30,7 @@ export default class TodoList extends Component {
             <Todo {...todo}
               key={index}
               index={index}
+              onEditTodo={this.props.onEditTodo}
               onTodoDeleted={this.props.onTodoDeleted}
               onChecked={this.props.onTodoChecked} />
           )}

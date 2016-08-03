@@ -1,18 +1,46 @@
 import React , { Component, PropTypes } from 'react'
+
 export default class Todo extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      edit: false
+    }
+  }
+  doubleClick() {
+    this.setState({edit: true})
+    this.refs.edit.focus()
+  }
+  keyPress(e) {
+    if (e.key === 'Enter') {
+      const text = e.target.value.trim()
+      if (!text.length) return false
+      this.setState({edit: false})
+      this.props.onEditTodo(this.props.index, text)
+    } else if (e.key === 'Escape') {
+      this.setState({edit: false})
+      this.refs.edit.value = this.props.text
+    }
+  }
+  blur(e) {
+    const text = e.target.value.trim()
+    if (!text.length) return false
+    this.setState({edit: false})
+    this.props.onEditTodo(this.props.index, text)
+  }
   render() {
     return (
-      <li className={this.props.completed ? "completed" : ""}>
+      <li className={this.props.completed ? "completed" : ""} className={this.state.edit ? "editing" : ""}>
         <div className="view">
           <input className="toggle" type="checkbox" ref="check" checked={this.props.completed} onChange={() => {
             this.props.onChecked(this.props.index, this.refs.check.checked)
           }} />
-          <label>{this.props.text}</label>
+          <label onDoubleClick={this.doubleClick.bind(this)}>{this.props.text}</label>
           <button className="destroy" onClick={() => {
             this.props.onTodoDeleted(this.props.index)
           }}></button>
         </div>
-        <input className="edit" defaultValue="Create a TodoMVC template" />
+        <input className="edit" ref="edit" defaultValue={this.props.text} onKeyUp={this.keyPress.bind(this)} onBlur={this.blur.bind(this)} />
       </li>
     )
   }
