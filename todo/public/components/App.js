@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Router, Route, Link } from 'react-router'
 import { connect } from 'react-redux'
-import { addTodo, toggleTodo, setVisibilityFilter, VisibilityFilters } from '../actions'
+import { addTodo, deleteTodo, toggleTodo, setVisibilityFilter, VisibilityFilters, clearCompleted } from '../actions'
 
 import AddTodo from './AddTodo'
 import TodoList from './TodoList'
@@ -19,11 +19,18 @@ class App extends Component {
           } />
         <TodoList
           todos={this.props.visibleTodos}
+          onTodoDeleted={(index) => {
+            dispatch(deleteTodo(index))
+          }}
           onTodoChecked={(index, ifCompleted) => 
             dispatch(toggleTodo(index, ifCompleted))
           } />
         <Footer
+          todos={this.props.visibleTodos}
           filter={visibilityFilter}
+          onClearCompleted={() => {
+            dispatch(clearCompleted())
+          }}
           onFilterChange={nextFilter =>
             dispatch(setVisibilityFilter(nextFilter))
           } />

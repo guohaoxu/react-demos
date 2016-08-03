@@ -4,11 +4,13 @@ export default class Todo extends Component {
     return (
       <li className={this.props.completed ? "completed" : ""}>
         <div className="view">
-          <input className="toggle" type="checkbox" ref="check" defaultChecked={this.props.completed} onChange={() => {
+          <input className="toggle" type="checkbox" ref="check" checked={this.props.completed} onChange={() => {
             this.props.onChecked(this.props.index, this.refs.check.checked)
           }} />
           <label>{this.props.text}</label>
-          <button className="destroy"></button>
+          <button className="destroy" onClick={() => {
+            this.props.onTodoDeleted(this.props.index)
+          }}></button>
         </div>
         <input className="edit" defaultValue="Create a TodoMVC template" />
       </li>
