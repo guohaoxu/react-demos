@@ -43,9 +43,7 @@ function todos(state = [], action) {
       ]
     case CLEAR_COMPLETED:
       return [
-        ...state.filter((todo) => {
-          return todo.completed === false
-        })
+        ...state.filter(todo => !todo.completed)
       ]
     default:
       return state

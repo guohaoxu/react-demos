@@ -13,7 +13,7 @@ export default class Footer extends Component {
   }
   render() {
     return (
-      <footer className={this.props.todos.length ? "footer": "hidden"}>
+      <footer className="footer">
 				<span className="todo-count"><strong>{this.getTodoLeft()}</strong> item left</span>
 				<ul className="filters">
 					<li>
