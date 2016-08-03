@@ -28,9 +28,19 @@ export default class Todo extends Component {
     this.setState({edit: false})
     this.props.onEditTodo(this.props.index, text)
   }
+  getClass() {
+    let str = ''
+    if (this.props.completed) {
+      str += 'completed'
+    }
+    if (this.state.edit) {
+      str += " editing"
+    }
+    return str
+  }
   render() {
     return (
-      <li className={this.props.completed ? "completed" : ""} className={this.state.edit ? "editing" : ""}>
+      <li className={this.getClass()}>
         <div className="view">
           <input className="toggle" type="checkbox" ref="check" checked={this.props.completed} onChange={() => {
             this.props.onChecked(this.props.index, this.refs.check.checked)
