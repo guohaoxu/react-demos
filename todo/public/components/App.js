@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react'
 import { Router, Route, Link } from 'react-router'
 import { connect } from 'react-redux'
 import { addTodo, deleteTodo, toggleTodo, editTodo, setVisibilityFilter, VisibilityFilters, clearCompleted } from '../actions'
-
 import AddTodo from './AddTodo'
 import TodoList from './TodoList'
 import Footer from './Footer'

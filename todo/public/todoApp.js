@@ -6,12 +6,11 @@ import { Router, Route, IndexRoute, Link, browserHistory, RouterContext } from '
 import todoApp from './reducers'
 import App from './components/App'
 
-let store = createStore(todoApp)
-let rootElement = document.getElementById('content')
+const store = createStore(todoApp)
 
 render(
   <Provider store={store}>
     <App />
   </Provider>,
-  rootElement
+  document.getElementById('content')
 )
