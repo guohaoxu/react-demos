@@ -352,7 +352,7 @@ menu .active {
 }
 
 .float-button {
-  position: absolute;
+  position: fixed;;
   width: 56px;
   height: 56px;
   z-index: 2;

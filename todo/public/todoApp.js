@@ -15,16 +15,3 @@ render(
   </Provider>,
   rootElement
 )
-// 
-// render(
-//   <Router history={browserHistory}>
-//     <Route path="/" component={KanbanBoard}>
-//       <Route path="about" component={About} />
-//       <Route path="new" component={NewCard} />
-//       <Route path="edit/:card_id" component={EditCard} />
-//       <Route path="error" component={ServerError} />
-//       <Route path="*" component={NoMatch} />
-//     </Route>
-//   </Router>,
-//   document.getElementById('content')
-// )
