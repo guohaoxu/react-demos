@@ -10,7 +10,7 @@
     <meta name="description" content="It's a todo app">
     <meta name="author" content="guohaoxu, guohao0817@gmail.com">
     <meta http-equiv="Cache-Control" content="no-siteapp">
-    <link rel="stylesheet" href="/public/todo.css">
+    <link rel="stylesheet" href="<%= ctx %>/public/todo.css">
 	</head>
 
 	<body>
@@ -21,7 +21,11 @@
 			<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
 			<p>Created by <a href="https://github.com/guohaoxu">guohaoxu</a> 2016</p>
 		</footer>
-		<script src="http://localhost:8080/bundle.js"></script>
+    <% if (process.env.NODE_ENV === 'production') { %>
+		<script src="<%= ctx %>/public/build/bundle.js"></script>
+    <% } else { %>
+		<script src="http://localhost:8080/public/build/bundle.js"></script>
+    <% } %>
 	</body>
 	
 </html>
