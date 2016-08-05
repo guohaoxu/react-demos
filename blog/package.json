@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "supervisor server.js",
-    "webpack": "webpack",
-    "webpack-dev-server": "webpack-dev-server --inline --hot --progress --color",
-    "prod": "forever server.js"
+    "start:dev": "webpack-dev-server --inline --hot --progress --color",
+    "start:prod": "webpack && forever server.js"
   },
   "repository": {
     "type": "git",
@@ -25,21 +24,27 @@
   },
   "homepage": "https://github.com/guohaoxu/react-demos#readme",
   "dependencies": {
+    "babel-polyfill": "^6.13.0",
     "body-parser": "^1.15.2",
+    "classnames": "^2.2.5",
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
     "forever": "^0.15.2",
+    "jquery": "^3.1.0",
+    "marked": "^0.3.6",
     "method-override": "^2.3.6",
     "mongoose": "^4.5.7",
     "morgan": "^1.7.0",
     "react": "^15.3.0",
+    "react-addons-update": "^15.3.0",
     "react-dom": "^15.3.0",
     "react-redux": "^4.4.5",
     "react-router": "^2.6.1",
     "redux": "^3.5.2",
-    "serve-favicon": "^2.3.0"
+    "serve-favicon": "^2.3.0",
+    "supervisor": "^0.11.0"
   },
   "devDependencies": {
     "babel-core": "^6.11.4",

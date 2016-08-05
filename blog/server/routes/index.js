@@ -1,6 +1,77 @@
-var Card = require('../models/card.js')
+var User = require('../models/User.js'),
+  crypto = require('crypto')
 
 module.exports = function (app) {
+  // api
+  function checkLogin(req, res, next) {
+    if (!req.session.user) {
+      return res.json({
+        success: false,
+        text: '未登录'
+      })
+    }
+    next()
+  }
+
+  function checkNotLogin(req, res, next) {
+    if (req.session.user) {
+      return res.json({
+        success: false,
+        text: '已登录'
+      })
+    }
+    next()
+  }
+  app.post('/api/reg', checkNotLogin, (req, res) => {
+    var username = req.body.username,
+      password = req.body.password,
+      password_re = req.body.password_re
+    if (username.length < 3 || password.length < 6 || password_re.length < 6) {
+      return res.json({
+        success: false,
+        text: '用户名或密码过于简单'
+      })
+    }
+    if (password !== password_re) {
+      return res.json({
+        success: false,
+        text: '俩次输入的密码不一致'
+      })
+    }
+    var md5 = crypto.createHash('md5'),
+      newUser = new User({
+        username: username,
+        password: md5.update(password).digest('hex')
+      })
+      User.findOne({
+        username: username
+      }, (error, r) => {
+        if (error) {
+          console.error(error)
+        } else {
+          if (r) {
+            return res.json({
+              success: false,
+              text: '用户名已存在'
+            })
+          }
+          newUser.save((error, r) => {
+            if (error) {
+              console.log(error)
+            } else {
+              req.session.username = username
+              return res.json({
+                success: true,
+                username: username
+              })
+            }
+          })
+        }
+      })
+    
+  })
+  
+  
   //get cards
   app.get('/cards', function (req, res, next) {
     Card.find({}).sort({id: 1}).exec(function (err, r) {

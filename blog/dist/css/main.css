@@ -156,3 +156,25 @@ footer {
   bottom: 20px;
   right: 50px;
 }
+
+.error-route {
+  margin: 80px auto 0;
+  text-align: center;
+}
+.error-route h1 {
+  font-size: 120px;
+}
+.error-route p {
+  font-size: 18px;
+  color: #999;
+}
+#tip-route {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  padding: 0px 20px;
+  line-height: 40px;
+  background: #333;
+  color: #eee;
+  border-radius: 5px;
+}

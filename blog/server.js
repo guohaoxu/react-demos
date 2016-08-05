@@ -14,8 +14,8 @@ var express = require('express'),
   settings = require('./server/settings'),
   routes = require('./server/routes/index.js'),
   
-  mongoose = require('mongoose'),
-  dbURL = process.env.dbURL || settings.dbURL,
+  // mongoose = require('mongoose'),
+  //dbURL = process.env.dbURL || settings.dbURL,
   
   logger = require('morgan'),
   errorHandler = require('errorhandler'),
@@ -43,11 +43,7 @@ app.use(session({
 app.use(compression())
 app.use(favicon(path.join(__dirname, 'dist/favicon.ico')))
 
-var mongoose = require('mongoose'),
-  settings = require('../settings.js'),
-  dbURL = process.env.dbURL || settings.dbURL
-
-mongoose.connect(dbURL)
+// mongoose.connect(dbURL)
 
 if ('development' === app.get('env')) {
 	app.use(logger('dev'))
@@ -55,9 +51,10 @@ if ('development' === app.get('env')) {
 }
 
 app.use('/static', express.static(path.join(__dirname, 'dist')))
-//routes(app)
+routes(app)
 app.get('*', function (req, res) {
 	res.render('index', {
+    window_username: req.session.username || '',
     ctx: process.env.staticDomain ? process.env.staticDomain : 'http://localhost:' + app.get('port')
   })
 })
