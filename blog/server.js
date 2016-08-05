@@ -1,23 +1,26 @@
 var express = require('express'),
 
-	path = require('path'),
-	util = require('util'),
+  path = require('path'),
+  util = require('util'),
 
-	bodyParser = require('body-parser'),
-	cookieParser = require('cookie-parser'),
-	session = require('express-session'),
+  bodyParser = require('body-parser'),
+  cookieParser = require('cookie-parser'),
+  session = require('express-session'),
 
-	methodOverride = require('method-override'),
-	compression = require('compression'),
+  methodOverride = require('method-override'),
+  compression = require('compression'),
 
-	favicon = require('serve-favicon'),
-	settings = require('./app/settings'),
-	//routes = require('./app/routes/index.js'),
+  favicon = require('serve-favicon'),
+  settings = require('./server/settings'),
+  routes = require('./server/routes/index.js'),
+  
+  mongoose = require('mongoose'),
+  dbURL = process.env.dbURL || settings.dbURL,
+  
+  logger = require('morgan'),
+  errorHandler = require('errorhandler'),
 
-	errorHandler = require('errorhandler'),
-	logger = require('morgan'),
-
-	app = express()
+  app = express()
 
 app.set('port', process.env.PORT || 3000)
 app.set('views', path.join(__dirname))
@@ -38,14 +41,20 @@ app.use(session({
 	saveUninitialized: true
 }))
 app.use(compression())
-app.use(favicon(path.join(__dirname, 'public/favicon.ico')))
+app.use(favicon(path.join(__dirname, 'dist/favicon.ico')))
+
+var mongoose = require('mongoose'),
+  settings = require('../settings.js'),
+  dbURL = process.env.dbURL || settings.dbURL
+
+mongoose.connect(dbURL)
 
 if ('development' === app.get('env')) {
 	app.use(logger('dev'))
 	app.use(errorHandler())
 }
 
-app.use('/public', express.static(path.join(__dirname, 'public')))
+app.use('/static', express.static(path.join(__dirname, 'dist')))
 //routes(app)
 app.get('*', function (req, res) {
 	res.render('index', {

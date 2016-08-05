@@ -1,10 +1,10 @@
 module.exports = {
 	entry: [
-		'./public/todoApp.js'
+		'./index.js'
 	],
 	output: {
-		path: __dirname + '/public/build',
-    publicPath: '/public/build',
+		path: __dirname + 'dist/js',
+    publicPath: '/static/js',
 		filename: 'bundle.js'
 	},
 	module: {

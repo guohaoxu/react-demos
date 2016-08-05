@@ -1,7 +1,7 @@
 {
-  "name": "todo",
+  "name": "blog",
   "version": "1.0.0",
-  "description": "This is a todomvc app use react redux express",
+  "description": "This is a blog app use react express",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
