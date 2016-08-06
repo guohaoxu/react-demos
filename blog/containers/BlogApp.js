@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
 import update from 'react-addons-update'
-import 'whatwg-fetch'
+import fetch from 'isomorphic-fetch'
 import 'babel-polyfill'
-
+import $ from 'jquery'
 import Header from '../components/Header'
 
 const API_URL = 'http://localhost:3000'
@@ -19,24 +19,85 @@ export default class BlogApp extends Component {
       username: window.username
     }
   }
-  editState(o) {
+  editState(username) {
     this.setState({
-      username: o
+      username: username
     })
-    browserHistory.push('/')
   }
   showTip(text) {
-    var node = document.getElementById('tip-route')
-    node.innerHTML = text
+    var $tip = $('#tip-route')
+    $tip.show().find('span').text(text)
+    setTimeout(() => {
+      $tip.hide()
+    }, 2000)
+  }
+  reg(reqBody) {
+    fetch(`${API_URL}/api/reg`, {
+      method: 'post',
+      headers: API_HEADERS,
+      credentials: 'include',
+      body: JSON.stringify(reqBody)
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      if (!responseData.success) {
+        this.showTip(responseData.text)
+      } else {
+        this.editState(responseData.username)
+        browserHistory.push('/')
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
+  logout() {
+    fetch(`${API_URL}/api/logout`, {
+      method: 'get',
+      headers: API_HEADERS,
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      if (!responseData.success) {
+       this.showTip(responseData.text)
+      } else {
+        this.editState('')
+        browserHistory.push('/')
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
+  login(reqBody) {
+    fetch(`${API_URL}/api/login`, {
+      method: 'post',
+      headers: API_HEADERS,
+      credentials: 'include',
+      body: JSON.stringify(reqBody)
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      if (!responseData.success) {
+       this.showTip(responseData.text)
+      } else {
+        this.editState(responseData.username)
+        browserHistory.push('/')
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
   }
   render() {
     var propsChildren = this.props.children && React.cloneElement(this.props.children, {
-      editState: this.editState.bind(this),
-      showTip: this.showTip.bind(this)
+      reg: this.reg.bind(this),
+      login: this.login.bind(this)
     })
     return (
       <div>
-        <Header nav={this.props.location.pathname} editState={this.editState.bind(this)} username={this.state.username} showTip={this.showTip.bind(this)} />
+        <Header nav={this.props.location.pathname} username={this.state.username} logout={this.logout.bind(this)} />
         <div className="container main-content">{propsChildren}</div>
         <footer>
           <div className="container">
@@ -44,7 +105,7 @@ export default class BlogApp extends Component {
             <p>Copyright &copy; 2016 <a href="https://github.com/guohaoxu" target="_blank">@guohaoxu</a>.</p>
           </div>
         </footer>
-        <div id="tip-route">请输入标题</div>
+        <div id="tip-route" ref="tipRoute"><span></span>&nbsp;&nbsp;<a href="javascript:;" onClick={() => {$('#tip-route').fadeOut()}}>x</a></div>
         <div id="upTop" className="btn btn-default"><span className="glyphicon glyphicon-menu-up"></span></div>
       </div>
     )

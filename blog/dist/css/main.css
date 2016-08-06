@@ -169,6 +169,7 @@ footer {
   color: #999;
 }
 #tip-route {
+  display: none;
   position: fixed;
   bottom: 10px;
   left: 10px;

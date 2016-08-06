@@ -16,8 +16,13 @@ var express = require('express'),
   
   logger = require('morgan'),
   errorHandler = require('errorhandler'),
+  
+  mongoose = require('mongoose'),
+  dbURL = process.env.dbURL || settings.dbURL,
 
   app = express()
+  
+mongoose.connect(dbURL)
 
 app.set('port', process.env.PORT || 3000)
 app.set('views', path.join(__dirname))
@@ -56,23 +61,23 @@ app.get('*', function (req, res, next) {
   next()
 })
 
-if ('development' === app.get('env')) {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500)
-    res.render('error', {
-      message: err.message,
-      error: err
-    })
-  })
-}
-
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500)
-  res.render('error', {
-    message: err.message,
-    error: {}
-  })
-})
+// if ('development' === app.get('env')) {
+//   app.use(function(err, req, res, next) {
+//     res.status(err.status || 500)
+//     res.render('error', {
+//       message: err.message,
+//       error: err
+//     })
+//   })
+// }
+// 
+// app.use(function(err, req, res, next) {
+//   res.status(err.status || 500)
+//   res.render('error', {
+//     message: err.message,
+//     error: {}
+//   })
+// })
 
 app.listen(app.get('port'), function () {
   console.log('Server is running on ' + app.set('port'))

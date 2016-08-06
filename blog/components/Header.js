@@ -9,28 +9,12 @@ export default class Header extends Component {
         browserHistory.push(`/search?keyword=${text}`)
       } else {
         this.refs.input.focus()
-        this.props.showTip('请输入文章标题')
       }
       this.refs.input.value = ''
   }
-  handleLogout() {
+  handleLogout(e) {
     e.preventDefault()
-    this.props.editState('')
-    browserHistory.push('/')
-    fetch(`${API_URL}/api/logout`, {
-      method: 'get',
-      headers: API_HEADERS,
-      credentials: 'include'
-    })
-    .then(response => response.json())
-    .then(responseData => {
-      if (!responseData.success) {
-        this.props.showTip(responseData.text)
-      }
-    })
-    .catch((error) => {
-      browserHistory.push('/error')
-    })
+    this.props.logout()
   }
   render() {
     var navbarRight
@@ -44,7 +28,7 @@ export default class Header extends Component {
               <li><Link to="/post">发表</Link></li>
               <li><Link to="/setting">设置</Link></li>
               <li className="divider"></li>
-              <li><Link to="/logout" onClick={this.handleLogout.bind(this)}>退出</Link></li>
+              <li><a href="/logout" onClick={this.handleLogout.bind(this)}>退出</a></li>
             </ul>
           </li>
         </ul>
@@ -76,6 +60,7 @@ export default class Header extends Component {
               <div className="form-group">
                 <input type="text" name="keyword" ref="input" className="form-control" placeholder="输入标题" />
               </div>
+              &nbsp;
               <button type="submit" className="btn btn-default">搜索</button>
             </form>
             {navbarRight}
@@ -89,5 +74,5 @@ export default class Header extends Component {
 Header.propTypes = {
   nav: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  showTip: PropTypes.func.isRequired
+  logout: PropTypes.func.isRequired
 }

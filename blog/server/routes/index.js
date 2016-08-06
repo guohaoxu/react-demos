@@ -1,4 +1,5 @@
-var User = require('../models/User.js'),
+var User = require('../models/User'),
+  //Article = require('../models/Article'),
   crypto = require('crypto')
 
 module.exports = function (app) {
@@ -70,13 +71,34 @@ module.exports = function (app) {
     })
   })
   
-  app.get('/logout', checkLogin, function (req, res) {
-    req.session.user = null;
-    res.json({
+  app.get('/api/logout', checkLogin, function (req, res) {
+    req.session.user = null
+    return res.json({
       success: true
     })
   })
   
+  app.post('/api/login', checkNotLogin, function (req, res) {
+    var md5 = crypto.createHash('md5'),
+      username = req.body.username,
+      password = md5.update(req.body.password).digest('hex')
+    User.findOne({
+      username: username,
+      password: password
+    }, (error, r) => {
+      if (!r) {
+        return res.json({
+          success: false,
+          text: '用户名或者密码错误'
+        })
+      }
+      req.session.user = r
+      res.json({
+        success: true,
+        username: username
+      })
+    })
+  })
   
   //get cards
   app.get('/cards', function (req, res, next) {

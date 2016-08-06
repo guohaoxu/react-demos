@@ -1,8 +1,8 @@
-var mongoose = require('mongoose'),
-  settings = require('../settings.js'),
-  dbURL = process.env.dbURL || settings.dbURL
+var mongoose = require('mongoose')
+  //settings = require('../settings.js'),
+  //dbURL = process.env.dbURL || settings.dbURL
 
-mongoose.connect(dbURL)
+//mongoose.connect(dbURL)
 
 var userSchema = new mongoose.Schema({
   username: String,
