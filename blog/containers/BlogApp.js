@@ -5,6 +5,7 @@ import update from 'react-addons-update'
 import fetch from 'isomorphic-fetch'
 import 'babel-polyfill'
 import $ from 'jquery'
+import marked from 'marked'
 import Header from '../components/Header'
 
 const API_URL = 'http://localhost:3000'
@@ -16,7 +17,15 @@ export default class BlogApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: window.username
+      username: window.username,
+      articles: [
+        {
+          author: 'aaa',
+          title: 'This is aaa\'s first article.',
+          tags: ['南京', '旅游'],
+          content: '## This is aaa article.hahaha,,Do you like it?'
+        }
+      ]
     }
   }
   editState(username) {
