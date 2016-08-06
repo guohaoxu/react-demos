@@ -43,32 +43,38 @@ module.exports = function (app) {
         username: username,
         password: md5.update(password).digest('hex')
       })
-      User.findOne({
-        username: username
-      }, (error, r) => {
-        if (error) {
-          console.error(error)
-        } else {
-          if (r) {
-            return res.json({
-              success: false,
-              text: '用户名已存在'
-            })
-          }
-          newUser.save((error, r) => {
-            if (error) {
-              console.log(error)
-            } else {
-              req.session.username = username
-              return res.json({
-                success: true,
-                username: username
-              })
-            }
+    User.findOne({
+      username: username
+    }, (error, r) => {
+      if (error) {
+        console.error(error)
+      } else {
+        if (r) {
+          return res.json({
+            success: false,
+            text: '用户名已存在'
           })
         }
-      })
-    
+        newUser.save((error, r) => {
+          if (error) {
+            console.error(error)
+          } else {
+            req.session.user = r
+            return res.json({
+              success: true,
+              username: username
+            })
+          }
+        })
+      }
+    })
+  })
+  
+  app.get('/logout', checkLogin, function (req, res) {
+    req.session.user = null;
+    res.json({
+      success: true
+    })
   })
   
   

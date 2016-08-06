@@ -35860,7 +35860,7 @@
 	                null,
 	                _react2.default.createElement(
 	                  _reactRouter.Link,
-	                  { to: '/set' },
+	                  { to: '/setting' },
 	                  '设置'
 	                )
 	              ),
@@ -36260,7 +36260,7 @@
 	      return _react2.default.createElement(
 	        'h1',
 	        null,
-	        'Set'
+	        'Setting'
 	      );
 	    }
 	  }]);

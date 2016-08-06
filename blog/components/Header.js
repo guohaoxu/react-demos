@@ -13,19 +13,38 @@ export default class Header extends Component {
       }
       this.refs.input.value = ''
   }
+  handleLogout() {
+    e.preventDefault()
+    this.props.editState('')
+    browserHistory.push('/')
+    fetch(`${API_URL}/api/logout`, {
+      method: 'get',
+      headers: API_HEADERS,
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      if (!responseData.success) {
+        this.props.showTip(responseData.text)
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
   render() {
     var navbarRight
-    if (this.props.user.username) {
+    if (this.props.username) {
       navbarRight = (
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown">{this.props.user.username}<span className="caret"></span></a>
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown">{this.props.username}<span className="caret"></span></a>
             <ul className="dropdown-menu">
-              <li><Link to={`/u/${this.props.user.username}`}>我的主页</Link></li>
+              <li><Link to={`/u/${this.props.username}`}>我的主页</Link></li>
               <li><Link to="/post">发表</Link></li>
-              <li><Link to="/set">设置</Link></li>
+              <li><Link to="/setting">设置</Link></li>
               <li className="divider"></li>
-              <li><Link to="/logout">退出</Link></li>
+              <li><Link to="/logout" onClick={this.handleLogout.bind(this)}>退出</Link></li>
             </ul>
           </li>
         </ul>
@@ -69,6 +88,6 @@ export default class Header extends Component {
 
 Header.propTypes = {
   nav: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired,
+  username: PropTypes.string.isRequired,
   showTip: PropTypes.func.isRequired
 }

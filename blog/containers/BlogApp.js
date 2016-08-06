@@ -16,16 +16,12 @@ export default class BlogApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      user: {
-        username: window.username
-      }
+      username: window.username
     }
   }
   editState(o) {
     this.setState({
-      user: {
-        username: o
-      }
+      username: o
     })
     browserHistory.push('/')
   }
@@ -40,7 +36,7 @@ export default class BlogApp extends Component {
     })
     return (
       <div>
-        <Header nav={this.props.location.pathname} user={this.state.user} showTip={this.showTip.bind(this)} />
+        <Header nav={this.props.location.pathname} editState={this.editState.bind(this)} username={this.state.username} showTip={this.showTip.bind(this)} />
         <div className="container main-content">{propsChildren}</div>
         <footer>
           <div className="container">
