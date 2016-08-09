@@ -8,7 +8,7 @@ const formatter = buildFormatter(zhString)
 
 export default class Search extends Component {
   componentDidMount() {
-    this.props.updateArticles(undefined, 'a')
+    this.props.updateArticles(undefined, this.props.location.query.keyword)
   }
   render() {
     return (
