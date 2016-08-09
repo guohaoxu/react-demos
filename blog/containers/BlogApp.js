@@ -18,11 +18,25 @@ export default class BlogApp extends Component {
     super(props)
     this.state = {
       username: window.username,
-      articles: []
+      articles: [],
+      userArticles: []
     }
   }
-  componentDidMount() {
+  updateArticles2() {
     fetch(`${API_URL}/api/articles`, {
+      method: 'get',
+      headers: API_HEADERS
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({articles: responseData.data})
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
+  updateArticles(username) {
+    fetch(`${API_URL}/api/articles?username=${username}`, {
       method: 'get',
       headers: API_HEADERS
     })
@@ -98,7 +112,7 @@ export default class BlogApp extends Component {
        this.showTip(responseData.text)
       } else {
         this.editState(responseData.username)
-        browserHistory.push('/')
+        browserHistory.push(`/u/${responseData.username}`)
       }
     })
     .catch((error) => {
@@ -130,6 +144,7 @@ export default class BlogApp extends Component {
       reg: this.reg.bind(this),
       login: this.login.bind(this),
       articles: this.state.articles,
+      updateArticles: this.updateArticles.bind(this),
       post: this.post.bind(this),
       username: this.state.username
     })

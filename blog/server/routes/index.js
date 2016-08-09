@@ -25,17 +25,34 @@ module.exports = function (app) {
   }
   
   app.get('/api/articles', (req, res) => {
-    var p = req.query.p || 1
-    Article.find({}).skip(10 * (p - 1)).limit(10).exec((error, r) => {
-      if (error) {
-        console.error(error)
-      } else {
-        res.json({
-          success: true,
-          data: r
-        })
-      }
-    })
+    var p = req.query.p || 1,
+      username = req.query.username
+    if (username !== 'undefined') {
+      Article.find({
+        author: username
+      }).skip(10 * (p - 1)).limit(10).exec((error, r) => {
+        if (error) {
+          console.error(error)
+        } else {
+          return res.json({
+            success: true,
+            data: r
+          })
+        }
+      })
+    } else {
+      Article.find({}).skip(10 * (p - 1)).limit(10).exec((error, r) => {
+        if (error) {
+          console.error(error)
+        } else {
+          return res.json({
+            success: true,
+            data: r
+          })
+        }
+      })
+    }
+    
   })
   
   app.post('/api/reg', checkNotLogin, (req, res) => {
@@ -129,7 +146,7 @@ module.exports = function (app) {
       if (error) {
         console.error(error)
       } else {
-        res.json({
+        return res.json({
           success: true
         })
       }

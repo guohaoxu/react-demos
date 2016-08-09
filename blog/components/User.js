@@ -5,6 +5,9 @@ import Article from './Article'
 var imgsrc = '/static/imgs/default.jpg'
   
 export default class User extends Component {
+  componentDidMount() {
+    this.props.updateArticles(this.props.params.username)
+  }
   render() {
     return (
       <div>
