@@ -23,7 +23,14 @@ export default class BlogApp extends Component {
           author: 'aaa',
           title: 'This is aaa\'s first article.',
           tags: ['南京', '旅游'],
-          content: '## This is aaa article.hahaha,,Do you like it?'
+          content: '## This is aaa article.hahaha,,Do you like it?',
+          comments: [
+            {
+              author: 'bbb',
+              time: Date.now(),
+              comment: 'hahahaha'
+            }
+          ]
         }
       ]
     }

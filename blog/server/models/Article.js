@@ -13,7 +13,8 @@ var articleSchema = new mongoose.Schema({
     type: Date,
     default: Date.now()
   },
-  comments: []
+  comments: [],
+  pv: Number
 })
 
 //Instance methods
