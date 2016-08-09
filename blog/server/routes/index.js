@@ -1,5 +1,5 @@
 var User = require('../models/User'),
-  //Article = require('../models/Article'),
+  Article = require('../models/Article'),
   crypto = require('crypto')
 
 module.exports = function (app) {
@@ -23,6 +23,21 @@ module.exports = function (app) {
     }
     next()
   }
+  
+  app.get('/api/articles', (req, res) => {
+    var p = req.query.p || 1
+    Article.find({}).skip(10 * (p - 1)).limit(10).exec((error, r) => {
+      if (error) {
+        console.error(error)
+      } else {
+        res.json({
+          success: true,
+          data: r
+        })
+      }
+    })
+  })
+  
   app.post('/api/reg', checkNotLogin, (req, res) => {
     var username = req.body.username,
       password = req.body.password,
@@ -97,6 +112,36 @@ module.exports = function (app) {
         success: true,
         username: username
       })
+    })
+  })
+  
+  app.post('/api/post', checkLogin, function (req, res) {
+    var title = req.body.title,
+      tags = req.body.tags,
+      content = req.body.content,
+      newArticle = new Article({
+        author: req.session.user.username,
+        title: title,
+        tags: tags,
+        content: content
+      })
+    newArticle.save((error, r) => {
+      if (error) {
+        console.error(error)
+      } else {
+        res.json({
+          success: true
+        })
+      }
+    })
+  })
+  
+  
+  
+  app.get('*', function (req, res) {
+    res.render('index', {
+      window_username: req.session.user ? req.session.user.username : '',
+      ctx: process.env.staticDomain ? process.env.staticDomain : 'http://localhost:' + app.get('port')
     })
   })
   

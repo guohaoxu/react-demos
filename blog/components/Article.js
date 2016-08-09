@@ -1,34 +1,40 @@
 import React, { Component, PropTypes } from 'react'
+import { Link, browserHistory } from 'react-router'
+import marked from 'marked'
+import Timeago from 'react-timeago'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
+import zhString from 'react-timeago/lib/language-strings/zh-CN'
 
+const formatter = buildFormatter(zhString)
+
+var imgsrc = '/static/imgs/default.jpg'
+  
 export default class Article extends Component {
   render() {
     return (
       <div className="article-per">
-          <div className="img-left wid64">
-              <a href=`/u/${this.props.article.author}`><img src=`${this.props.}` alt="#" className="img-responsive"></a>
-          </div>
-          <div className="content-right">
-              <div className="panel panel-default">
-                  <div className="panel-heading"><a href="/u/<%= article.author %>"><%= article.author %></a></div>
-                  <div className="panel-body">
-                      <div className="article-title"><a href="/u/<%= article.author %>/<%= article.time.day %>/<%= article.title %>"><%= article.title %></a></div>
-                      <div className="clearfix"><%- article.content %></div>
-                      <div><small>日期： <%= article.time.minute %></small></div>
-                  </div>
-                  <div className="panel-footer clearfix">
-                      <div className="pull-left">
-                      <% if (article.tags) { %>
-                          <span className="glyphicon glyphicon-tags"></span>
-                          <% article.tags.forEach(function (tag, index) { %>
-                              <% if (tag) { %>
-                              <a href="/tags/<%= tag %>"><%= tag %></a>
-                              <% }  %>
-                          <% }) } %>
-                      </div>
-                      <div className="pull-right">阅读： <%= article.pv %> | <% if (article.comments) { %>评论： <%=  article.comments.length %><% } %></div>
-                  </div>
+        <div className="img-left wid64">
+          <Link to={`/u/${this.props.article.author}`}><img src={imgsrc} alt="#" className="img-responsive" /></Link>
+        </div>
+        <div className="content-right">
+          <div className="panel panel-default">
+            <div className="panel-heading">作者: <Link to={`/u/${this.props.article.author}`}>{this.props.article.author}</Link></div>
+            <div className="panel-body">
+              <div className="article-title"><Link to={`/articles/${this.props.article._id}`}>{this.props.article.title}</Link></div>
+              <div className="clearfix" dangerouslySetInnerHTML={{__html:marked(this.props.article.content)}} />
+              <div><small><Timeago date={this.props.article.time} formatter={formatter} /></small></div>
+            </div>
+            <div className="panel-footer clearfix">
+              <div className="pull-left">
+                <span className="glyphicon glyphicon-tags"></span>
+                {this.props.article.tags.map((tag, index) => 
+                  <Link key={index} to={`/tags/${tag}`}>{tag}</Link>
+                )}
               </div>
+              <div className="text-right">阅读: {this.props.article.pv || 0} | 评论: {this.props.article.comments.length || 0}</div>
+            </div>
           </div>
+        </div>
       </div>
     )
   }

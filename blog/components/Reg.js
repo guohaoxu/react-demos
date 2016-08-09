@@ -2,6 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import { browserHistory } from 'react-router'
 
 export default class Reg extends Component {
+  componentWillMount() {
+    if (this.props.username) {
+      browserHistory.push('/')
+    }
+  }
   handleReg(e) {
     e.preventDefault()
     var reqBody = {

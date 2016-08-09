@@ -8,7 +8,7 @@ import $ from 'jquery'
 import marked from 'marked'
 import Header from '../components/Header'
 
-const API_URL = 'http://localhost:3000'
+const API_URL = window.ctx || 'http://localhost:3000'
 const API_HEADERS = {
   'Content-Type': 'application/json'
 }
@@ -18,22 +18,21 @@ export default class BlogApp extends Component {
     super(props)
     this.state = {
       username: window.username,
-      articles: [
-        {
-          author: 'aaa',
-          title: 'This is aaa\'s first article.',
-          tags: ['南京', '旅游'],
-          content: '## This is aaa article.hahaha,,Do you like it?',
-          comments: [
-            {
-              author: 'bbb',
-              time: Date.now(),
-              comment: 'hahahaha'
-            }
-          ]
-        }
-      ]
+      articles: []
     }
+  }
+  componentDidMount() {
+    fetch(`${API_URL}/api/articles`, {
+      method: 'get',
+      headers: API_HEADERS
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({articles: responseData.data})
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
   }
   editState(username) {
     this.setState({
@@ -106,10 +105,33 @@ export default class BlogApp extends Component {
       browserHistory.push('/error')
     })
   }
+  post(reqBody) {
+    fetch(`${API_URL}/api/post`, {
+      method: 'post',
+      headers: API_HEADERS,
+      credentials: 'include',
+      body: JSON.stringify(reqBody)
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      if (!responseData.success) {
+       this.showTip(responseData.text)
+      } else {
+        // this.editState(responseData.username)
+        browserHistory.push('/')
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
   render() {
     var propsChildren = this.props.children && React.cloneElement(this.props.children, {
       reg: this.reg.bind(this),
-      login: this.login.bind(this)
+      login: this.login.bind(this),
+      articles: this.state.articles,
+      post: this.post.bind(this),
+      username: this.state.username
     })
     return (
       <div>

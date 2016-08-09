@@ -53,13 +53,6 @@ if ('development' === app.get('env')) {
 app.use('/static', express.static(path.join(__dirname, 'dist')))
 
 routes(app)
-app.get('*', function (req, res, next) {
-  res.render('index', {
-    window_username: req.session.user ? req.session.user.username : '',
-    ctx: process.env.staticDomain ? process.env.staticDomain : 'http://localhost:' + app.get('port')
-  })
-  next()
-})
 
 // if ('development' === app.get('env')) {
 //   app.use(function(err, req, res, next) {

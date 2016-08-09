@@ -1,6 +1,12 @@
 import React, { Component, PropTypes } from 'react'
+import { browserHistory } from 'react-router'
 
 export default class Login extends Component {
+  componentWillMount() {
+    if (this.props.username) {
+      browserHistory.push('/')
+    }
+  }
   handleLogin(e) {
     e.preventDefault()
     var reqBody = {
