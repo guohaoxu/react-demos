@@ -18,6 +18,7 @@ render(
     <Route path='/' component={BlogApp}>
       <IndexRoute component={Home} />
       <Route path='/tags' component={Tags} />
+      <Route path='/tags/:tag' component={Tag} />
       <Route path='/search' component={Search} />
       <Route path='/u/:username' component={User} />
       <Route path='/post' component={Post} />

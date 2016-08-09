@@ -1,9 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
+import Timeago from 'react-timeago'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
+import zhString from 'react-timeago/lib/language-strings/zh-CN'
 
-export default class Seatch extends Component {
+const formatter = buildFormatter(zhString)
+
+export default class Search extends Component {
+  componentDidMount() {
+    this.props.updateArticles(undefined, 'a')
+  }
   render() {
     return (
-      <h1>search</h1>
+      <ul className="list-group my-search">
+        {this.props.articles.map((article, index) => 
+          <li key={index} className="list-group-item clearfix">
+            <div className="pull-left"><Link to={`/articles/${article._id}`}>{article.title}</Link> - 作者: <Link to={`/u/${article.author}`}>{article.author}</Link></div>
+            <div className="pull-right"><small><Timeago date={article.time} formatter={formatter} /></small></div>
+          </li>
+        )}
+      </ul>
     )
   }
 }

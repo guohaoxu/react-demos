@@ -26,11 +26,26 @@ module.exports = function (app) {
   
   app.get('/api/articles', (req, res) => {
     var p = req.query.p || 1,
-      username = req.query.username
+      username = req.query.username,
+      keyword = req.query.keyword
     if (username !== 'undefined') {
       Article.find({
         author: username
-      }).skip(10 * (p - 1)).limit(10).exec((error, r) => {
+      }).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
+        if (error) {
+          console.error(error)
+        } else {
+          return res.json({
+            success: true,
+            data: r
+          })
+        }
+      })
+    } else if (keyword !== 'undefined'){
+      var k_reg = new RegExp(keyword, 'i');
+      Article.find({
+        title: k_reg
+      }).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
         if (error) {
           console.error(error)
         } else {
@@ -41,7 +56,7 @@ module.exports = function (app) {
         }
       })
     } else {
-      Article.find({}).skip(10 * (p - 1)).limit(10).exec((error, r) => {
+      Article.find({}).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
         if (error) {
           console.error(error)
         } else {

@@ -18,25 +18,11 @@ export default class BlogApp extends Component {
     super(props)
     this.state = {
       username: window.username,
-      articles: [],
-      userArticles: []
+      articles: []
     }
   }
-  updateArticles2() {
-    fetch(`${API_URL}/api/articles`, {
-      method: 'get',
-      headers: API_HEADERS
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.setState({articles: responseData.data})
-    })
-    .catch((error) => {
-      browserHistory.push('/error')
-    })
-  }
-  updateArticles(username) {
-    fetch(`${API_URL}/api/articles?username=${username}`, {
+  updateArticles(username, keyword) {
+    fetch(`${API_URL}/api/articles?username=${username}&keyword=${keyword}`, {
       method: 'get',
       headers: API_HEADERS
     })
