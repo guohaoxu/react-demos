@@ -132,8 +132,7 @@ export default class BlogApp extends Component {
       articles: this.state.articles,
       updateArticles: this.updateArticles.bind(this),
       post: this.post.bind(this),
-      username: this.state.username,
-      location: this.props.location
+      username: this.state.username
     })
     return (
       <div>

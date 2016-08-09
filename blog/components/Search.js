@@ -9,14 +9,15 @@ const formatter = buildFormatter(zhString)
 export default class Search extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      keyword: this.props.location.query.keyword
-    }
   }
   componentDidMount() {
-    this.props.updateArticles({keyword: this.state.keyword})
+    this.props.updateArticles({keyword: this.props.location.query.keyword})
+  }
+  componentWillReceiveProps(nextProps) {
+    console.log('----------')
   }
   render() {
+    console.log(this.props.location.query.keyword)
     return (
       <ul className="list-group my-search">
         {this.props.articles.map((article, index) => 
