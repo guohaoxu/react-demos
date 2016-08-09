@@ -4,6 +4,7 @@ import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
 import BlogApp from './containers/BlogApp'
 import Home from './components/Home'
 import Tags from './components/Tags'
+import Tag from './components/Tag'
 import Search from './components/Search'
 import User from './components/User'
 import Post from './components/Post'
@@ -17,6 +18,8 @@ render(
   <Router history={browserHistory}>
     <Route path='/' component={BlogApp}>
       <IndexRoute component={Home} />
+      <Route path='/tags' component={Tags} />
+      <Route path='/tags/:tag' component={Tag} />
       <Route path='/search' component={Search} />
       <Route path='/u/:username' component={User} />
       <Route path='/post' component={Post} />
@@ -30,6 +33,3 @@ render(
   document.getElementById('root')
 )
 
-
-// <Route path='/tags' component={Tags} />
-// <Route path='/tags/:tag' component={Tag} />

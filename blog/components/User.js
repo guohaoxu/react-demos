@@ -6,7 +6,7 @@ var imgsrc = '/static/imgs/default.jpg'
   
 export default class User extends Component {
   componentDidMount() {
-    this.props.updateArticles(this.props.params.username)
+    this.props.updateArticles({username: this.props.params.username})
   }
   render() {
     return (

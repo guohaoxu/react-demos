@@ -7,8 +7,14 @@ import zhString from 'react-timeago/lib/language-strings/zh-CN'
 const formatter = buildFormatter(zhString)
 
 export default class Search extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      keyword: this.props.location.query.keyword
+    }
+  }
   componentDidMount() {
-    this.props.updateArticles(undefined, this.props.location.query.keyword)
+    this.props.updateArticles({keyword: this.state.keyword})
   }
   render() {
     return (

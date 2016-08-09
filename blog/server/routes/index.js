@@ -27,46 +27,35 @@ module.exports = function (app) {
   app.get('/api/articles', (req, res) => {
     var p = req.query.p || 1,
       username = req.query.username,
-      keyword = req.query.keyword
+      keyword = req.query.keyword,
+      tag = req.query.tag,
+      query
     if (username !== 'undefined') {
-      Article.find({
+      query = {
         author: username
-      }).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
-        if (error) {
-          console.error(error)
-        } else {
-          return res.json({
-            success: true,
-            data: r
-          })
-        }
-      })
+      }
     } else if (keyword !== 'undefined'){
-      var k_reg = new RegExp(keyword, 'i');
-      Article.find({
+      var k_reg = new RegExp(keyword, 'i')
+      query = {
         title: k_reg
-      }).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
-        if (error) {
-          console.error(error)
-        } else {
-          return res.json({
-            success: true,
-            data: r
-          })
-        }
-      })
+      }
+    } else if (tag !== 'undefined') {
+      query = {
+        tag: tag
+      }
     } else {
-      Article.find({}).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
-        if (error) {
-          console.error(error)
-        } else {
-          return res.json({
-            success: true,
-            data: r
-          })
-        }
-      })
+      query = {}
     }
+    Article.find(query).skip(10 * (p - 1)).limit(10).sort({time: -1}).exec((error, r) => {
+      if (error) {
+        console.error(error)
+      } else {
+        return res.json({
+          success: true,
+          data: r
+        })
+      }
+    })
     
   })
   

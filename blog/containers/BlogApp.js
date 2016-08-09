@@ -21,8 +21,8 @@ export default class BlogApp extends Component {
       articles: []
     }
   }
-  updateArticles(username, keyword) {
-    fetch(`${API_URL}/api/articles?username=${username}&keyword=${keyword}`, {
+  updateArticles(o={}) {
+    fetch(`${API_URL}/api/articles?username=${o.username}&keyword=${o.keyword}&tag=${o.tag}`, {
       method: 'get',
       headers: API_HEADERS
     })
