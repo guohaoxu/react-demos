@@ -13,15 +13,15 @@ var express = require('express'),
   favicon = require('serve-favicon'),
   settings = require('./server/settings'),
   routes = require('./server/routes/index.js'),
-  
+
   logger = require('morgan'),
   errorHandler = require('errorhandler'),
-  
+
   mongoose = require('mongoose'),
   dbURL = process.env.dbURL || settings.dbURL,
 
   app = express()
-  
+
 mongoose.connect(dbURL)
 
 app.set('port', process.env.PORT || 3000)
@@ -51,6 +51,7 @@ if ('development' === app.get('env')) {
 }
 
 app.use('/static', express.static(path.join(__dirname, 'dist')))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 routes(app)
 
@@ -63,7 +64,7 @@ routes(app)
 //     })
 //   })
 // }
-// 
+//
 // app.use(function(err, req, res, next) {
 //   res.status(err.status || 500)
 //   res.render('error', {

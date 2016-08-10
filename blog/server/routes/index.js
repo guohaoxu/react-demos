@@ -37,7 +37,19 @@ module.exports = function (app) {
   }
 
   app.post('/api/upload', checkLogin, upload.single('avatar'), function (req, res) {
-    res.end()
+    res.end('ok')
+  })
+
+  app.get('/api/user', function (req, res) {
+    User.findOne({
+      username: req.query.u
+    }, function (error, r) {
+      console.log(r)
+      return res.json({
+        success: true,
+        data: r
+      })
+    })
   })
 
   app.get('/api/articles', (req, res) => {
@@ -66,9 +78,24 @@ module.exports = function (app) {
       if (error) {
         console.error(error)
       } else {
-        return res.json({
-          success: true,
-          data: r
+        var results = [],
+          txs = []
+        r.map((article) => {
+          User.findOne({
+            username: article.author
+          }, function (error, doc) {
+            results.push(article)
+            txs.push(docs)
+            if (results.length === r.length) {
+              return res.json({
+                success: true,
+                data: {
+                  articles: results,
+                  txs: txs
+                }
+              })
+            }
+          })
         })
       }
     })
@@ -79,7 +106,6 @@ module.exports = function (app) {
     var tags = []
     Article.find({}).distinct('tags').exec((error, r) => {
       var results = r.filter((tag) => tag)
-      console.log(results)
       results.map((tag) => {
         var tmp = {}
         tmp.tagName = tag

@@ -7,6 +7,21 @@ export default class Setting extends Component {
       browserHistory.push('/login')
     }
   }
+  handleTx() {
+    var tmpStr = $(this.refs.txUpload).val(),
+      str = tmpStr.slice(tmpStr.indexOf('.'), tmpStr.length)
+    $("#txForm").ajaxSubmit()
+    $("#upTip").show()
+    var that = this
+    var tagImg = new Image()
+    tagImg.onload = function () {
+      setTimeout(function () {
+        $("#upTip").hide()
+        $(".img-rounded").attr("src", `${window.ctx}/uploads/${that.props.user.username}${str}?t=${Math.random()}`)
+      }, 1000)
+    }
+    tagImg.src = `${window.ctx}/uploads/${this.props.user.username}${str}?t=${Math.random()}`
+  }
   render() {
     return (
       <div className="row">
@@ -14,12 +29,12 @@ export default class Setting extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">设置</div>
             <div className="panel-body">
-              <form id="txForm" method="post" action="/api/upload" encType="multipart/form-data">
+              <form ref="txForm" id="txForm" method="post" action="/api/upload" encType="multipart/form-data">
                 <div className="form-group">
                   <label htmlFor="userDesc">个人头像：</label>
                   <div className="imgTx"><img src="/static/imgs/default.jpg" alt="#" className="img-rounded" /></div>
-                  <label className="btn btn-default openFile">修改头像<input type="file" name="avatar" id="txUpload" data-user="aaa" /></label>
-                  <div id="upTip"><span className="glyphicon glyphicon-refresh"></span> <span className="upTipTxt"></span></div>
+                  <label className="btn btn-default openFile">修改头像<input type="file" name="avatar" ref="txUpload" data-user="aaa" onChange={this.handleTx.bind(this)} /></label>
+                  <div id="upTip"><span className="glyphicon glyphicon-refresh"></span> <span className="upTipTxt">uploading...</span></div>
                 </div>
               </form>
               <form method="post" action="/api/setting">
@@ -34,7 +49,6 @@ export default class Setting extends Component {
           </div>
         </div>
 
-        <script src="/static/js/jquery.form.js"></script>
       </div>
     )
   }

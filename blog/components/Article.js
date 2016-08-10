@@ -14,7 +14,7 @@ export default class Article extends Component {
     return (
       <div className="article-per">
         <div className="img-left wid64">
-          <Link to={`/u/${this.props.article.author}`}><img src={imgsrc} alt="#" title={`${this.props.article.author}`} className="img-responsive" /></Link>
+          <Link to={`/u/${this.props.article.author}`}><img src={`${this.props.article.tx}`} alt="#" title={`${this.props.article.author}`} className="img-responsive" /></Link>
         </div>
         <div className="content-right">
           <div className="panel panel-default">
