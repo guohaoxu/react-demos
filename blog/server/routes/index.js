@@ -42,7 +42,7 @@ module.exports = function (app) {
 
   app.get('/api/user', function (req, res) {
     User.findOne({
-      username: req.query.u
+      username: req.query.username
     }, function (error, r) {
       return res.json({
         success: true,
@@ -62,7 +62,6 @@ module.exports = function (app) {
         description: userdesc
       }
     }, function (error, r) {
-      console.log(r)
       return res.json({
         success: true,
         data: r
@@ -76,16 +75,16 @@ module.exports = function (app) {
       keyword = req.query.keyword,
       tag = req.query.tag,
       query
-    if (username !== 'undefined') {
+    if (username !== undefined) {
       query = {
         author: username
       }
-    } else if (keyword !== 'undefined'){
+    } else if (keyword !== undefined){
       var k_reg = new RegExp(keyword, 'i')
       query = {
         title: k_reg
       }
-    } else if (tag !== 'undefined') {
+    } else if (tag !== undefined) {
       query = {
         tags: tag
       }
@@ -97,11 +96,18 @@ module.exports = function (app) {
         console.error(error)
       } else {
         var results = []
+        if (!r.length) {
+          return res.json({
+            success: true,
+            data: []
+          })
+        }
         r.map((article) => {
           User.findOne({
             username: article.author
           }, function (error, doc) {
             results.push({
+              _id: article._id,
               author: article.author,
               title: article.title,
               tags: article.tags,
@@ -128,6 +134,12 @@ module.exports = function (app) {
     var tags = []
     Article.find({}).distinct('tags').exec((error, r) => {
       var results = r.filter((tag) => tag)
+      if (!r.length) {
+        return res.json({
+          success: true,
+          data: []
+        })
+      }
       results.map((tag) => {
         var tmp = {}
         tmp.tagName = tag

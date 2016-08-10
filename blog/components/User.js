@@ -3,38 +3,54 @@ import { browserHistory } from 'react-router'
 import Article from './Article'
 
 
-var imgsrc = '/static/imgs/default.jpg'
+const API_URL = window.ctx || 'http://localhost:3000'
+const API_HEADERS = {
+  'Content-Type': 'application/json'
+}
 
 export default class User extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      articles: [],
       user: {}
     }
   }
-  componentDidMount() {
-    this.props.updateArticles({username: this.props.params.username})
-
-    const API_URL = window.ctx || 'http://localhost:3000'
-    const API_HEADERS = {
-      'Content-Type': 'application/json'
-    }
-    fetch(`${API_URL}/api/user?u=${this.props.params.username}`, {
+  fetchUser(o) {
+    fetch(`${API_URL}/api/user?username=${o.username}`, {
       method: 'get',
       headers: API_HEADERS,
       credentials: 'include'
     })
-    .then(response => response.json())
-    .then(responseData => {
-      if (!responseData.success) {
-       this.showTip(responseData.text)
-      } else {
-        this.setState({user: responseData.data})
-      }
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({user: responseData.data})
     })
     .catch((error) => {
       browserHistory.push('/error')
     })
+  }
+  fetchData(o) {
+    fetch(`${API_URL}/api/articles?username=${o.username}`, {
+      method: 'get',
+      headers: API_HEADERS,
+      credentials: 'include'
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({articles: responseData.data})
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
+  componentDidMount() {
+    this.fetchUser({username: this.props.params.username})
+    this.fetchData({username: this.props.params.username})
+  }
+  componentWillReceiveProps(nextProps) {
+    this.fetchUser({username: nextProps.params.username})
+    this.fetchData({username: nextProps.params.username})
   }
   render() {
     return (
@@ -43,10 +59,10 @@ export default class User extends Component {
           <div className="panel-body clearfix">
             <img src={`${window.ctx}/uploads/${this.state.user.tx}`} className="img-responsive img-rounded pull-left wid120 right20" />
             <h2>{this.props.params.username}</h2>
-            <p>aaaaaaaaa</p>
+            <p>{this.state.user.description}</p>
           </div>
         </div>
-        {this.props.articles.map((article, index) => {
+        {this.state.articles.map((article, index) => {
           return <Article key={index} article={article} />
         })}
       </div>

@@ -22,32 +22,6 @@ export default class BlogApp extends Component {
       tags: []
     }
   }
-  updateArticles(o={}) {
-    fetch(`${API_URL}/api/articles?username=${o.username}&keyword=${o.keyword}&tag=${o.tag}`, {
-      method: 'get',
-      headers: API_HEADERS
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.setState({articles: responseData.data})
-    })
-    .catch((error) => {
-      browserHistory.push('/error')
-    })
-  }
-  getTags() {
-    fetch(`${API_URL}/api/tags`, {
-      method: 'get',
-      headers: API_HEADERS
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-      this.setState({tags: responseData.data})
-    })
-    .catch((error) => {
-      browserHistory.push('/error')
-    })
-  }
   showTip(text) {
     var $tip = $('#tip-route')
     $tip.show().find('span').text(text)
@@ -145,9 +119,7 @@ export default class BlogApp extends Component {
       if (!responseData.success) {
        this.showTip(responseData.text)
       } else {
-        this.setState({
-          user: responseData.user
-        })
+        this.setState
         browserHistory.push(`/u/${this.state.user.username}`)
       }
     })
@@ -160,10 +132,8 @@ export default class BlogApp extends Component {
       reg: this.reg.bind(this),
       login: this.login.bind(this),
       articles: this.state.articles,
-      updateArticles: this.updateArticles.bind(this),
       post: this.post.bind(this),
       user: this.state.user,
-      getTags: this.getTags.bind(this),
       tags: this.state.tags,
       updateUser: this.updateUser.bind(this)
     })

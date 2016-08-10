@@ -1,18 +1,43 @@
 import React, { Component, PropTypes } from 'react'
 import Article from './Article'
 
+const API_URL = window.ctx || 'http://localhost:3000'
+const API_HEADERS = {
+  'Content-Type': 'application/json'
+}
+
 export default class Home extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      articles: []
+    }
+  }
+  fetchData() {
+    fetch(`${API_URL}/api/articles`, {
+      method: 'get',
+      headers: API_HEADERS,
+      credentials: 'include'
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({articles: responseData.data})
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
   componentDidMount() {
-    this.props.updateArticles()
+    this.fetchData()
   }
   render() {
     var articles
-    if (this.props.articles.length) {
-      articles = this.props.articles.map((article, index) => {
-      return <Article key={index} article={article} />
-      })
+    if (!this.state.articles.length) {
+      articles = <p>暂无文章</p>
     } else {
-      articles = <div>暂无文章</div>
+      articles = this.state.articles.map((article, index) => (
+        <Article key={index} article={article} />
+      ))
     }
     return (
       <div>{articles}</div>

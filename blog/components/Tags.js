@@ -1,13 +1,42 @@
 import React, { Component, PropTypes } from 'react'
-import { Link } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 import Article from './Article'
+
+const API_URL = window.ctx || 'http://localhost:3000'
+const API_HEADERS = {
+  'Content-Type': 'application/json'
+}
+
 export default class Tags extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      tags: []
+    }
+  }
+  fetchData() {
+    fetch(`${API_URL}/api/tags`, {
+      method: 'get',
+      headers: API_HEADERS,
+      credentials: 'include'
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({tags: responseData.data})
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
   componentDidMount() {
-    this.props.getTags()
+    this.fetchData()
   }
   render() {
-    return (
-      <table className="table table-striped table-bordered">
+    var nodes
+    if (!this.state.tags.length) {
+      nodes = <p>暂无数据</p>
+    } else {
+      nodes = <table className="table table-striped table-bordered">
         <thead>
           <tr>
             <th>标签</th>
@@ -16,7 +45,7 @@ export default class Tags extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.tags.map((tag, index) => {
+          {this.state.tags.map((tag, index) => {
             return <tr key={index}>
               <td><Link to={`/tags/${tag.tagName}`}>{tag.tagName}</Link></td>
               <td>{tag.count}</td>
@@ -25,6 +54,9 @@ export default class Tags extends Component {
           })}
         </tbody>
       </table>
+    }
+    return (
+      <div>{nodes}</div>
     )
   }
 }
