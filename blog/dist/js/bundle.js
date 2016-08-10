@@ -27186,40 +27186,6 @@
 	  }
 
 	  _createClass(BlogApp, [{
-	    key: 'updateArticles',
-	    value: function updateArticles() {
-	      var _this2 = this;
-
-	      var o = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	      (0, _isomorphicFetch2.default)(API_URL + '/api/articles?username=' + o.username + '&keyword=' + o.keyword + '&tag=' + o.tag, {
-	        method: 'get',
-	        headers: API_HEADERS
-	      }).then(function (response) {
-	        return response.json();
-	      }).then(function (responseData) {
-	        _this2.setState({ articles: responseData.data });
-	      }).catch(function (error) {
-	        _reactRouter.browserHistory.push('/error');
-	      });
-	    }
-	  }, {
-	    key: 'getTags',
-	    value: function getTags() {
-	      var _this3 = this;
-
-	      (0, _isomorphicFetch2.default)(API_URL + '/api/tags', {
-	        method: 'get',
-	        headers: API_HEADERS
-	      }).then(function (response) {
-	        return response.json();
-	      }).then(function (responseData) {
-	        _this3.setState({ tags: responseData.data });
-	      }).catch(function (error) {
-	        _reactRouter.browserHistory.push('/error');
-	      });
-	    }
-	  }, {
 	    key: 'showTip',
 	    value: function showTip(text) {
 	      var $tip = (0, _jquery2.default)('#tip-route');
@@ -27231,9 +27197,54 @@
 	  }, {
 	    key: 'reg',
 	    value: function reg(reqBody) {
-	      var _this4 = this;
+	      var _this2 = this;
 
 	      (0, _isomorphicFetch2.default)(API_URL + '/api/reg', {
+	        method: 'post',
+	        headers: API_HEADERS,
+	        credentials: 'include',
+	        body: JSON.stringify(reqBody)
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          _this2.showTip(responseData.text);
+	        } else {
+	          _this2.setState({ user: responseData.user });
+	          _reactRouter.browserHistory.push('/u/' + responseData.user.username);
+	        }
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
+	    key: 'logout',
+	    value: function logout() {
+	      var _this3 = this;
+
+	      (0, _isomorphicFetch2.default)(API_URL + '/api/logout', {
+	        method: 'get',
+	        headers: API_HEADERS,
+	        credentials: 'include'
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          _this3.showTip(responseData.text);
+	        } else {
+	          _this3.setState({ user: {} });
+	          _reactRouter.browserHistory.push('/');
+	        }
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
+	    key: 'login',
+	    value: function login(reqBody) {
+	      var _this4 = this;
+
+	      (0, _isomorphicFetch2.default)(API_URL + '/api/login', {
 	        method: 'post',
 	        headers: API_HEADERS,
 	        credentials: 'include',
@@ -27245,51 +27256,7 @@
 	          _this4.showTip(responseData.text);
 	        } else {
 	          _this4.setState({ user: responseData.user });
-	          _reactRouter.browserHistory.push('/u/' + responseData.user.username);
-	        }
-	      }).catch(function (error) {
-	        _reactRouter.browserHistory.push('/error');
-	      });
-	    }
-	  }, {
-	    key: 'logout',
-	    value: function logout() {
-	      var _this5 = this;
-
-	      (0, _isomorphicFetch2.default)(API_URL + '/api/logout', {
-	        method: 'get',
-	        headers: API_HEADERS,
-	        credentials: 'include'
-	      }).then(function (response) {
-	        return response.json();
-	      }).then(function (responseData) {
-	        if (!responseData.success) {
-	          _this5.showTip(responseData.text);
-	        } else {
-	          _this5.setState({ user: {} });
-	          _reactRouter.browserHistory.push('/');
-	        }
-	      }).catch(function (error) {
-	        _reactRouter.browserHistory.push('/error');
-	      });
-	    }
-	  }, {
-	    key: 'login',
-	    value: function login(reqBody) {
-	      var _this6 = this;
-
-	      (0, _isomorphicFetch2.default)(API_URL + '/api/login', {
-	        method: 'post',
-	        headers: API_HEADERS,
-	        credentials: 'include',
-	        body: JSON.stringify(reqBody)
-	      }).then(function (response) {
-	        return response.json();
-	      }).then(function (responseData) {
-	        if (!responseData.success) {
-	          _this6.showTip(responseData.text);
-	        } else {
-	          _this6.setState({ user: responseData.user });
+	          console.log(user, 'user');
 	          _reactRouter.browserHistory.push('/u/' + responseData.user.username);
 	        }
 	      }).catch(function (error) {
@@ -27299,7 +27266,7 @@
 	  }, {
 	    key: 'post',
 	    value: function post(reqBody) {
-	      var _this7 = this;
+	      var _this5 = this;
 
 	      (0, _isomorphicFetch2.default)(API_URL + '/api/post', {
 	        method: 'post',
@@ -27310,9 +27277,9 @@
 	        return response.json();
 	      }).then(function (responseData) {
 	        if (!responseData.success) {
-	          _this7.showTip(responseData.text);
+	          _this5.showTip(responseData.text);
 	        } else {
-	          _reactRouter.browserHistory.push('/u/' + _this7.state.user.username);
+	          _reactRouter.browserHistory.push('/u/' + _this5.state.user.username);
 	        }
 	      }).catch(function (error) {
 	        _reactRouter.browserHistory.push('/error');
@@ -27321,7 +27288,7 @@
 	  }, {
 	    key: 'updateUser',
 	    value: function updateUser(reqBody) {
-	      var _this8 = this;
+	      var _this6 = this;
 
 	      (0, _isomorphicFetch2.default)(API_URL + '/api/user', {
 	        method: 'put',
@@ -27332,12 +27299,11 @@
 	        return response.json();
 	      }).then(function (responseData) {
 	        if (!responseData.success) {
-	          _this8.showTip(responseData.text);
+	          _this6.showTip(responseData.text);
 	        } else {
-	          _this8.setState({
-	            user: responseData.user
-	          });
-	          _reactRouter.browserHistory.push('/u/' + _this8.state.user.username);
+	          _this6.setState({ user: responseData.data });
+	          console.log(_this6.state.user);
+	          _reactRouter.browserHistory.push('/u/' + _this6.state.user.username);
 	        }
 	      }).catch(function (error) {
 	        _reactRouter.browserHistory.push('/error');
@@ -27350,10 +27316,8 @@
 	        reg: this.reg.bind(this),
 	        login: this.login.bind(this),
 	        articles: this.state.articles,
-	        updateArticles: this.updateArticles.bind(this),
 	        post: this.post.bind(this),
 	        user: this.state.user,
-	        getTags: this.getTags.bind(this),
 	        tags: this.state.tags,
 	        updateUser: this.updateUser.bind(this)
 	      });
@@ -47567,34 +47531,61 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var API_URL = window.ctx || 'http://localhost:3000';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json'
+	};
+
 	var Home = function (_Component) {
 	  _inherits(Home, _Component);
 
-	  function Home() {
+	  function Home(props) {
 	    _classCallCheck(this, Home);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Home).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
+
+	    _this.state = {
+	      articles: []
+	    };
+	    return _this;
 	  }
 
 	  _createClass(Home, [{
+	    key: 'fetchData',
+	    value: function fetchData() {
+	      var _this2 = this;
+
+	      fetch(API_URL + '/api/articles', {
+	        method: 'get',
+	        headers: API_HEADERS,
+	        credentials: 'include'
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this2.setState({ articles: responseData.data });
+	      }).catch(function (error) {
+	        browserHistory.push('/error');
+	      });
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.updateArticles();
+	      this.fetchData();
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var articles;
-	      if (this.props.articles.length) {
-	        articles = this.props.articles.map(function (article, index) {
-	          return _react2.default.createElement(_Article2.default, { key: index, article: article });
-	        });
-	      } else {
+	      if (!this.state.articles.length) {
 	        articles = _react2.default.createElement(
-	          'div',
+	          'p',
 	          null,
 	          '暂无文章'
 	        );
+	      } else {
+	        articles = this.state.articles.map(function (article, index) {
+	          return _react2.default.createElement(_Article2.default, { key: index, article: article });
+	        });
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -48064,82 +48055,123 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var API_URL = window.ctx || 'http://localhost:3000';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json'
+	};
+
 	var Tags = function (_Component) {
 	  _inherits(Tags, _Component);
 
-	  function Tags() {
+	  function Tags(props) {
 	    _classCallCheck(this, Tags);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Tags).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tags).call(this, props));
+
+	    _this.state = {
+	      tags: []
+	    };
+	    return _this;
 	  }
 
 	  _createClass(Tags, [{
+	    key: 'fetchData',
+	    value: function fetchData() {
+	      var _this2 = this;
+
+	      fetch(API_URL + '/api/tags', {
+	        method: 'get',
+	        headers: API_HEADERS,
+	        credentials: 'include'
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this2.setState({ tags: responseData.data });
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.getTags();
+	      this.fetchData();
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'table',
-	        { className: 'table table-striped table-bordered' },
-	        _react2.default.createElement(
-	          'thead',
+	      var nodes;
+	      if (!this.state.tags.length) {
+	        nodes = _react2.default.createElement(
+	          'p',
 	          null,
+	          '暂无数据'
+	        );
+	      } else {
+	        nodes = _react2.default.createElement(
+	          'table',
+	          { className: 'table table-striped table-bordered' },
 	          _react2.default.createElement(
-	            'tr',
+	            'thead',
 	            null,
 	            _react2.default.createElement(
-	              'th',
-	              null,
-	              '标签'
-	            ),
-	            _react2.default.createElement(
-	              'th',
-	              null,
-	              '文章数'
-	            ),
-	            _react2.default.createElement(
-	              'th',
-	              null,
-	              '最近更新'
-	            )
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'tbody',
-	          null,
-	          this.props.tags.map(function (tag, index) {
-	            return _react2.default.createElement(
 	              'tr',
-	              { key: index },
+	              null,
 	              _react2.default.createElement(
-	                'td',
+	                'th',
 	                null,
-	                _react2.default.createElement(
-	                  _reactRouter.Link,
-	                  { to: '/tags/' + tag.tagName },
-	                  tag.tagName
-	                )
+	                '标签'
 	              ),
 	              _react2.default.createElement(
-	                'td',
+	                'th',
 	                null,
-	                tag.count
+	                '文章数'
 	              ),
 	              _react2.default.createElement(
-	                'td',
+	                'th',
 	                null,
-	                _react2.default.createElement(
-	                  _reactRouter.Link,
-	                  { to: '/u/' + tag.lastUser },
-	                  tag.lastUser
-	                )
+	                '最近更新'
 	              )
-	            );
-	          })
-	        )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'tbody',
+	            null,
+	            this.state.tags.map(function (tag, index) {
+	              return _react2.default.createElement(
+	                'tr',
+	                { key: index },
+	                _react2.default.createElement(
+	                  'td',
+	                  null,
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { to: '/tags/' + tag.tagName },
+	                    tag.tagName
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'td',
+	                  null,
+	                  tag.count
+	                ),
+	                _react2.default.createElement(
+	                  'td',
+	                  null,
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { to: '/u/' + tag.lastUser },
+	                    tag.lastUser
+	                  )
+	                )
+	              );
+	            })
+	          )
+	        );
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        nodes
 	      );
 	    }
 	  }]);
@@ -48165,6 +48197,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRouter = __webpack_require__(176);
+
 	var _Article = __webpack_require__(544);
 
 	var _Article2 = _interopRequireDefault(_Article);
@@ -48177,21 +48211,46 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var API_URL = window.ctx || 'http://localhost:3000';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json'
+	};
+
 	var Tags = function (_Component) {
 	  _inherits(Tags, _Component);
 
-	  function Tags() {
+	  function Tags(props) {
 	    _classCallCheck(this, Tags);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Tags).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Tags).call(this, props));
+
+	    _this.state = {
+	      articles: []
+	    };
+	    return _this;
 	  }
 
 	  _createClass(Tags, [{
+	    key: 'fetchData',
+	    value: function fetchData(o) {
+	      var _this2 = this;
+
+	      fetch(API_URL + '/api/articles?tag=' + o.tag, {
+	        method: 'get',
+	        headers: API_HEADERS,
+	        credentials: 'include'
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this2.setState({ articles: responseData.data });
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.updateArticles({
-	        tag: this.props.params.tag
-	      });
+	      this.fetchData({ tag: this.props.params.tag });
 	    }
 	  }, {
 	    key: 'render',
@@ -48205,7 +48264,7 @@
 	          _react2.default.createElement('span', { className: 'glyphicon glyphicon-tags my-tag-icon' }),
 	          this.props.params.tag
 	        ),
-	        this.props.articles.map(function (article, index) {
+	        this.state.articles.map(function (article, index) {
 	          return _react2.default.createElement(_Article2.default, { article: article, key: index });
 	        })
 	      );
@@ -48257,66 +48316,102 @@
 
 	var formatter = (0, _buildFormatter2.default)(_zhCN2.default);
 
+	var API_URL = window.ctx || 'http://localhost:3000';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json'
+	};
+
 	var Search = function (_Component) {
 	  _inherits(Search, _Component);
 
-	  function Search() {
+	  function Search(props) {
 	    _classCallCheck(this, Search);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Search).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Search).call(this, props));
+
+	    _this.state = {
+	      articles: []
+	    };
+	    return _this;
 	  }
 
 	  _createClass(Search, [{
+	    key: 'fetchData',
+	    value: function fetchData(o) {
+	      var _this2 = this;
+
+	      fetch(API_URL + '/api/articles?keyword=' + o.keyword, {
+	        method: 'get',
+	        headers: API_HEADERS,
+	        credentials: 'include'
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this2.setState({ articles: responseData.data });
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.updateArticles({ keyword: this.props.location.query.keyword });
+	      this.fetchData({ keyword: this.props.location.query.keyword });
 	    }
 	  }, {
-	    key: 'componentWillUpdate',
-	    value: function componentWillUpdate(nextProps, nextState) {
-	      console.log('---componentWillUpdate-------');
-	    }
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate(prevProps, prevState) {
-	      console.log('---componentDidUpdate-------');
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.fetchData({ keyword: nextProps.location.query.keyword });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
+	      var _this3 = this;
 
-	      var k_reg = new RegExp(this.props.location.query.keyword, 'i');
+	      var k_reg = new RegExp(this.props.location.query.keyword, 'i'),
+	          searchNode;
+	      if (!this.state.articles.length) {
+	        searchNode = _react2.default.createElement(
+	          'p',
+	          null,
+	          '没有搜索结果'
+	        );
+	      } else {
+	        searchNode = _react2.default.createElement(
+	          'ul',
+	          { className: 'list-group my-search' },
+	          this.state.articles.map(function (article, index) {
+	            var title2 = article.title.replace(k_reg, '<span class="keyword">' + _this3.props.location.query.keyword + '</span>');
+	            return _react2.default.createElement(
+	              'li',
+	              { key: index, className: 'list-group-item clearfix' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'pull-left' },
+	                _react2.default.createElement(_reactRouter.Link, { to: '/articles/' + article._id, dangerouslySetInnerHTML: { __html: title2 } }),
+	                ' - 作者: ',
+	                _react2.default.createElement(
+	                  _reactRouter.Link,
+	                  { to: '/u/' + article.author },
+	                  article.author
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'pull-right' },
+	                _react2.default.createElement(
+	                  'small',
+	                  null,
+	                  _react2.default.createElement(_reactTimeago2.default, { date: article.time, formatter: formatter })
+	                )
+	              )
+	            );
+	          })
+	        );
+	      }
 	      return _react2.default.createElement(
-	        'ul',
-	        { className: 'list-group my-search' },
-	        this.props.articles.map(function (article, index) {
-	          var title2 = article.title.replace(k_reg, '<span class="keyword">' + _this2.props.location.query.keyword + '</span>');
-	          return _react2.default.createElement(
-	            'li',
-	            { key: index, className: 'list-group-item clearfix' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'pull-left' },
-	              _react2.default.createElement(_reactRouter.Link, { to: '/articles/' + article._id, dangerouslySetInnerHTML: { __html: title2 } }),
-	              ' - 作者: ',
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: '/u/' + article.author },
-	                article.author
-	              )
-	            ),
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'pull-right' },
-	              _react2.default.createElement(
-	                'small',
-	                null,
-	                _react2.default.createElement(_reactTimeago2.default, { date: article.time, formatter: formatter })
-	              )
-	            )
-	          );
-	        })
+	        'div',
+	        null,
+	        searchNode
 	      );
 	    }
 	  }]);
@@ -48356,7 +48451,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var imgsrc = '/static/imgs/default.jpg';
+	var API_URL = window.ctx || 'http://localhost:3000';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json'
+	};
 
 	var User = function (_Component) {
 	  _inherits(User, _Component);
@@ -48367,37 +48465,57 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(User).call(this, props));
 
 	    _this.state = {
+	      articles: [],
 	      user: {}
 	    };
 	    return _this;
 	  }
 
 	  _createClass(User, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
+	    key: 'fetchUser',
+	    value: function fetchUser(o) {
 	      var _this2 = this;
 
-	      this.props.updateArticles({ username: this.props.params.username });
-
-	      var API_URL = window.ctx || 'http://localhost:3000';
-	      var API_HEADERS = {
-	        'Content-Type': 'application/json'
-	      };
-	      fetch(API_URL + '/api/user?u=' + this.props.params.username, {
+	      fetch(API_URL + '/api/user?username=' + o.username, {
 	        method: 'get',
 	        headers: API_HEADERS,
 	        credentials: 'include'
 	      }).then(function (response) {
 	        return response.json();
 	      }).then(function (responseData) {
-	        if (!responseData.success) {
-	          _this2.showTip(responseData.text);
-	        } else {
-	          _this2.setState({ user: responseData.data });
-	        }
+	        _this2.setState({ user: responseData.data });
 	      }).catch(function (error) {
 	        _reactRouter.browserHistory.push('/error');
 	      });
+	    }
+	  }, {
+	    key: 'fetchData',
+	    value: function fetchData(o) {
+	      var _this3 = this;
+
+	      fetch(API_URL + '/api/articles?username=' + o.username, {
+	        method: 'get',
+	        headers: API_HEADERS,
+	        credentials: 'include'
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        _this3.setState({ articles: responseData.data });
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.fetchUser({ username: this.props.params.username });
+	      this.fetchData({ username: this.props.params.username });
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.fetchUser({ username: nextProps.params.username });
+	      this.fetchData({ username: nextProps.params.username });
 	    }
 	  }, {
 	    key: 'render',
@@ -48420,11 +48538,11 @@
 	            _react2.default.createElement(
 	              'p',
 	              null,
-	              'aaaaaaaaa'
+	              this.state.user.description
 	            )
 	          )
 	        ),
-	        this.props.articles.map(function (article, index) {
+	        this.state.articles.map(function (article, index) {
 	          return _react2.default.createElement(_Article2.default, { key: index, article: article });
 	        })
 	      );
@@ -48585,19 +48703,29 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var API_URL = window.ctx || 'http://localhost:3000';
+	var API_HEADERS = {
+	  'Content-Type': 'application/json'
+	};
+
 	var Setting = function (_Component) {
 	  _inherits(Setting, _Component);
 
-	  function Setting() {
+	  function Setting(props) {
 	    _classCallCheck(this, Setting);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Setting).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Setting).call(this, props));
+
+	    _this.state = {
+	      user: _this.props.user
+	    };
+	    return _this;
 	  }
 
 	  _createClass(Setting, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      if (!this.props.user.username) {
+	      if (!this.state.user.username) {
 	        _reactRouter.browserHistory.push('/login');
 	      }
 	    }
@@ -48613,11 +48741,11 @@
 	      tagImg.onload = function () {
 	        setTimeout(function () {
 	          $("#upTip").hide();
-	          $(".img-rounded").attr("src", window.ctx + '/uploads/' + that.props.user.username + str + '?t=' + Math.random());
-	          $("#hiddenImgSrc").val(window.ctx + '/uploads/' + that.props.user.username + str);
+	          $(".img-rounded").attr("src", window.ctx + '/uploads/' + that.state.user.username + str + '?t=' + Math.random());
+	          $("#hiddenImgSrc").val('' + that.props.user.username + str);
 	        }, 1000);
 	      };
-	      tagImg.src = window.ctx + '/uploads/' + this.props.user.username + str + '?t=' + Math.random();
+	      tagImg.src = window.ctx + '/uploads/' + this.state.user.username + str + '?t=' + Math.random();
 	    }
 	  }, {
 	    key: 'handleSetting',
@@ -48664,7 +48792,7 @@
 	                  _react2.default.createElement(
 	                    'div',
 	                    { className: 'imgTx' },
-	                    _react2.default.createElement('img', { src: window.ctx + '/uploads/' + this.props.user.tx, alt: '#', className: 'img-rounded' })
+	                    _react2.default.createElement('img', { src: window.ctx + '/uploads/' + this.state.user.tx, alt: '#', className: 'img-rounded' })
 	                  ),
 	                  _react2.default.createElement(
 	                    'label',
@@ -48696,8 +48824,8 @@
 	                    { htmlFor: 'userDesc' },
 	                    '个人描述：'
 	                  ),
-	                  _react2.default.createElement('textarea', { ref: 'userdesc', className: 'form-control', id: 'userDesc', defaultValue: this.props.user.description }),
-	                  _react2.default.createElement('input', { type: 'hidden', ref: 'imgsrc', id: 'hiddenImgSrc', value: '' })
+	                  _react2.default.createElement('textarea', { ref: 'userdesc', className: 'form-control', id: 'userDesc', defaultValue: this.state.user.description }),
+	                  _react2.default.createElement('input', { type: 'hidden', ref: 'imgsrc', id: 'hiddenImgSrc', value: this.state.user.tx })
 	                ),
 	                _react2.default.createElement(
 	                  'button',

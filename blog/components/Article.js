@@ -18,7 +18,7 @@ export default class Article extends Component {
           <div className="panel panel-default">
             <div className="panel-heading">作者: <Link to={`/u/${this.props.article.author}`}>{this.props.article.author}</Link></div>
             <div className="panel-body">
-              <div className="article-title"><Link to={`/articles/${this.props.article._id}`}>{this.props.article.title}</Link></div>
+              <div className="article-title"><Link to={`/articles/${this.props.article._id}`}>{this.props.article.title}</Link>{this.props.children}</div>
               <div className="clearfix" dangerouslySetInnerHTML={{__html:marked(this.props.article.content)}} />
               <div><small><Timeago date={this.props.article.time} formatter={formatter} /></small></div>
             </div>

@@ -119,7 +119,7 @@ export default class BlogApp extends Component {
       if (!responseData.success) {
        this.showTip(responseData.text)
       } else {
-        this.setState
+        this.setState({user: responseData.data})
         browserHistory.push(`/u/${this.state.user.username}`)
       }
     })

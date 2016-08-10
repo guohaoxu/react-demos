@@ -3,6 +3,8 @@ import { render } from 'react-dom'
 import { Router, Route, IndexRoute, Link, browserHistory } from 'react-router'
 import BlogApp from './containers/BlogApp'
 import Home from './components/Home'
+import ArticleDetail from './components/ArticleDetail'
+import ArticleEdit from './components/ArticleEdit'
 import Tags from './components/Tags'
 import Tag from './components/Tag'
 import Search from './components/Search'
@@ -18,6 +20,8 @@ render(
   <Router history={browserHistory}>
     <Route path='/' component={BlogApp}>
       <IndexRoute component={Home} />
+      <Route path='/articles/:_id' component={ArticleDetail} />
+      <Route path='/edit/:_id' component={ArticleEdit} />
       <Route path='/tags' component={Tags} />
       <Route path='/tags/:tag' component={Tag} />
       <Route path='/search' component={Search} />
@@ -32,4 +36,3 @@ render(
   </Router>,
   document.getElementById('root')
 )
-

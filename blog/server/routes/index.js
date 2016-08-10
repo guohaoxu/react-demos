@@ -64,7 +64,11 @@ module.exports = function (app) {
     }, function (error, r) {
       return res.json({
         success: true,
-        data: r
+        data: {
+          username: r.username,
+          description: userdesc,
+          tx: imgsrc
+        }
       })
     })
   })
@@ -74,6 +78,7 @@ module.exports = function (app) {
       username = req.query.username,
       keyword = req.query.keyword,
       tag = req.query.tag,
+      _id = req.query._id,
       query
     if (username !== undefined) {
       query = {
@@ -87,6 +92,10 @@ module.exports = function (app) {
     } else if (tag !== undefined) {
       query = {
         tags: tag
+      }
+    } else if (_id !== undefined){
+      query = {
+        _id: _id
       }
     } else {
       query = {}

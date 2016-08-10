@@ -1,9 +1,20 @@
 import React, { Component } from 'react'
 import { browserHistory } from 'react-router'
 
+const API_URL = window.ctx || 'http://localhost:3000'
+const API_HEADERS = {
+  'Content-Type': 'application/json'
+}
+
 export default class Setting extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      user: this.props.user
+    }
+  }
   componentWillMount() {
-    if (!this.props.user.username) {
+    if (!this.state.user.username) {
       browserHistory.push('/login')
     }
   }
@@ -17,11 +28,11 @@ export default class Setting extends Component {
     tagImg.onload = function () {
       setTimeout(function () {
         $("#upTip").hide()
-        $(".img-rounded").attr("src", `${window.ctx}/uploads/${that.props.user.username}${str}?t=${Math.random()}`)
-        $("#hiddenImgSrc").val(`${window.ctx}/uploads/${that.props.user.username}${str}`)
+        $(".img-rounded").attr("src", `${window.ctx}/uploads/${that.state.user.username}${str}?t=${Math.random()}`)
+        $("#hiddenImgSrc").val(`${that.props.user.username}${str}`)
       }, 1000)
     }
-    tagImg.src = `${window.ctx}/uploads/${this.props.user.username}${str}?t=${Math.random()}`
+    tagImg.src = `${window.ctx}/uploads/${this.state.user.username}${str}?t=${Math.random()}`
   }
   handleSetting(e) {
     e.preventDefault()
@@ -42,7 +53,7 @@ export default class Setting extends Component {
               <form ref="txForm" id="txForm" method="post" action="/api/upload" encType="multipart/form-data">
                 <div className="form-group">
                   <label htmlFor="userDesc">个人头像：</label>
-                  <div className="imgTx"><img src={`${window.ctx}/uploads/${this.props.user.tx}`} alt="#" className="img-rounded" /></div>
+                  <div className="imgTx"><img src={`${window.ctx}/uploads/${this.state.user.tx}`} alt="#" className="img-rounded" /></div>
                   <label className="btn btn-default openFile">修改头像<input type="file" name="avatar" ref="txUpload" data-user="aaa" onChange={this.handleTx.bind(this)} /></label>
                   <div id="upTip"><span className="glyphicon glyphicon-refresh"></span> <span className="upTipTxt">uploading...</span></div>
                 </div>
@@ -50,8 +61,8 @@ export default class Setting extends Component {
               <form method="post" action="/api/setting" onSubmit={this.handleSetting.bind(this)}>
                 <div className="form-group">
                   <label htmlFor="userDesc">个人描述：</label>
-                  <textarea ref="userdesc" className="form-control" id="userDesc" defaultValue={this.props.user.description}></textarea>
-                  <input type="hidden" ref="imgsrc" id="hiddenImgSrc" value="" />
+                  <textarea ref="userdesc" className="form-control" id="userDesc" defaultValue={this.state.user.description}></textarea>
+                  <input type="hidden" ref="imgsrc" id="hiddenImgSrc" value={this.state.user.tx} />
                 </div>
                 <button type="submit" className="btn btn-default">保存</button>
               </form>
