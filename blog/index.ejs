@@ -16,7 +16,7 @@
   <script src="<%= ctx %>/static/bootstrap/js/bootstrap.min.js"></script>
   <script src="<%= ctx %>/static/js/main.js"></script>
   <script>
-    window.username = "<%= window_username %>";
+    window.user = JSON.parse('<%- window_user %>');
     window.ctx = "<%= ctx %>";
   </script>
 </head>
@@ -29,7 +29,7 @@
   <% } else { %>
   <script src="http://localhost:8080/static/js/bundle.js"></script>
   <% } %>
-  
+
 </body>
 
 </html>

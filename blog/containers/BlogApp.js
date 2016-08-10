@@ -17,11 +17,13 @@ export default class BlogApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: window.username,
-      articles: []
+      user: window.user,
+      articles: [],
+      tags: []
     }
   }
   updateArticles(o={}) {
+    console.log('isFetching...................')
     fetch(`${API_URL}/api/articles?username=${o.username}&keyword=${o.keyword}&tag=${o.tag}`, {
       method: 'get',
       headers: API_HEADERS
@@ -34,9 +36,17 @@ export default class BlogApp extends Component {
       browserHistory.push('/error')
     })
   }
-  editState(username) {
-    this.setState({
-      username: username
+  getTags() {
+    fetch(`${API_URL}/api/tags`, {
+      method: 'get',
+      headers: API_HEADERS
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      this.setState({tags: responseData.data})
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
     })
   }
   showTip(text) {
@@ -58,8 +68,8 @@ export default class BlogApp extends Component {
       if (!responseData.success) {
         this.showTip(responseData.text)
       } else {
-        this.editState(responseData.username)
-        browserHistory.push('/')
+        this.setState({user: responseData.user})
+        browserHistory.push(`/u/${responseData.user.username}`)
       }
     })
     .catch((error) => {
@@ -77,7 +87,7 @@ export default class BlogApp extends Component {
       if (!responseData.success) {
        this.showTip(responseData.text)
       } else {
-        this.editState('')
+        this.setState({user: {}})
         browserHistory.push('/')
       }
     })
@@ -97,8 +107,8 @@ export default class BlogApp extends Component {
       if (!responseData.success) {
        this.showTip(responseData.text)
       } else {
-        this.editState(responseData.username)
-        browserHistory.push(`/u/${responseData.username}`)
+        this.setState({user: responseData.user})
+        browserHistory.push(`/u/${responseData.user.username}`)
       }
     })
     .catch((error) => {
@@ -117,8 +127,7 @@ export default class BlogApp extends Component {
       if (!responseData.success) {
        this.showTip(responseData.text)
       } else {
-        // this.editState(responseData.username)
-        browserHistory.push('/')
+        browserHistory.push(`/u/${this.state.user.username}`)
       }
     })
     .catch((error) => {
@@ -132,11 +141,13 @@ export default class BlogApp extends Component {
       articles: this.state.articles,
       updateArticles: this.updateArticles.bind(this),
       post: this.post.bind(this),
-      username: this.state.username
+      user: this.state.user,
+      getTags: this.getTags.bind(this),
+      tags: this.state.tags
     })
     return (
       <div>
-        <Header nav={this.props.location.pathname} username={this.state.username} logout={this.logout.bind(this)} />
+        <Header nav={this.props.location.pathname} user={this.state.user} logout={this.logout.bind(this)} />
         <div className="container main-content">{propsChildren}</div>
         <footer>
           <div className="container">

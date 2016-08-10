@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router'
 
 export default class Post extends Component {
   componentWillMount() {
-    if (!this.props.username) {
+    if (!this.props.user.username) {
       browserHistory.push('/login')
     }
   }

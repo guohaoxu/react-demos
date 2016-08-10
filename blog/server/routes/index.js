@@ -1,6 +1,18 @@
 var User = require('../models/User'),
   Article = require('../models/Article'),
-  crypto = require('crypto')
+  crypto = require('crypto'),
+  multer = require('multer'),
+  storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      var tmpStr = file.originalname
+      var str = tmpStr.slice(tmpStr.indexOf('.'), tmpStr.length)
+      cb(null, req.session.user.username + str)
+    }
+  }),
+  upload = multer({ storage: storage })
 
 module.exports = function (app) {
   // api
@@ -23,7 +35,11 @@ module.exports = function (app) {
     }
     next()
   }
-  
+
+  app.post('/api/upload', checkLogin, upload.single('avatar'), function (req, res) {
+    res.end()
+  })
+
   app.get('/api/articles', (req, res) => {
     var p = req.query.p || 1,
       username = req.query.username,
@@ -41,7 +57,7 @@ module.exports = function (app) {
       }
     } else if (tag !== 'undefined') {
       query = {
-        tag: tag
+        tags: tag
       }
     } else {
       query = {}
@@ -56,9 +72,34 @@ module.exports = function (app) {
         })
       }
     })
-    
   })
-  
+
+  app.get('/api/tags', function (req, res) {
+    //tag: {tagName: '南京', count: 4, lastUser: 'aaa'}
+    var tags = []
+    Article.find({}).distinct('tags').exec((error, r) => {
+      var results = r.filter((tag) => tag)
+      console.log(results)
+      results.map((tag) => {
+        var tmp = {}
+        tmp.tagName = tag
+        Article.find({
+          tags: tag
+        }).sort({time: -1}).exec((error, docs) => {
+          tmp.count = docs.length
+          tmp.lastUser = docs[0].author
+          tags.push(tmp)
+          if (tags.length === results.length) {
+            return res.json({
+              success: true,
+              data: tags
+            })
+          }
+        })
+      })
+    })
+  })
+
   app.post('/api/reg', checkNotLogin, (req, res) => {
     var username = req.body.username,
       password = req.body.password,
@@ -99,21 +140,25 @@ module.exports = function (app) {
             req.session.user = r
             return res.json({
               success: true,
-              username: username
+              user: {
+                username: r.username,
+                description: r.description,
+                tx: r.tx
+              }
             })
           }
         })
       }
     })
   })
-  
+
   app.get('/api/logout', checkLogin, function (req, res) {
     req.session.user = null
     return res.json({
       success: true
     })
   })
-  
+
   app.post('/api/login', checkNotLogin, function (req, res) {
     var md5 = crypto.createHash('md5'),
       username = req.body.username,
@@ -131,11 +176,15 @@ module.exports = function (app) {
       req.session.user = r
       res.json({
         success: true,
-        username: username
+        user: {
+          username: r.username,
+          description: r.description,
+          tx: r.tx
+        }
       })
     })
   })
-  
+
   app.post('/api/post', checkLogin, function (req, res) {
     var title = req.body.title,
       tags = req.body.tags,
@@ -144,6 +193,7 @@ module.exports = function (app) {
         author: req.session.user.username,
         title: title,
         tags: tags,
+        time: new Date(),
         content: content
       })
     newArticle.save((error, r) => {
@@ -156,16 +206,18 @@ module.exports = function (app) {
       }
     })
   })
-  
-  
-  
+
   app.get('*', function (req, res) {
     res.render('index', {
-      window_username: req.session.user ? req.session.user.username : '',
+      window_user: req.session.user ? JSON.stringify({
+        username: req.session.user.username,
+        description: req.session.user.description,
+        tx: req.session.user.tx
+      }) : JSON.stringify({}),
       ctx: process.env.staticDomain ? process.env.staticDomain : 'http://localhost:' + app.get('port')
     })
   })
-  
+
   //get cards
   app.get('/cards', function (req, res, next) {
     Card.find({}).sort({id: 1}).exec(function (err, r) {
@@ -173,7 +225,7 @@ module.exports = function (app) {
       res.send(r)
     })
   })
-  
+
   // new card
   app.post('/cards', (req, res, next) => {
     let card = req.body,
@@ -185,7 +237,7 @@ module.exports = function (app) {
       })
     })
   })
-  
+
   // new card task
   app.post('/cards/:cardId/tasks', (req, res) => {
     let cardId = Number(req.params.cardId),
@@ -203,7 +255,7 @@ module.exports = function (app) {
       })
     })
   })
-  
+
   // delete card task
   app.delete('/cards/:cardId/tasks/:taskId', (req, res) => {
     let cardId = Number(req.params.cardId),
@@ -223,7 +275,7 @@ module.exports = function (app) {
       })
     })
   })
-  
+
   // toggle card task
   app.put('/cards/:cardId/tasks/:taskId', (req, res) => {
     let cardId = Number(req.params.cardId),
@@ -243,7 +295,7 @@ module.exports = function (app) {
       })
     })
   })
-  
+
   // put card -> two ways: put status and edit card
   app.put('/cards/:cardId', (req, res) => {
     let put = req.body.do
@@ -317,6 +369,6 @@ module.exports = function (app) {
       })
     })
   })
-  
-  
+
+
 }

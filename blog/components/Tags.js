@@ -2,9 +2,12 @@ import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
 import Article from './Article'
 export default class Tags extends Component {
+  componentDidMount() {
+    this.props.getTags()
+  }
   render() {
     return (
-      <table class="table table-striped table-bordered">
+      <table className="table table-striped table-bordered">
         <thead>
           <tr>
             <th>标签</th>
@@ -15,9 +18,9 @@ export default class Tags extends Component {
         <tbody>
           {this.props.tags.map((tag, index) => {
             return <tr key={index}>
-              <td><Link to={`/tags/${tag}`}>{tag}</Link></td>
-              <td>{tag}</td>
-              <td><Link to={`/tags/${tag}`}>{tag}</Link></td>
+              <td><Link to={`/tags/${tag.tagName}`}>{tag.tagName}</Link></td>
+              <td>{tag.count}</td>
+              <td><Link to={`/u/${tag.lastUser}`}>{tag.lastUser}</Link></td>
             </tr>
           })}
         </tbody>

@@ -18,13 +18,13 @@ export default class Header extends Component {
   }
   render() {
     var navbarRight
-    if (this.props.username) {
+    if (this.props.user.username) {
       navbarRight = (
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown">{this.props.username}<span className="caret"></span></a>
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown">{this.props.user.username}<span className="caret"></span></a>
             <ul className="dropdown-menu">
-              <li><Link to={`/u/${this.props.username}`}>我的主页</Link></li>
+              <li><Link to={`/u/${this.props.user.username}`}>我的主页</Link></li>
               <li><Link to="/post">发表</Link></li>
               <li><Link to="/setting">设置</Link></li>
               <li className="divider"></li>
@@ -73,6 +73,6 @@ export default class Header extends Component {
 
 Header.propTypes = {
   nav: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired
 }
