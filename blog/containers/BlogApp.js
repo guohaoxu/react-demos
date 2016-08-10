@@ -133,6 +133,28 @@ export default class BlogApp extends Component {
       browserHistory.push('/error')
     })
   }
+  updateUser(reqBody) {
+    fetch(`${API_URL}/api/user`, {
+      method: 'put',
+      headers: API_HEADERS,
+      credentials: 'include',
+      body: JSON.stringify(reqBody)
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      if (!responseData.success) {
+       this.showTip(responseData.text)
+      } else {
+        this.setState({
+          user: responseData.user
+        })
+        browserHistory.push(`/u/${this.state.user.username}`)
+      }
+    })
+    .catch((error) => {
+      browserHistory.push('/error')
+    })
+  }
   render() {
     var propsChildren = this.props.children && React.cloneElement(this.props.children, {
       reg: this.reg.bind(this),
@@ -142,7 +164,8 @@ export default class BlogApp extends Component {
       post: this.post.bind(this),
       user: this.state.user,
       getTags: this.getTags.bind(this),
-      tags: this.state.tags
+      tags: this.state.tags,
+      updateUser: this.updateUser.bind(this)
     })
     return (
       <div>

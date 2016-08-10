@@ -27319,6 +27319,31 @@
 	      });
 	    }
 	  }, {
+	    key: 'updateUser',
+	    value: function updateUser(reqBody) {
+	      var _this8 = this;
+
+	      (0, _isomorphicFetch2.default)(API_URL + '/api/user', {
+	        method: 'put',
+	        headers: API_HEADERS,
+	        credentials: 'include',
+	        body: JSON.stringify(reqBody)
+	      }).then(function (response) {
+	        return response.json();
+	      }).then(function (responseData) {
+	        if (!responseData.success) {
+	          _this8.showTip(responseData.text);
+	        } else {
+	          _this8.setState({
+	            user: responseData.user
+	          });
+	          _reactRouter.browserHistory.push('/u/' + _this8.state.user.username);
+	        }
+	      }).catch(function (error) {
+	        _reactRouter.browserHistory.push('/error');
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var propsChildren = this.props.children && _react2.default.cloneElement(this.props.children, {
@@ -27329,7 +27354,8 @@
 	        post: this.post.bind(this),
 	        user: this.state.user,
 	        getTags: this.getTags.bind(this),
-	        tags: this.state.tags
+	        tags: this.state.tags,
+	        updateUser: this.updateUser.bind(this)
 	      });
 	      return _react2.default.createElement(
 	        'div',
@@ -47632,8 +47658,6 @@
 
 	var formatter = (0, _buildFormatter2.default)(_zhCN2.default);
 
-	var imgsrc = '/static/imgs/default.jpg';
-
 	var Article = function (_Component) {
 	  _inherits(Article, _Component);
 
@@ -47655,7 +47679,7 @@
 	          _react2.default.createElement(
 	            _reactRouter.Link,
 	            { to: '/u/' + this.props.article.author },
-	            _react2.default.createElement('img', { src: '' + this.props.article.tx, alt: '#', title: '' + this.props.article.author, className: 'img-responsive' })
+	            _react2.default.createElement('img', { src: window.ctx + '/uploads/' + this.props.article.tx, alt: '#', title: '' + this.props.article.author, className: 'img-responsive' })
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -48590,9 +48614,21 @@
 	        setTimeout(function () {
 	          $("#upTip").hide();
 	          $(".img-rounded").attr("src", window.ctx + '/uploads/' + that.props.user.username + str + '?t=' + Math.random());
+	          $("#hiddenImgSrc").val(window.ctx + '/uploads/' + that.props.user.username + str);
 	        }, 1000);
 	      };
 	      tagImg.src = window.ctx + '/uploads/' + this.props.user.username + str + '?t=' + Math.random();
+	    }
+	  }, {
+	    key: 'handleSetting',
+	    value: function handleSetting(e) {
+	      e.preventDefault();
+	      var imgsrc = this.refs.imgsrc.value,
+	          userdesc = this.refs.userdesc.value.trim();
+	      this.props.updateUser({
+	        imgsrc: imgsrc,
+	        userdesc: userdesc
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -48628,7 +48664,7 @@
 	                  _react2.default.createElement(
 	                    'div',
 	                    { className: 'imgTx' },
-	                    _react2.default.createElement('img', { src: '/static/imgs/default.jpg', alt: '#', className: 'img-rounded' })
+	                    _react2.default.createElement('img', { src: window.ctx + '/uploads/' + this.props.user.tx, alt: '#', className: 'img-rounded' })
 	                  ),
 	                  _react2.default.createElement(
 	                    'label',
@@ -48651,7 +48687,7 @@
 	              ),
 	              _react2.default.createElement(
 	                'form',
-	                { method: 'post', action: '/api/setting' },
+	                { method: 'post', action: '/api/setting', onSubmit: this.handleSetting.bind(this) },
 	                _react2.default.createElement(
 	                  'div',
 	                  { className: 'form-group' },
@@ -48660,8 +48696,8 @@
 	                    { htmlFor: 'userDesc' },
 	                    '个人描述：'
 	                  ),
-	                  _react2.default.createElement('textarea', { name: 'userdesc', className: 'form-control', id: 'userDesc', value: this.props.user.description }),
-	                  _react2.default.createElement('input', { type: 'hidden', name: 'imgSrc', id: 'hiddenImgSrc', value: '' })
+	                  _react2.default.createElement('textarea', { ref: 'userdesc', className: 'form-control', id: 'userDesc', defaultValue: this.props.user.description }),
+	                  _react2.default.createElement('input', { type: 'hidden', ref: 'imgsrc', id: 'hiddenImgSrc', value: '' })
 	                ),
 	                _react2.default.createElement(
 	                  'button',

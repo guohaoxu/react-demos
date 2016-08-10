@@ -44,6 +44,24 @@ module.exports = function (app) {
     User.findOne({
       username: req.query.u
     }, function (error, r) {
+      return res.json({
+        success: true,
+        data: r
+      })
+    })
+  })
+
+  app.put('/api/user', checkLogin, function (req, res) {
+    var imgsrc = req.body.imgsrc || 'default.jpg',
+      userdesc = req.body.userdesc
+    User.findOneAndUpdate({
+      username: req.session.user.username
+    }, {
+      $set: {
+        tx: imgsrc,
+        description: userdesc
+      }
+    }, function (error, r) {
       console.log(r)
       return res.json({
         success: true,
@@ -78,21 +96,25 @@ module.exports = function (app) {
       if (error) {
         console.error(error)
       } else {
-        var results = [],
-          txs = []
+        var results = []
         r.map((article) => {
           User.findOne({
             username: article.author
           }, function (error, doc) {
-            results.push(article)
-            txs.push(docs)
+            results.push({
+              author: article.author,
+              title: article.title,
+              tags: article.tags,
+              content: article.content,
+              time: article.time,
+              comments: article.comments,
+              pv: article.pv,
+              tx: doc.tx
+            })
             if (results.length === r.length) {
               return res.json({
                 success: true,
-                data: {
-                  articles: results,
-                  txs: txs
-                }
+                data: results
               })
             }
           })
