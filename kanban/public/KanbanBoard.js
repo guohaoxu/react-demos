@@ -10,7 +10,7 @@ import { DragDropContext, DropTarget, DragSource } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { throttle } from './utils'
 
-const API_URL = 'http://localhost:3000'
+const API_URL = 'http://localhost:3001'
 const API_HEADERS = {
   'Content-Type': 'application/json'
 }
@@ -305,7 +305,7 @@ class List_dnd extends Component {
   render() {
     const { canDrop, isOVer, connectDropTarget } = this.props
     const isActive = canDrop && isOVer
-    
+
     let backgroundColor = ''
     if (isActive) {
       backgroundColor = '#f8f8f8'
@@ -315,7 +315,7 @@ class List_dnd extends Component {
     const style={
       backgroundColor: backgroundColor
     }
-    
+
     var cards = this.props.cards.map((card, index) => {
       return <Card id={card.id}
         taskCallbacks={this.props.taskCallbacks}
@@ -398,7 +398,7 @@ class Card_dnd extends Component {
   }
   render() {
     const { name, isDragging, connectDragSource, connectDropTarget } = this.props
-  
+
     const opacity = isDragging ? 0.4 : 1
     let style = {
       opacity: opacity
@@ -419,7 +419,7 @@ class Card_dnd extends Component {
       <div className="card" style={style}>
         <div className="cardBorder" style={sideColor} />
         <div className="card-edit"><Link to={'/edit/'+this.props.id}>✎</Link></div>
-        <div className={this.state.showDetails ? "card-title card-title-open" : "card-title"} 
+        <div className={this.state.showDetails ? "card-title card-title-open" : "card-title"}
           onClick={this.toggleDetails.bind(this)}>
           {this.props.title}
         </div>

@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "supervisor server.js",
     "start:dev": "webpack-dev-server --inline --hot --progress --color",
-    "start:prod": "webpack && forever server.js"
+    "start:prod": "webpack -p && forever server.js"
   },
   "repository": {
     "type": "git",

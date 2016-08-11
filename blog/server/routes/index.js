@@ -78,7 +78,6 @@ module.exports = function (app) {
       username = req.query.username,
       keyword = req.query.keyword,
       tag = req.query.tag,
-      _id = req.query._id,
       query
     if (username !== undefined) {
       query = {
@@ -92,10 +91,6 @@ module.exports = function (app) {
     } else if (tag !== undefined) {
       query = {
         tags: tag
-      }
-    } else if (_id !== undefined){
-      query = {
-        _id: _id
       }
     } else {
       query = {}
@@ -254,6 +249,35 @@ module.exports = function (app) {
     })
   })
 
+  app.get('/api/post', function (req, res) {
+    var _id = req.query._id
+    Article.findOneAndUpdate({
+      _id: _id
+    }, {
+      $inc: {
+        pv: 1
+      }
+    }, function (error, r) {
+      User.findOne({
+        username: r.author
+      }, function (error, doc) {
+        return res.json({
+          success: true,
+          data: {
+            _id: r._id,
+            author: r.author,
+            title: r.title,
+            content: r.content,
+            pv: r.pv + 1,
+            comments: r.comments,
+            time: r.time,
+            tags: r.tags,
+            tx: doc.tx
+          }
+        })
+      })
+    })
+  })
   app.post('/api/post', checkLogin, function (req, res) {
     var title = req.body.title,
       tags = req.body.tags,
@@ -273,6 +297,59 @@ module.exports = function (app) {
           success: true
         })
       }
+    })
+  })
+
+  app.put('/api/post', checkLogin, function (req, res) {
+    var id = req.body._id,
+      newContent = req.body.content
+    Article.findOneAndUpdate({
+      _id: id
+    }, {
+      $set: {
+        content: newContent
+      }
+    }, function (error, r) {
+      return res.json({
+        success: true
+      })
+    })
+  })
+
+  app.delete('/api/post', checkLogin, function (req, res) {
+    var _id = req.body._id
+    Article.findOneAndRemove({
+      _id: _id
+    }, function (error, r) {
+      return res.json({
+        success: true
+      })
+    })
+  })
+
+  app.post('/api/postComment', function (req, res) {
+    var _id = req.body._id,
+      newComment = {
+        username: req.body.comment.username || '',
+        website: req.body.comment.website || '',
+        content: req.body.comment.content || '',
+        time: new Date()
+      }
+    Article.findOneAndUpdate({
+      _id: _id
+    }, {
+      $push: {
+        comments: newComment
+      }
+    }, function (error, r) {
+      Article.findOne({
+        _id: _id
+      }, function (error, doc) {
+        return res.json({
+          success: true,
+          data: doc
+        })
+      })
     })
   })
 
