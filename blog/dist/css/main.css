@@ -182,3 +182,10 @@ footer {
 #tip-route a{
   color: #fff;
 }
+.comment-remove {
+  margin-left: 10px;
+  display: none;
+}
+.comments li:hover .comment-remove{
+  display: inline;
+}
