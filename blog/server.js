@@ -20,6 +20,11 @@ var express = require('express'),
   mongoose = require('mongoose'),
   dbURL = process.env.dbURL || settings.dbURL,
 
+  MongoStore = require('connect-mongo')(session),
+  sessionStore = new MongoStore({
+    url: dbURL
+  }),
+
   app = express()
 
 mongoose.connect(dbURL)
@@ -40,7 +45,8 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 30
   },
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: sessionStore
 }))
 app.use(compression())
 app.use(favicon(path.join(__dirname, 'dist/favicon.ico')))
@@ -49,7 +55,12 @@ if ('development' === app.get('env')) {
 	app.use(logger('dev'))
 	app.use(errorHandler())
 }
-
+app.all('*', function (req, res, next) {
+  res.writeHead({
+    'Access-Control-Allow-Origin': '*'
+  })
+  next()
+})
 app.use('/static', express.static(path.join(__dirname, 'dist')))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
