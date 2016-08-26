@@ -27,7 +27,10 @@ var express = require('express'),
 
   app = express()
 
+mongoose.Promise = global.Promise
 mongoose.connect(dbURL)
+  .then(() => console.log('mongoose connection successful'))
+  .catch((error) => console.error(error))
 
 app.set('port', process.env.PORT || 3000)
 app.set('views', path.join(__dirname))
@@ -52,37 +55,13 @@ app.use(compression())
 app.use(favicon(path.join(__dirname, 'dist/favicon.ico')))
 
 if ('development' === app.get('env')) {
-	app.use(logger('dev'))
-	app.use(errorHandler())
+  app.use(logger('dev'))
+  app.use(errorHandler())
 }
-app.all('*', function (req, res, next) {
-  res.writeHead({
-    'Access-Control-Allow-Origin': '*'
-  })
-  next()
-})
+
 app.use('/static', express.static(path.join(__dirname, 'dist')))
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 routes(app)
-
-// if ('development' === app.get('env')) {
-//   app.use(function(err, req, res, next) {
-//     res.status(err.status || 500)
-//     res.render('error', {
-//       message: err.message,
-//       error: err
-//     })
-//   })
-// }
-//
-// app.use(function(err, req, res, next) {
-//   res.status(err.status || 500)
-//   res.render('error', {
-//     message: err.message,
-//     error: {}
-//   })
-// })
 
 app.listen(app.get('port'), function () {
   console.log('Server is running on ' + app.set('port'))

@@ -14,6 +14,8 @@ var User = require('../models/User'),
   }),
   upload = multer({ storage: storage })
 
+
+
 module.exports = function (app) {
   // api
   function checkLogin(req, res, next) {
@@ -202,6 +204,7 @@ module.exports = function (app) {
             console.error(error)
           } else {
             req.session.user = r
+            console.log('++++++++')
             return res.json({
               success: true,
               user: {
@@ -278,7 +281,7 @@ module.exports = function (app) {
       })
     })
   })
-  
+
   app.post('/api/post', checkLogin, function (req, res) {
     var title = req.body.title,
       tags = req.body.tags,
@@ -362,6 +365,7 @@ module.exports = function (app) {
         description: req.session.user.description,
         tx: req.session.user.tx
       }) : JSON.stringify({}),
+      mainCtx: process.env.mainDomain ? process.env.mainDomain : 'http://localhost:' + app.get('port'),
       ctx: process.env.staticDomain ? process.env.staticDomain : 'http://localhost:' + app.get('port')
     })
   })

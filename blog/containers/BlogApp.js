@@ -8,7 +8,7 @@ import $ from 'jquery'
 import marked from 'marked'
 import Header from '../components/Header'
 
-const API_URL = window.ctx || 'http://localhost:3000'
+const API_URL = window.mainCtx || 'http://localhost:3000'
 const API_HEADERS = {
   'Content-Type': 'application/json'
 }
@@ -42,6 +42,7 @@ export default class BlogApp extends Component {
         this.showTip(responseData.text)
       } else {
         this.setState({user: responseData.user})
+        console.log('---------reg')
         browserHistory.push(`/u/${responseData.user.username}`)
       }
     })

@@ -1,17 +1,13 @@
 var mongoose = require('mongoose')
-  //settings = require('../settings.js'),
-  //dbURL = process.env.dbURL || settings.dbURL
 
-//mongoose.connect(dbURL)
-
-var articleSchema = new mongoose.Schema({
+var ArticleSchema = new mongoose.Schema({
   author: String,
   title: String,
   tags: Array,
   content: String,
   time: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
   comments: [],
   pv: {
@@ -21,15 +17,13 @@ var articleSchema = new mongoose.Schema({
 })
 
 //Instance methods
-articleSchema.methods.speak = function () {
+ArticleSchema.methods.speak = function () {
   //console.log(this.sayer)
 }
 
 //Statics methods
-articleSchema.statics.getFive = function () {
+ArticleSchema.statics.getFive = function () {
   //
 }
 
-var Article = mongoose.model('Article', articleSchema)
-
-module.exports = Article
+module.exports = mongoose.model('Article', ArticleSchema)

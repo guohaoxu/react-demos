@@ -5,7 +5,7 @@ export default class Error extends Component {
     return (
       <div className="error-route">
         <h1>500</h1>
-        <p>Oops.Server is down...</p>
+        <p>Oops!Something goes wrong...</p>
       </div>
     )
   }
