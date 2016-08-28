@@ -1,1 +1,1 @@
-web: forever ./blog/server.js
+web: node ./blog/server.js
